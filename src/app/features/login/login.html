@@ -1,0 +1,55 @@
+<div class="min-h-screen flex bg-slate-50">
+
+    <div class="hidden lg:flex lg:w-1/2 bg-blue-50 items-center justify-center p-12">
+        <div class="max-w-lg text-center">
+            <img src="assets/login.svg" alt="">
+            <h2 class="mt-8 text-3xl font-bold text-slate-800">Estágio Supervisionado</h2>
+            <p class="mt-4 text-slate-600 leading-relaxed">
+                Aprenda lógica de programação com IA de uma vez por todas !
+            </p>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+        <div class="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-slate-100">
+
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Bem-vindo de volta</h1>
+                <p class="text-slate-500">Por favor, insira seus dados para acessar sua conta.</p>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="login()" class="flex flex-col gap-5">
+
+                <div class="flex flex-col gap-2">
+                    <p-float-label variant="on">
+                        <input pInputText id="email" type="email" formControlName="email" class="w-full"
+                            autocomplete="email"
+                            [class.border-red-500]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
+                        <label for="email">E-mail</label>
+                    </p-float-label>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <p-float-label variant="on">
+                        <p-password id="senha" formControlName="senha" [feedback]="false" [toggleMask]="true"
+                            styleClass="w-full" inputId="senha"
+                            [inputStyleClass]="'w-full ' + (loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched ? 'border-red-500' : '')" />
+                        <label for="senha">Senha</label>
+                    </p-float-label>
+                </div>
+
+
+
+                <p-button label="Entrar" type="submit" styleClass="w-full mt-4 !py-3"></p-button>
+
+                <div class="flex items-center justify-center mt-1">
+                    <a href="#" class="text-sm font-semibold text-blue-600 hover:text-blue-500 transition-colors">
+                        Não possuo conta !
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
