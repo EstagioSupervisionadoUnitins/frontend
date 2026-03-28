@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -7,6 +7,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
+import { AuthService } from '../../domain/auth/service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +20,9 @@ export class Login {
   loginForm!: FormGroup;
   private formBuilder = inject(FormBuilder);
   private toastService = inject(ToastService);
-  private router = inject(Router);  
-
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  loading = signal(false);
 
   constructor() {
     this.criarLoginForm();
@@ -34,9 +36,26 @@ export class Login {
     });
   }
 
-  public login(){
-    this.toastService.showSuccess('Login bem-sucedido', 'Bem-vindo de volta!');
-      this.router.navigate(['/teste']);
+  public login() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+    this.authService.login(this.loginForm.value.email, this.loginForm.value.senha).subscribe({
+      next: (response) => {
+        console.log('Login realizado com sucesso:', response);
+
+        this.toastService.showSuccess('Login realizado com sucesso!');
+        if (response.perfil.id === 1) {
+          this.router.navigate(['/teste']);
+        }
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Login falhou:', error);
+        this.loading.set(false);
+      }
+    });
   }
 
 }

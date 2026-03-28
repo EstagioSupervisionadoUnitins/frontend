@@ -1,0 +1,27 @@
+<header class="bg-white border-b border-surface-200 shadow-sm sticky top-0 z-30">
+  <div class="flex items-center justify-between px-4 py-3">
+    <div class="flex items-center gap-3">
+      <p-button 
+        (click)="onToggleSidebar()" 
+        icon="pi pi-bars" 
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        size="large"
+        styleClass="hover:bg-surface-100"
+        pTooltip="Menu"
+        tooltipPosition="bottom"
+        class="bg-primary-500">
+      </p-button>
+      
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex flex-col">
+          <span class="font-semibold text-lg text-surface-800 leading-tight">Estágio Frontend</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+    </div>
+  </div>
+</header>

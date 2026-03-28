@@ -5,7 +5,6 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
 
-import Aura from '@primeuix/themes/aura';
 import { EstagioPreset } from './core/presets/EstagioPreset';
 import { MessageService } from 'primeng/api';
 
@@ -17,13 +16,13 @@ export const appConfig: ApplicationConfig = {
 
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: EstagioPreset,
         options: {
           darkModeSelector: '.my-app-dark',
-          // cssLayer: {
-          //   name: 'primeng',
-          //   order: 'tailwind-base, primeng, tailwind-utilities'
-          // }
+          cssLayer: {
+            name: 'primeng',
+            order: 'theme, base, primeng, components, utilities'
+          }
         }
       }
     }),
