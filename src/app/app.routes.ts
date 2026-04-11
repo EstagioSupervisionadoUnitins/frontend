@@ -18,6 +18,10 @@ export const routes: Routes = [
             {
                 path: 'aluno/dashboard',
                 loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
+            },
+            {
+                path: 'aluno/trilhas',
+                loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha)
             }
         ]
     }
