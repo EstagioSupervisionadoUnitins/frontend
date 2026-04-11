@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* Garante que o Angular Monaco Editor expanda 100% da sua div pai */
+::ng-deep .editor-container {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Remove a borda de outline default do Monaco ao focar */
+::ng-deep .monaco-editor .margin {
+  background-color: #fafafa !important;
+}

@@ -22,6 +22,10 @@ export const routes: Routes = [
             {
                 path: 'aluno/trilhas',
                 loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha)
+            },
+            {
+                path: 'aluno/exercicio/:id',
+                loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio)
             }
         ]
     }

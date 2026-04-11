@@ -1,0 +1,56 @@
+<div class="flex flex-col gap-6 h-full p-6 bg-white border-r border-slate-200 overflow-y-auto">
+  <div class="flex flex-col gap-2">
+    <div class="inline-flex items-center gap-2 bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit mb-2">
+      <i class="pi pi-book"></i>
+      Instruções do Desafio
+    </div>
+    <h1 class="text-2xl font-black tracking-tight text-slate-900">{{ exercicio().titulo }}</h1>
+    <div class="text-slate-600 text-sm leading-relaxed mt-2" [innerHTML]="exercicio().descricao"></div>
+  </div>
+
+  @if (avaliando()) {
+    <div class="mt-8 p-6 rounded-xl bg-blue-50 border border-blue-100 flex flex-col items-center justify-center gap-4">
+      <i class="pi pi-spin pi-spinner text-blue-500 text-3xl"></i>
+      <div class="text-center">
+        <h4 class="font-bold text-blue-900">A IA está analisando seu código</h4>
+        <p class="text-blue-700/80 text-sm">Aguarde um momento enquanto verificamos a lógica e os resultados...</p>
+      </div>
+    </div>
+  }
+
+  @if (feedback() && !avaliando()) {
+    <div class="mt-8 flex flex-col gap-4 animate-fade-in">
+      <h3 class="font-bold text-lg text-slate-800">Feedback da IA</h3>
+      
+      <div 
+        class="p-5 rounded-xl border flex gap-4"
+        [class]="feedback()?.sucesso ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'">
+        
+        <div class="mt-1">
+          <i 
+            class="pi text-xl"
+            [class]="feedback()?.sucesso ? 'pi-check-circle text-green-500' : 'pi-times-circle text-red-500'">
+          </i>
+        </div>
+        
+        <div class="flex flex-col gap-3">
+          <p class="text-sm font-medium leading-relaxed" 
+            [class]="feedback()?.sucesso ? 'text-green-900' : 'text-red-900'">
+            {{ feedback()?.mensagem }}
+          </p>
+
+          @if (feedback()?.dicas && feedback()!.dicas!.length > 0) {
+            <div class="mt-2 flex flex-col gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider" [class]="feedback()?.sucesso ? 'text-green-700' : 'text-red-700'">Dicas para melhorar:</span>
+              <ul class="list-disc list-inside text-sm marker:text-current space-y-1" [class]="feedback()?.sucesso ? 'text-green-800' : 'text-red-800'">
+                @for (dica of feedback()?.dicas; track dica) {
+                  <li>{{ dica }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
