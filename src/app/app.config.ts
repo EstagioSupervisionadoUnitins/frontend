@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -7,6 +7,7 @@ import { providePrimeNG } from 'primeng/config';
 
 import { EstagioPreset } from './core/presets/EstagioPreset';
 import { MessageService } from 'primeng/api';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,6 +27,10 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
+
+    importProvidersFrom(MonacoEditorModule.forRoot({
+      baseUrl: 'assets/monaco/min/vs' 
+    })),
     MessageService
   ]
 };
