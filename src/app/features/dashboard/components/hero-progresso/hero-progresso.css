@@ -1,0 +1,4 @@
+:host ::ng-deep .hero-progressbar .p-progressbar-value {
+  background: linear-gradient(90deg, #22c55e, #86efac);
+  border-radius: 9999px;
+}

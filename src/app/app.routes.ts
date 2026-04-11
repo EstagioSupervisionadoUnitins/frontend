@@ -14,6 +14,10 @@ export const routes: Routes = [
             {
                 path: 'teste',
                 loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
+            },
+            {
+                path: 'aluno/dashboard',
+                loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
             }
         ]
     }
