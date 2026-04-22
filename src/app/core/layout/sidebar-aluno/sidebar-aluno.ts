@@ -29,8 +29,8 @@ export class SidebarAluno {
 
  
   labelForAvatarIcon = computed(() => {
-    const nome = this.usuario()?.nome;
-    return nome ? nome.charAt(0).toUpperCase() : 'U';
+    const username = this.usuario()?.username;
+    return username ? username.charAt(0).toUpperCase() : 'U';
   });
 
   visible = model<boolean>(false);

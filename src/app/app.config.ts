@@ -9,11 +9,13 @@ import { EstagioPreset } from './core/presets/EstagioPreset';
 import { MessageService } from 'primeng/api';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([])),
+    provideHttpClient(withInterceptors([authInterceptor])),
 
     providePrimeNG({
       theme: {

@@ -1,0 +1,67 @@
+<div class="min-h-screen flex bg-slate-50">
+
+    <div class="hidden lg:flex lg:w-1/2 bg-blue-50 items-center justify-center p-12">
+        <div class="max-w-lg text-center">
+            <img src="assets/login.svg" alt="">
+            <h2 class="mt-8 text-3xl font-bold text-slate-800">Crie sua Conta</h2>
+            <p class="mt-4 text-slate-600 leading-relaxed">
+                Junte-se à plataforma e aprenda lógica de programação de forma inteligente.
+            </p>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+        <div class="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-slate-100">
+
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Cadastro</h1>
+                <p class="text-slate-500">Preencha os dados abaixo para registrar-se.</p>
+            </div>
+
+            <form [formGroup]="signupForm" (ngSubmit)="signup()" class="flex flex-col gap-5">
+
+                <div class="flex flex-col gap-2">
+                    <p-float-label variant="on">
+                        <input pInputText id="name" type="text" formControlName="name" class="w-full"
+                            [class.border-red-500]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched" />
+                        <label for="name">Nome Completo</label>
+                    </p-float-label>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <p-float-label variant="on">
+                        <input pInputText id="email" type="email" formControlName="email" class="w-full"
+                            autocomplete="email"
+                            [class.border-red-500]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" />
+                        <label for="email">E-mail</label>
+                    </p-float-label>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <p-float-label variant="on">
+                        <p-password id="password" formControlName="password" [feedback]="true" [toggleMask]="true"
+                            styleClass="w-full" inputId="password" promptLabel="Sua senha" weakLabel="Fraca" mediumLabel="Média" strongLabel="Forte"
+                            [inputStyleClass]="'w-full ' + (signupForm.get('password')?.invalid && signupForm.get('password')?.touched ? 'border-red-500' : '')" />
+                        <label for="password">Senha</label>
+                    </p-float-label>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <p-select [options]="roles" formControlName="role" optionLabel="label" optionValue="value"
+                        placeholder="Selecione seu perfil" [style]="{'width':'100%'}">
+                    </p-select>
+                </div>
+
+                <p-button label="Criar Conta" type="submit" severity="primary" styleClass="w-full mt-4 !py-3" [loading]="loading()"></p-button>
+
+                <div class="flex items-center justify-center mt-4">
+                    <a routerLink="/login" class="text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors">
+                        Já possui conta? Faça Login
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>

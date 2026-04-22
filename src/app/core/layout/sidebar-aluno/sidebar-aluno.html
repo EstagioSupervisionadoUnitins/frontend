@@ -47,9 +47,9 @@
                         size="large">
                     </p-avatar>
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-surface-800 truncate">{{ user.nome }}</p>
+                        <p class="font-semibold text-surface-800 truncate">{{ user.username }}</p>
                         <p class="text-xs text-surface-500 truncate">{{ user.email }}</p>
-                        <p class="text-xs text-surface-500 truncate">{{ user.perfil.label }}</p>
+                        <p class="text-xs text-surface-500 truncate">{{ user.role === 'student' ? 'Aluno' : 'Professor' }}</p>
                     </div>
                     <p-button (onClick)="logout()">
                         <i class="pi pi-sign-out text-surface-400 hover:text-primary-500 cursor-pointer transition-colors"

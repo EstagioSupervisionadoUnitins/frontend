@@ -1,15 +1,24 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-
-
+    {
+        path: '',
+        redirectTo: 'aluno/dashboard',
+        pathMatch: 'full'
+    },
     {
         path: 'login',
         loadComponent: () => import('./features/login/login').then(m => m.Login)
     },
     {
+        path: 'signup',
+        loadComponent: () => import('./features/signup/signup').then(m => m.Signup)
+    },
+    {
         path: '',
         loadComponent: () => import('./core/layout/main-layout/main-layout').then(m => m.MainLayout),
+        canActivate: [authGuard],
         children: [
             {
                 path: 'teste',

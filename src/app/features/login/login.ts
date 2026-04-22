@@ -5,13 +5,13 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PasswordModule } from 'primeng/password';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule],
+  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -41,18 +41,29 @@ export class Login {
       this.loginForm.markAllAsTouched();
       return;
     }
-    this.authService.login(this.loginForm.value.email, this.loginForm.value.senha).subscribe({
+    
+    this.loading.set(true);
+    
+    const credenciais = {
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.senha
+    };
+
+    this.authService.login(credenciais).subscribe({
       next: (response) => {
         console.log('Login realizado com sucesso:', response);
 
         this.toastService.showSuccess('Login realizado com sucesso!');
-        if (response.perfil.id === 1) {
+        if (response.role === 'student') {
+          this.router.navigate(['/aluno/dashboard']);
+        } else {
           this.router.navigate(['/teste']);
         }
         this.loading.set(false);
       },
       error: (error) => {
         console.error('Login falhou:', error);
+        this.toastService.showError('Falha no login. Verifique suas credenciais.');
         this.loading.set(false);
       }
     });

@@ -1,9 +1,9 @@
 <div class="flex flex-col h-screen overflow-hidden bg-surface-50">
 
   <app-header (toggleSidebar)="toggleSidebar()"></app-header>
-  @if (usuario()?.perfil?.id === 1) {
+  @if (usuario()?.role === 'student') {
   <app-sidebar-aluno [(visible)]="sidebarVisible"></app-sidebar-aluno>
-  } @else if (usuario()?.perfil?.id === 2) {
+  } @else if (usuario()?.role === 'teacher') {
 
   }
   <div class="flex-1 overflow-x-hidden overflow-y-auto flex flex-col">

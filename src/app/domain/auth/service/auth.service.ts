@@ -1,16 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UsuarioResponse } from '../models/usuario-response.interface';
 import { environment } from '../../../../environments/environment';
+import { jwtDecode } from 'jwt-decode';
+import { LoginRequest } from '../models/login-request.interface';
+import { SignupRequest } from '../models/signup-request.interface';
+import { AuthResponse } from '../models/auth-response.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-
-  // adaptar para o futuro backend, quando tiver login e token
 
   private readonly API = `${environment.apiUrl}/auth`;
   private readonly TOKEN_KEY = 'jwt_token';
@@ -19,50 +21,94 @@ export class AuthService {
   private router = inject(Router);
 
   private usuarioSubject = new BehaviorSubject<UsuarioResponse | null>(null);
-  
   public usuario$ = this.usuarioSubject.asObservable();
-  
-  
-  // aqui vai retornar token, com o token setar no logal storage
-  login(email: string, senha: string): Observable<any> {
-    const usuarioMockado: UsuarioResponse = {
-      id: 1,
-      nome: 'Matheus Mockado',
-      email: 'matheus.mockado@example.com',
-      perfil: {
-        id: 1,
-        label: 'Aluno',
-      },
-    }
 
-    this.usuarioSubject.next(usuarioMockado);
-    return new Observable((observer) => {
-      observer.next(usuarioMockado);
-      observer.complete();
-    });
+  constructor() {
+    this.carregarSessao();
   }
 
-  me(): Observable<UsuarioResponse> {
-    const usuarioMockado: UsuarioResponse = {
-      id: 1,
-      nome: 'Matheus Mockado',
-      email: 'matheus.mockado@example.com',
-      perfil: {
-        id: 1,
-        label: 'Aluno',
-      },
-    }
+  login(credenciais: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API}/login`, credenciais).pipe(
+      tap((response) => {
+        this.salvarToken(response.token);
+        this.decodificarENotificar(response.token, response.username, response.role);
+      })
+    );
+  }
 
-    this.usuarioSubject.next(usuarioMockado);
-    return new Observable((observer) => {
-      observer.next(usuarioMockado);
-      observer.complete();
-    });
+  signup(dados: SignupRequest): Observable<any> {
+    return this.http.post(`${this.API}/signup`, dados);
+  }
+
+  me(): Observable<UsuarioResponse | null> {
+    return this.usuario$;
   }
 
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.usuarioSubject.next(null);
     this.router.navigate(['/login']);
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    const expirado = this.isTokenExpirado(token);
+    if (expirado) {
+      this.logout();
+      return false;
+    }
+    return true;
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  hasRole(role: string): boolean {
+    const usuario = this.usuarioSubject.value;
+    return usuario?.role === role;
+  }
+
+  private salvarToken(token: string) {
+    localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  private carregarSessao() {
+    const token = this.getToken();
+    if (token && !this.isTokenExpirado(token)) {
+      try {
+        const decoded: any = jwtDecode(token);
+        this.decodificarENotificar(token, decoded.username, decoded.role);
+      } catch (error) {
+        this.logout();
+      }
+    } else {
+      this.logout();
+    }
+  }
+
+  private isTokenExpirado(token: string): boolean {
+    try {
+      const decoded: any = jwtDecode(token);
+      return Date.now() >= decoded.exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+
+  private decodificarENotificar(token: string, username: string, role: string) {
+    try {
+      const decoded: any = jwtDecode(token);
+      const usuario: UsuarioResponse = {
+        username: username || decoded.username,
+        email: decoded.email || '',
+        role: (role || decoded.role) as 'student' | 'teacher'
+      };
+      this.usuarioSubject.next(usuario);
+    } catch (error) {
+      this.logout();
+    }
   }
 }
