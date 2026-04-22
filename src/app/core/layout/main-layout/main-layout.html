@@ -4,7 +4,7 @@
   @if (usuario()?.role === 'student') {
   <app-sidebar-aluno [(visible)]="sidebarVisible"></app-sidebar-aluno>
   } @else if (usuario()?.role === 'teacher') {
-
+  <app-sidebar-professor [(visible)]="sidebarVisible"></app-sidebar-professor>
   }
   <div class="flex-1 overflow-x-hidden overflow-y-auto flex flex-col">
     <main class="p-4 md:p-6 flex-1">

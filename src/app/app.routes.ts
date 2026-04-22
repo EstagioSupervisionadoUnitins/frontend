@@ -1,12 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-    {
-        path: '',
-        redirectTo: 'aluno/dashboard',
-        pathMatch: 'full'
-    },
     {
         path: 'login',
         loadComponent: () => import('./features/login/login').then(m => m.Login)
@@ -21,21 +17,42 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
             {
-                path: 'teste',
-                loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
+                path: '',
+                redirectTo: 'aluno/dashboard', // Redirecionamento default dentro do layout
+                pathMatch: 'full'
+            },
+            {
+                path: 'turmas',
+                loadComponent: () => import('./features/turmas/turmas').then(m => m.Turmas),
+                data: { roles: ['student', 'teacher'] },
+                canActivate: [roleGuard]
             },
             {
                 path: 'aluno/dashboard',
-                loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
+                loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
+                data: { roles: ['student'] },
+                canActivate: [roleGuard]
             },
             {
                 path: 'aluno/trilhas',
-                loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha)
+                loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha),
+                data: { roles: ['student'] },
+                canActivate: [roleGuard]
             },
             {
                 path: 'aluno/exercicio/:id',
-                loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio)
-            }
+                loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio),
+                data: { roles: ['student'] },
+                canActivate: [roleGuard]
+            },
+            {
+                path: 'teste',
+                loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
+            },
         ]
+    },
+    {
+        path: '**',
+        redirectTo: ''
     }
 ];

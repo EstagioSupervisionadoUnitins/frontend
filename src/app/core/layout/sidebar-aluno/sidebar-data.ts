@@ -13,6 +13,11 @@ export const sidebarDataAluno: MenuItem[] = [
         routerLink: '/aluno/dashboard'
     },
     {
+        label: 'Minhas Turmas',
+        icon: 'pi pi-users',
+        routerLink: '/turmas'
+    },
+    {
         label: 'Trilha de Aprendizado',
         icon: 'pi pi-briefcase',
         routerLink: '/aluno/trilhas'
