@@ -46,6 +46,24 @@ export const routes: Routes = [
                 canActivate: [roleGuard]
             },
             {
+                path: 'professor/questoes',
+                loadComponent: () => import('./features/professor/questoes/questoes-professor').then(m => m.QuestoesProfessor),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
+                path: 'professor/questoes/nova',
+                loadComponent: () => import('./features/professor/questoes/criar-questao/criar-questao').then(m => m.CriarQuestao),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
+                path: 'professor/questoes/gerar',
+                loadComponent: () => import('./features/professor/questoes/gerar-questao-ia/gerar-questao-ia').then(m => m.GerarQuestaoIA),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
                 path: 'teste',
                 loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
             },

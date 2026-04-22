@@ -1,0 +1,17 @@
+:host ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+        background: transparent;
+        border-bottom: 2px solid #f1f5f9;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .p-datatable-tbody > tr {
+        border-bottom: 1px solid #f1f5f9;
+        
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}

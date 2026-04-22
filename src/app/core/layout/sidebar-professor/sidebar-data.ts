@@ -15,8 +15,7 @@ export const sidebarDataProfessor: MenuItem[] = [
     {
         label: 'Questões',
         icon: 'pi pi-book',
-        routerLink: '/questoes',
-        disabled: true
+        routerLink: '/professor/questoes'
     },
     {
         label: 'Perfil',

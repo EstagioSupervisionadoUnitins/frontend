@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExercicioDetalhe, FeedbackIA } from '../../../../domain/aluno/models/exercicio.model';
+import { FeedbackIA } from '../../../../domain/aluno/models/exercicio.model';
+import { Question } from '../../../../domain/question/models/question.interface';
 
 @Component({
   selector: 'app-painel-instrucao',
@@ -9,7 +10,7 @@ import { ExercicioDetalhe, FeedbackIA } from '../../../../domain/aluno/models/ex
   styleUrl: './painel-instrucao.css',
 })
 export class PainelInstrucao {
-  exercicio = input.required<ExercicioDetalhe>();
+  question = input.required<Question>();
   feedback = input<FeedbackIA | null>(null);
   avaliando = input<boolean>(false);
 }
