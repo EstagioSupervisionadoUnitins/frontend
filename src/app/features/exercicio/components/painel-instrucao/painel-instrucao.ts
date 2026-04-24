@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeedbackIA } from '../../../../domain/aluno/models/exercicio.model';
+import { Submission } from '../../../../domain/submission/models/submission.interface';
 import { Question } from '../../../../domain/question/models/question.interface';
 
 @Component({
@@ -11,6 +11,6 @@ import { Question } from '../../../../domain/question/models/question.interface'
 })
 export class PainelInstrucao {
   question = input.required<Question>();
-  feedback = input<FeedbackIA | null>(null);
+  feedback = input<Submission | null>(null);
   avaliando = input<boolean>(false);
 }

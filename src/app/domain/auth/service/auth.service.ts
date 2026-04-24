@@ -54,12 +54,7 @@ export class AuthService {
     const token = this.getToken();
     if (!token) return false;
 
-    const expirado = this.isTokenExpirado(token);
-    if (expirado) {
-      this.logout();
-      return false;
-    }
-    return true;
+    return !this.isTokenExpirado(token);
   }
 
   getToken(): string | null {

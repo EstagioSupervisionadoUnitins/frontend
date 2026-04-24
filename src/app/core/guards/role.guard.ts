@@ -22,7 +22,11 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Se não tiver permissão, redireciona para a home (onde o redirect base cuidará do resto)
-  router.navigate(['/']);
+  // Se não tiver permissão, redireciona para o dashboard se for aluno, senão vai para login
+  if (authService.hasRole('student')) {
+    router.navigate(['/aluno/dashboard']);
+  } else {
+    router.navigate(['/login']);
+  }
   return false;
 };

@@ -10,12 +10,13 @@ import { MessageService } from 'primeng/api';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
 
     providePrimeNG({
       theme: {
