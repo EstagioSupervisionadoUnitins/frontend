@@ -1,0 +1,60 @@
+<div class="p-6 md:p-8 animate-fade-in max-w-4xl mx-auto">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600">
+            <i class="pi pi-trophy text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">Ranking Global</h1>
+            <p class="text-slate-500">Compita com outros alunos resolvendo exercícios e ganhando pontos.</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <p-table [value]="leaderboard()" [loading]="loading()" [rows]="50" 
+                 styleClass="p-datatable-sm p-datatable-hoverable-rows"
+                 responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr class="bg-slate-50">
+                    <th class="w-20 text-center text-slate-400 font-semibold uppercase text-xs tracking-wider py-4">Posição</th>
+                    <th class="text-slate-400 font-semibold uppercase text-xs tracking-wider py-4">Aluno</th>
+                    <th class="w-32 text-right text-slate-400 font-semibold uppercase text-xs tracking-wider py-4">Pontuação</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rank>
+                <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+                    <td class="text-center py-4">
+                        @if (rank.position === 1) {
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 text-amber-600 font-bold">1</span>
+                        } @else if (rank.position === 2) {
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold">2</span>
+                        } @else if (rank.position === 3) {
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-orange-600 font-bold">3</span>
+                        } @else {
+                            <span class="text-slate-500 font-medium">{{ rank.position }}</span>
+                        }
+                    </td>
+                    <td class="py-4">
+                        <div class="flex items-center gap-3">
+                            <span class="font-semibold text-slate-700">{{ rank.user_name }}</span>
+                        </div>
+                    </td>
+                    <td class="text-right py-4 pr-6">
+                        <span class="px-3 py-1 bg-primary-50 text-primary-700 font-bold rounded-lg text-sm">
+                            {{ rank.score }} pts
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="3" class="text-center py-12">
+                        <div class="flex flex-col items-center gap-2">
+                             <i class="pi pi-users text-4xl text-slate-200"></i>
+                             <p class="text-slate-400">Nenhum aluno no ranking ainda.</p>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

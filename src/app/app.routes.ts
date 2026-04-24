@@ -64,6 +64,11 @@ export const routes: Routes = [
                 canActivate: [roleGuard]
             },
             {
+                path: 'ranking',
+                loadComponent: () => import('./features/ranking/ranking').then(m => m.RankingPage),
+                canActivate: [roleGuard]
+            },
+            {
                 path: 'teste',
                 loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
             },

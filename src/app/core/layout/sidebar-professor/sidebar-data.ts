@@ -18,6 +18,11 @@ export const sidebarDataProfessor: MenuItem[] = [
         routerLink: '/professor/questoes'
     },
     {
+        label: 'Ranking',
+        icon: 'pi pi-trophy',
+        routerLink: '/ranking'
+    },
+    {
         label: 'Perfil',
         icon: 'pi pi-user',
         routerLink: '/perfil',
