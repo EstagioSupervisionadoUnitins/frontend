@@ -22,9 +22,17 @@
                 <div [routerLink]="['/aluno/exercicio', q.id]" 
                      class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-500 hover:shadow-md transition-all cursor-pointer group">
                     <div class="flex items-start justify-between mb-4">
-                        <span class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center font-bold">
-                            {{ q.id }}
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center font-bold">
+                                {{ q.id }}
+                            </span>
+                            @if (q.answered) {
+                                <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase flex items-center gap-1 border border-emerald-200">
+                                    <i class="pi pi-check text-[8px]"></i>
+                                    Respondida
+                                </span>
+                            }
+                        </div>
                         <span [ngClass]="{
                             'bg-emerald-50 text-emerald-600 border-emerald-100': q.difficulty === 'easy',
                             'bg-amber-50 text-amber-600 border-amber-100': q.difficulty === 'medium',

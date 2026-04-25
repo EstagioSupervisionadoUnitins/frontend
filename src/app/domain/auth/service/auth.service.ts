@@ -44,10 +44,12 @@ export class AuthService {
     return this.usuario$;
   }
 
-  logout(): void {
+  logout(redirect: boolean = true): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.usuarioSubject.next(null);
-    this.router.navigate(['/login']);
+    if (redirect) {
+      this.router.navigate(['/login']);
+    }
   }
 
   isAuthenticated(): boolean {
@@ -74,13 +76,13 @@ export class AuthService {
     const token = this.getToken();
     if (token && !this.isTokenExpirado(token)) {
       try {
-        const decoded: any = jwtDecode(token);
-        this.decodificarENotificar(token, decoded.username, decoded.role);
+        this.decodificarENotificar(token);
       } catch (error) {
-        this.logout();
+        this.logout(false);
       }
     } else {
-      this.logout();
+      // Apenas limpa o estado, não redireciona forçadamente no construtor
+      this.logout(false);
     }
   }
 
@@ -93,17 +95,19 @@ export class AuthService {
     }
   }
 
-  private decodificarENotificar(token: string, username: string, role: string) {
+  private decodificarENotificar(token: string, username?: string, role?: string) {
     try {
       const decoded: any = jwtDecode(token);
       const usuario: UsuarioResponse = {
-        username: username || decoded.username,
+        // Prioriza dados passados (login) ou os presentes no novo payload do JWT (refresh)
+        username: username || decoded.name || decoded.username || 'Usuário',
         email: decoded.email || '',
         role: (role || decoded.role) as 'student' | 'teacher'
       };
       this.usuarioSubject.next(usuario);
     } catch (error) {
-      this.logout();
+      console.error('Erro ao decodificar token:', error);
+      this.logout(false);
     }
   }
 }
