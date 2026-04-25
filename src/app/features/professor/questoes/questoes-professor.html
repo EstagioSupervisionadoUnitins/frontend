@@ -1,10 +1,22 @@
 <div class="container mx-auto p-6 animate-fade-in">
   <p-toast></p-toast>
   
-  <div class="flex justify-between items-center mb-8">
-    <div>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div class="flex-1">
       <h1 class="text-3xl font-black text-slate-900 tracking-tight">Banco de Questões</h1>
-      <p class="text-slate-500 mt-1">Gerencie e crie novos desafios de lógica para seus alunos.</p>
+      <div class="flex items-center gap-3 mt-2">
+        <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">Filtrar por Turma:</span>
+        <p-select 
+          [options]="classrooms()" 
+          [(ngModel)]="selectedClassroomId" 
+          optionLabel="name" 
+          optionValue="id"
+          placeholder="Selecione uma turma"
+          (onChange)="onClassroomChange()"
+          [loading]="loadingClassrooms()"
+          styleClass="w-full md:w-64">
+        </p-select>
+      </div>
     </div>
     
     <div class="flex gap-3">
@@ -60,14 +72,16 @@
               [rounded]="true" 
               [text]="true" 
               severity="secondary" 
-              pTooltip="Editar">
+              pTooltip="Editar"
+              (click)="editarQuestao(question.id)">
             </p-button>
             <p-button 
               icon="pi pi-trash" 
               [rounded]="true" 
               [text]="true" 
               severity="danger" 
-              pTooltip="Excluir">
+              pTooltip="Excluir"
+              (click)="excluirQuestao(question.id)">
             </p-button>
           </td>
         </tr>

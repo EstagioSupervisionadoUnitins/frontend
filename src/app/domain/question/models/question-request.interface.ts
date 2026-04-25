@@ -4,5 +4,6 @@ export interface QuestionRequest {
     statement: string;
     difficulty: 'easy' | 'medium' | 'hard';
     constraints?: string;
+    classroom_id: number;
   };
 }

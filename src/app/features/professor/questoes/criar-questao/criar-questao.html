@@ -31,17 +31,36 @@
         }
       </div>
 
-      <!-- Dificuldade -->
-      <div class="flex flex-col gap-2">
-        <label for="difficulty" class="font-bold text-slate-700">Dificuldade</label>
-        <p-select 
-          id="difficulty" 
-          [options]="difficultyOptions" 
-          formControlName="difficulty" 
-          optionLabel="label" 
-          optionValue="value"
-          [style]="{'width':'100%'}">
-        </p-select>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Turma -->
+        <div class="flex flex-col gap-2">
+          <label for="classroom_id" class="font-bold text-slate-700">Vincular à Turma</label>
+          <p-select 
+            id="classroom_id"
+            formControlName="classroom_id"
+            [options]="classrooms()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Selecione uma turma"
+            [style]="{'width':'100%'}">
+          </p-select>
+          @if (recipeForm.get('classroom_id')?.invalid && recipeForm.get('classroom_id')?.touched) {
+            <small class="text-rose-500 font-medium">A seleção da turma é obrigatória.</small>
+          }
+        </div>
+
+        <!-- Dificuldade -->
+        <div class="flex flex-col gap-2">
+          <label for="difficulty" class="font-bold text-slate-700">Dificuldade</label>
+          <p-select 
+            id="difficulty" 
+            [options]="difficultyOptions" 
+            formControlName="difficulty" 
+            optionLabel="label" 
+            optionValue="value"
+            [style]="{'width':'100%'}">
+          </p-select>
+        </div>
       </div>
 
       <!-- Enunciado -->
