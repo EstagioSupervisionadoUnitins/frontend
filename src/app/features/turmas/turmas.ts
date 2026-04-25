@@ -33,7 +33,6 @@ export class Turmas implements OnInit {
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
 
-  userRole = signal<'student' | 'teacher' | undefined>(undefined);
   classrooms = signal<Classroom[]>([]);
   loading = signal(false);
 
@@ -42,15 +41,8 @@ export class Turmas implements OnInit {
   newClassName = signal('');
   generatedCode = signal('');
 
-  // Aluno Join Modal
-  displayJoinModal = signal(false);
-  joinCode = signal('');
-
   ngOnInit(): void {
-    this.authService.me().subscribe(user => {
-      this.userRole.set(user?.role);
-      this.loadClassrooms();
-    });
+    this.loadClassrooms();
   }
 
   loadClassrooms(): void {
@@ -92,29 +84,6 @@ export class Turmas implements OnInit {
       },
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar turma.' });
-      }
-    });
-  }
-
-  openJoinModal(): void {
-    this.joinCode.set('');
-    this.displayJoinModal.set(true);
-  }
-
-  joinClassroom(): void {
-    if (!this.joinCode()) {
-      this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'O código da turma é obrigatório.' });
-      return;
-    }
-
-    this.classroomService.join({ code: this.joinCode() }).subscribe({
-      next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Você entrou na turma!' });
-        this.displayJoinModal.set(false);
-        this.loadClassrooms();
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Código inválido ou erro ao entrar na turma.' });
       }
     });
   }

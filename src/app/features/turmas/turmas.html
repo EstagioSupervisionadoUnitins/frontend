@@ -2,15 +2,8 @@
   <p-toast></p-toast>
 
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-surface-900">
-      {{ userRole() === 'teacher' ? 'Gerenciar Minhas Turmas' : 'Minhas Turmas' }}
-    </h1>
-    
-    @if (userRole() === 'teacher') {
-      <p-button label="Nova Turma" icon="pi pi-plus" (click)="openCreateModal()" raised></p-button>
-    } @else if (userRole() === 'student') {
-      <p-button label="Entrar em Turma" icon="pi pi-sign-in" (click)="openJoinModal()" severity="secondary" raised></p-button>
-    }
+    <h1 class="text-3xl font-bold text-surface-900">Gerenciar Minhas Turmas</h1>
+    <p-button label="Nova Turma" icon="pi pi-plus" (click)="openCreateModal()" raised></p-button>
   </div>
 
   @if (loading()) {
@@ -72,20 +65,4 @@
     </div>
   </p-dialog>
 
-  <!-- Aluno: Join Classroom Modal -->
-  <p-dialog header="Entrar em uma Turma" [(visible)]="displayJoinModal" [modal]="true" [style]="{ width: '400px' }" [draggable]="false" [resizable]="false">
-    <div class="flex flex-col gap-6 pt-4">
-      <div class="flex flex-col gap-2">
-        <label for="code" class="font-semibold text-surface-700">Código da Turma</label>
-        <input pInputText id="code" [(ngModel)]="joinCode" placeholder="Insira o código (ex: LOG-XXXXXX)" class="text-center font-mono text-lg uppercase" autocomplete="off" />
-      </div>
-      
-      <p class="text-sm text-surface-500 text-center">Peça o código ao seu professor para participar da turma.</p>
-
-      <div class="flex justify-end gap-2 mt-4">
-        <p-button label="Cancelar" severity="secondary" [text]="true" (click)="displayJoinModal.set(false)"></p-button>
-        <p-button label="Confirmar Entrada" (click)="joinClassroom()"></p-button>
-      </div>
-    </div>
-  </p-dialog>
 </div>

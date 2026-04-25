@@ -9,6 +9,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioResponse } from '../../../domain/auth/models/usuario-response.interface';
 import { AuthService } from '../../../domain/auth/service/auth.service';
 import { sidebarDataProfessor } from './sidebar-data';
+import { ClassroomService } from '../../../domain/classroom/services/classroom.service';
 
 @Component({
   selector: 'app-sidebar-professor',
@@ -18,6 +19,7 @@ import { sidebarDataProfessor } from './sidebar-data';
 })
 export class SidebarProfessor {
   authService = inject(AuthService);
+  classroomService = inject(ClassroomService);
   usuario = signal<UsuarioResponse | null>(null);
   
   sidebarData = sidebarDataProfessor;

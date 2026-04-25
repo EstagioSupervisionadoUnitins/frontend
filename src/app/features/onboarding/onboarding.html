@@ -1,0 +1,81 @@
+<div class="min-h-screen flex bg-slate-50 overflow-hidden">
+
+    <!-- Lado Esquerdo: Ilustração/Branding -->
+    <div class="hidden lg:flex lg:w-1/2 bg-emerald-50 items-center justify-center p-12 relative overflow-hidden">
+        <!-- Overlay decorativo -->
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-100 rounded-full opacity-50"></div>
+        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-96 h-96 bg-emerald-100 rounded-full opacity-30"></div>
+        
+        <div class="max-w-lg text-center z-10">
+            <div class="bg-white p-6 rounded-circle inline-flex mb-8 shadow-sm">
+                <i class="pi pi-graduation-cap text-6xl text-emerald-600"></i>
+            </div>
+            <h2 class="text-4xl font-bold text-slate-800 tracking-tight">Quase lá, Guerreiro!</h2>
+            <p class="mt-6 text-slate-600 text-lg leading-relaxed">
+                Você está a um passo de desbloquear o seu potencial em lógica de programação. 
+                Vincule-se à sua turma para começar a resolver desafios reais com IA.
+            </p>
+            
+            <div class="mt-12 flex justify-center gap-8">
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-emerald-700">100%</p>
+                    <p class="text-xs text-emerald-600 uppercase font-bold tracking-wider font-medium">Interativo</p>
+                </div>
+                <div class="w-px h-10 bg-emerald-200"></div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-emerald-700">IA</p>
+                    <p class="text-xs text-emerald-600 uppercase font-bold tracking-wider font-medium">Socrática</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lado Direito: Formulário -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+        <div class="w-full max-w-md bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-slate-100 animate-fadein">
+            
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Vincular Turma</h1>
+                <p class="text-slate-500">Insira o código fornecido pelo seu professor para acessar seu conteúdo.</p>
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-2">
+                    <label for="code" class="text-sm font-semibold text-slate-700 ml-1">Código da Turma</label>
+                    <span class="p-input-icon-left w-full">
+                        <i class="pi pi-key"></i>
+                        <input 
+                            pInputText 
+                            id="code" 
+                            [(ngModel)]="code" 
+                            placeholder="Ex: LOG-123456" 
+                            class="w-full !p-3 !pl-10 !rounded-xl !border-slate-200 focus:!border-emerald-500"
+                            [disabled]="loading()"
+                        />
+                    </span>
+                </div>
+
+                <p-button 
+                    label="Validar e Entrar" 
+                    icon="pi pi-check-circle" 
+                    styleClass="w-full !py-4 !rounded-xl !bg-emerald-600 !border-emerald-600 shadow-sm font-semibold text-lg"
+                    [loading]="loading()"
+                    (onClick)="joinClassroom()"
+                ></p-button>
+
+                <div class="flex items-center justify-center mt-4">
+                    <button 
+                        (click)="logout()" 
+                        class="text-sm font-semibold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-2"
+                    >
+                        <i class="pi pi-sign-out"></i>
+                        Sair da conta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<p-toast position="bottom-right"></p-toast>

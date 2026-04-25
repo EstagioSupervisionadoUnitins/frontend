@@ -1,14 +1,39 @@
 <p-drawer #drawerRef [(visible)]="visible">
     <ng-template #headless>
         <div class="flex flex-col h-full">
-            <div class="flex items-center justify-between px-6 pt-4 shrink-0">
-                <span class="inline-flex items-center gap-2">
-                    <span class="font-semibold text-2xl text-primary">Menu</span>
-                </span>
-                <span>
-                    <p-button type="button" (click)="closeCallback($event)" icon="pi pi-times" rounded="true"
-                        outlined="true" styleClass="h-8 w-8"></p-button>
-                </span>
+            <!-- Seção Superior: Identidade da Turma -->
+            <div class="px-6 pt-6 shrink-0">
+                <div class="flex items-center justify-between mb-6">
+                    <span class="text-3xl font-black tracking-tighter text-emerald-600 uppercase italic">LogikeIA</span>
+                    <p-button type="button" (click)="closeCallback($event)" icon="pi pi-times" [rounded]="true"
+                        [text]="true" severity="secondary" styleClass="h-10 w-10 hover:bg-surface-100"></p-button>
+                </div>
+
+                @if (classroomService.activeClassroom(); as active) {
+                    <div class="active-classroom-card p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm mb-2 relative overflow-hidden group">
+                        <!-- Decorative glow -->
+                        <div class="absolute -right-4 -top-4 w-12 h-12 bg-emerald-200 rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                        
+                        <div class="flex flex-col gap-2 relative z-10">
+                            <div class="flex items-center gap-2">
+                                <i class="pi pi-bookmark-fill text-emerald-600 text-sm"></i>
+                                <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Sua Turma Atual</span>
+                            </div>
+                            <h3 class="text-slate-800 font-bold text-lg leading-tight truncate" [pTooltip]="active.name" tooltipPosition="bottom">
+                                {{ active.name }}
+                            </h3>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="px-1.5 py-0.5 bg-white text-[10px] font-mono font-bold text-emerald-600 rounded border border-emerald-100 shadow-sm uppercase">
+                                    {{ active.code }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                } @else {
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 mb-2">
+                        <p class="text-xs text-slate-500 font-medium italic">Nenhuma turma selecionada</p>
+                    </div>
+                }
             </div>
 
             <div class="overflow-y-auto mt-4">
@@ -42,20 +67,22 @@
             <div class="mt-auto">
                 <hr class="mb-4 mx-4 border-t border-0 border-surface" />
                 <div
-                    class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-50 cursor-pointer transition-colors">
-                    <p-avatar [label]="labelForAvatarIcon()" shape="circle" styleClass="bg-primary-500 text-white"
+                    class="flex items-center gap-3 p-4 mx-4 mb-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <p-avatar [label]="labelForAvatarIcon()" shape="circle" styleClass="bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-50"
                         size="large">
                     </p-avatar>
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-surface-800 truncate">{{ user.username }}</p>
-                        <p class="text-xs text-surface-500 truncate">{{ user.email }}</p>
-                        <p class="text-xs text-surface-500 truncate">{{ user.role === 'student' ? 'Aluno' : 'Professor' }}</p>
+                        <p class="font-bold text-slate-800 truncate text-sm">{{ user.username }}</p>
+                        <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">{{ user.role === 'student' ? 'Estudante' : 'Mestre' }}</p>
                     </div>
-                    <p-button (onClick)="logout()">
-                        <i class="pi pi-sign-out text-surface-400 hover:text-primary-500 cursor-pointer transition-colors"
-                            pTooltip="Sair" tooltipPosition="top"></i>
-                    </p-button>
-
+                    <button 
+                        (click)="logout()" 
+                        class="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+                        pTooltip="Sair da Conta" 
+                        tooltipPosition="top"
+                    >
+                        <i class="pi pi-sign-out"></i>
+                    </button>
                 </div>
             </div>
             }

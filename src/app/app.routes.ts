@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { classroomGuard } from './core/guards/classroom.guard';
 
 export const routes: Routes = [
     {
@@ -18,32 +19,38 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'aluno/dashboard', // Redirecionamento default dentro do layout
+                redirectTo: 'aluno/dashboard', 
                 pathMatch: 'full'
+            },
+            {
+                path: 'onboarding',
+                loadComponent: () => import('./features/onboarding/onboarding').then(m => m.Onboarding),
+                data: { roles: ['student'] },
+                canActivate: [roleGuard]
             },
             {
                 path: 'turmas',
                 loadComponent: () => import('./features/turmas/turmas').then(m => m.Turmas),
-                data: { roles: ['student', 'teacher'] },
+                data: { roles: ['teacher'] },
                 canActivate: [roleGuard]
             },
             {
                 path: 'aluno/dashboard',
                 loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
                 data: { roles: ['student'] },
-                canActivate: [roleGuard]
+                canActivate: [roleGuard, classroomGuard]
             },
             {
                 path: 'aluno/trilhas',
                 loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha),
                 data: { roles: ['student'] },
-                canActivate: [roleGuard]
+                canActivate: [roleGuard, classroomGuard]
             },
             {
                 path: 'aluno/exercicio/:id',
                 loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio),
                 data: { roles: ['student'] },
-                canActivate: [roleGuard]
+                canActivate: [roleGuard, classroomGuard]
             },
             {
                 path: 'professor/questoes',

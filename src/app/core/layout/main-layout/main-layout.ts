@@ -5,6 +5,7 @@ import { UsuarioResponse } from '../../../domain/auth/models/usuario-response.in
 import { SidebarAluno } from "../sidebar-aluno/sidebar-aluno";
 import { SidebarProfessor } from "../sidebar-professor/sidebar-professor";
 import { Header } from "../header/header";
+import { ClassroomService } from '../../../domain/classroom/services/classroom.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -15,6 +16,7 @@ import { Header } from "../header/header";
 export class MainLayout {
 
   private authService = inject(AuthService);
+  private classroomService = inject(ClassroomService);
   usuario = signal<UsuarioResponse | null>(null);
 
   constructor(){
@@ -22,6 +24,14 @@ export class MainLayout {
       this.usuario.set(usuario);
     });
   }
+
+  canShowSidebar() {
+    const user = this.usuario();
+    if (!user) return false;
+    if (user.role === 'teacher') return true;
+    return !!this.classroomService.activeClassroom();
+  }
+
   sidebarVisible = signal(false);
 
 

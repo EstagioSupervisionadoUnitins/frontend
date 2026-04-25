@@ -188,3 +188,147 @@ Cada fase segue o mesmo ciclo de trabalho:
 | `core/interceptors/error.interceptor.ts` | **[CRIAR]** — tratamento global de erros HTTP (401, 403, 500) |
 | `shared/services/toast.service.ts` | **[ATUALIZAR]** — integrar com mensagens de erro da API |
 | Remoção de mocks | **[EXECUTAR]** — remover todos os `*-mock.service.ts` ao final das fases |
+
+---
+
+### **11. Fases de Correção e Evolução (Pós-integração)**
+
+> As fases 0–4 cobriram a integração inicial com o backend. As fases abaixo endereçam as **lacunas identificadas no [Gap Analysis](file:///home/matheusn/.gemini/antigravity/brain/b9ca4ebd-4481-46ea-82d4-215e8f92ee42/gap_analysis.md.resolved)** e os **novos endpoints** entregues pelo backend, conforme a [documentação atualizada da API](file:///home/matheusn/dev/faculdade/estagio-frontend/api-logike-estagio/api_documentation.md).
+
+---
+
+#### **Fase 5 — Escopo de Turma e Onboarding** `(GAP-1.1, GAP-1.2, GAP-1.3)`
+> **Endpoints:** `GET /classrooms/:id` · `GET /classrooms/:id/stats`
+> **Decisão adotada:** Aluno participa de **uma única turma** no MVP.
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/classroom/models/classroom.interface.ts` | **[ATUALIZAR]** — incluir campos retornados por `GET /classrooms/:id` |
+| **Service** | `domain/classroom/services/classroom.service.ts` | **[ATUALIZAR]** — implementar `getById(id)` consumindo `GET /classrooms/:id` |
+| **Guard** | `core/guards/classroom.guard.ts` | **[CRIAR]** — redirecionar aluno sem turma para tela de onboarding |
+| **Feature** | `features/onboarding/` | **[CRIAR]** — tela de primeiro acesso que exige código da turma antes de liberar o app |
+| **Feature** | `features/turmas/` | **[ATUALIZAR]** — após entrar na turma, persistir `classroom_id` no contexto do usuário |
+| **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — exibir nome da turma ativa na sidebar |
+
+**Critérios de Conclusão:**
+- [ ] Aluno sem turma é redirecionado para a tela de onboarding
+- [ ] Após informar código válido, aluno é vinculado à turma e redirecionado ao dashboard
+- [ ] `classroom_id` é persistido e utilizado como filtro nos demais endpoints
+- [ ] Sidebar exibe a turma ativa do aluno
+
+---
+
+#### **Fase 6 — Gestão Completa de Questões** `(GAP-2.1, GAP-2.2, GAP-2.3)`
+> **Endpoints:** `PATCH /questions/:id` · `DELETE /questions/:id` · `GET /questions?classroom_id=X`
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/question/models/question.interface.ts` | **[ATUALIZAR]** — adicionar `answered: boolean` e `classroom_id: number` |
+| **Models** | `domain/question/models/question-update.interface.ts` | **[CRIAR]** — body para `PATCH /questions/:id` |
+| **Service** | `domain/question/services/question.service.ts` | **[ATUALIZAR]** — implementar `update(id, body)`, `delete(id)` e filtro `?classroom_id=X` no `list()` |
+| **Feature** | `features/questoes-professor/` | **[ATUALIZAR]** — adicionar botões de editar e deletar em cada questão da tabela |
+| **Feature** | `features/questoes-professor/editar-questao/` | **[CRIAR]** — formulário de edição reutilizando layout do `criar-questao` |
+| **Feature** | `features/exercicio/` | **[ATUALIZAR]** — exibir indicador visual (✅/⬜) baseado no campo `answered` |
+| **UX** | Dialog de confirmação de exclusão | **[CRIAR]** — modal de confirmação antes de deletar questão |
+
+**Critérios de Conclusão:**
+- [ ] Professor edita uma questão existente e vê as alterações refletidas na listagem
+- [ ] Professor deleta uma questão com confirmação prévia
+- [ ] Listagem de questões filtra por `classroom_id` da turma ativa
+- [ ] Questões já respondidas pelo aluno exibem indicador visual (✅)
+- [ ] Questões são criadas com `classroom_id` vinculado à turma ativa do professor
+
+---
+
+#### **Fase 7 — Métricas Reais e Perfil** `(GAP-3.1, GAP-5.1, GAP-5.3)`
+> **Endpoints:** `GET /user/stats`
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/aluno/models/user-stats.interface.ts` | **[CRIAR]** — interface com os campos retornados por `GET /user/stats` |
+| **Service** | `domain/aluno/services/aluno.service.ts` | **[CRIAR]** — `getStats()` consumindo `GET /user/stats` |
+| **Service** | `domain/aluno/services/aluno-mock.service.ts` | **[REMOVER]** — substituído pelo service real |
+| **Feature** | `features/dashboard/components/hero-progresso/` | **[ATUALIZAR]** — consumir `aluno.service.getStats()` em vez do mock |
+| **Feature** | `features/dashboard/components/insight-ia/` | **[ATUALIZAR]** — substituir insight mockado por dados reais |
+| **Feature** | `features/perfil/` | **[CRIAR]** — tela de perfil com métricas do aluno (total de submissões, acertos, pontuação, streak) |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/perfil` |
+| **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — habilitar link de Perfil na sidebar |
+
+**Critérios de Conclusão:**
+- [ ] Dashboard do aluno exibe progresso real (não mockado)
+- [ ] Tela de perfil acessível via sidebar com métricas reais
+- [ ] `AlunoMockService` completamente removido sem quebrar funcionalidades
+- [ ] Insight IA do dashboard usa dados reais do backend
+
+---
+
+#### **Fase 8 — Trilhas de Aprendizado (Playlists)** `(GAP-5.2)`
+> **Endpoints:** `GET /playlists` · `GET /playlists/:id` · `POST /playlists` · `PATCH /playlists/:id` · `DELETE /playlists/:id`
+> **Decisão adotada:** Trilha = playlist de questões ordenada, criada pelo professor, vinculada a uma turma.
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/trilha/models/playlist.interface.ts` | **[CRIAR]** — `{ id, title, description, classroom_id, questions: Question[] }` |
+| **Models** | `domain/trilha/models/playlist-request.interface.ts` | **[CRIAR]** — body para criação e edição |
+| **Service** | `domain/trilha/services/trilha.service.ts` | **[CRIAR]** — `list()`, `getById()`, `create()`, `update()`, `delete()` consumindo `/playlists` |
+| **Service** | `domain/aluno/services/trilha-mock.service.ts` | **[REMOVER]** — substituído pelo service real |
+| **Feature** | `features/trilha/` | **[ATUALIZAR]** — consumir dados reais da API de playlists |
+| **Feature** | `features/trilha-professor/` | **[CRIAR]** — tela para professor criar, editar e deletar playlists com seleção de questões |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rotas `/trilha-professor` |
+
+**Critérios de Conclusão:**
+- [ ] Professor cria playlist selecionando questões da sua turma
+- [ ] Professor edita e remove playlists existentes
+- [ ] Aluno visualiza trilhas da sua turma com progresso baseado em questões respondidas
+- [ ] `TrilhaMockService` completamente removido sem quebrar funcionalidades
+- [ ] Playlists filtram por `classroom_id` da turma ativa
+
+---
+
+#### **Fase 9 — Dashboard do Professor** `(GAP-1.4, GAP-5.4)`
+> **Endpoints:** `GET /classrooms/:id/stats` · `GET /classrooms`
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/classroom/models/classroom-stats.interface.ts` | **[CRIAR]** — interface com métricas retornadas por `GET /classrooms/:id/stats` |
+| **Service** | `domain/classroom/services/classroom.service.ts` | **[ATUALIZAR]** — implementar `getStats(id)` consumindo `GET /classrooms/:id/stats` |
+| **Feature** | `features/dashboard-professor/` | **[CRIAR]** — dashboard com visão geral por turma |
+| **Feature** | `features/dashboard-professor/components/turma-resumo/` | **[CRIAR]** — card com nº de alunos, média, questões e submissões |
+| **Feature** | `features/dashboard-professor/components/alunos-lista/` | **[CRIAR]** — lista de alunos com status de progresso |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/teacher/dashboard` |
+| **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — habilitar link "Dashboard" para professor (`disabled: false`) |
+
+**Critérios de Conclusão:**
+- [ ] Professor acessa dashboard e visualiza lista de suas turmas
+- [ ] Cada turma exibe métricas: nº de alunos, média de pontuação, questões associadas
+- [ ] Professor navega para detalhes de uma turma e vê lista de alunos com progresso
+- [ ] Link "Dashboard" habilitado e funcional na sidebar do professor
+
+---
+
+#### **Fase 10 — Ranking por Turma** `(GAP-4.1)`
+> **Endpoints:** `GET /rankings?classroom_id=X`
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Service** | `domain/ranking/services/ranking.service.ts` | **[ATUALIZAR]** — adicionar parâmetro `classroom_id` ao `getLeaderboard()` |
+| **Feature** | `features/ranking/` | **[ATUALIZAR]** — filtrar ranking por turma do aluno por padrão, com toggle para global |
+| **UX** | Toggle/Seletor de escopo | **[CRIAR]** — alternância entre "Minha Turma" e "Global" no leaderboard |
+
+**Critérios de Conclusão:**
+- [ ] Ranking padrão exibe apenas alunos da turma do usuário
+- [ ] Aluno pode alternar entre ranking da turma e ranking global
+- [ ] Pontuações refletem dados reais filtrados corretamente
+
+---
+
+#### **Fase Transversal 2 — Limpeza e Qualidade**
+> Tarefas de finalização que devem ser executadas após todas as fases acima.
+
+| Artefato | Ação |
+| :--- | :--- |
+| `domain/aluno/services/aluno-mock.service.ts` | **[VERIFICAR REMOÇÃO]** — garantir que foi removido na Fase 7 |
+| `domain/aluno/services/trilha-mock.service.ts` | **[VERIFICAR REMOÇÃO]** — garantir que foi removido na Fase 8 |
+| Sidebar (ambos os roles) | **[VERIFICAR]** — todos os links devem estar habilitados e funcionais |
+| Todas as rotas | **[VERIFICAR]** — nenhuma rota deve apontar para componentes inexistentes |
+| Guards | **[VERIFICAR]** — `ClassroomGuard` protege rotas que exigem turma ativa |
