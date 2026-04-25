@@ -21,14 +21,6 @@
           <span class="font-semibold text-lg text-surface-800 leading-tight italic tracking-tighter">LogikeIA</span>
         </div>
         
-        @if (classroomService.activeClassroom(); as active) {
-          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full shadow-sm">
-            <i class="pi pi-bookmark-fill text-emerald-600 text-xs"></i>
-            <span class="text-xs font-bold text-emerald-700 truncate max-w-[200px]">
-              {{ active.name }}
-            </span>
-          </div>
-        }
       </div>
     </div>
     
