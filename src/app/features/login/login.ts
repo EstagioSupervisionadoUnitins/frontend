@@ -57,7 +57,7 @@ export class Login {
         if (response.role === 'student') {
           this.router.navigate(['/aluno/dashboard']);
         } else {
-          this.router.navigate(['/teste']);
+          this.router.navigate(['/professor/questoes']);
         }
         this.loading.set(false);
       },

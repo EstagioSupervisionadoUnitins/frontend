@@ -61,9 +61,24 @@ export class Signup {
 
     this.authService.signup(dados).subscribe({
       next: () => {
-        this.toastService.showSuccess('Conta criada. Faça login para continuar.');
-        this.router.navigate(['/login']);
-        this.loading.set(false);
+        this.toastService.showSuccess('Conta criada com sucesso! Entrando...');
+        
+        // Auto-login
+        this.authService.login({ email: dados.email, password: dados.password }).subscribe({
+          next: (response) => {
+            if (response.role === 'student') {
+              this.router.navigate(['/aluno/dashboard']);
+            } else {
+              this.router.navigate(['/professor/questoes']);
+            }
+            this.loading.set(false);
+          },
+          error: () => {
+            this.toastService.showWarn('Conta criada, mas houve um erro ao entrar. Por favor, faça login manualmente.');
+            this.router.navigate(['/login']);
+            this.loading.set(false);
+          }
+        });
       },
       error: (error) => {
         console.error('Signup falhou:', error);

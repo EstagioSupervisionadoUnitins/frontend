@@ -25,6 +25,7 @@ export const sidebarDataAluno: MenuItem[] = [
     {
         label: 'Perfil',
         icon: 'pi pi-user',
+        disabled: true,
         routerLink: '/perfil'
     }
 ];
