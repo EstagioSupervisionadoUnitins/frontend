@@ -38,7 +38,7 @@
                             'bg-amber-50 text-amber-600 border-amber-100': q.difficulty === 'medium',
                             'bg-rose-50 text-rose-600 border-rose-100': q.difficulty === 'hard'
                         }" class="px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider">
-                            {{ q.difficulty }}
+                            {{ q.difficulty | difficulty }}
                         </span>
                     </div>
                     <h3 class="font-bold text-slate-900 group-hover:text-primary-700 transition-colors mb-2">{{ q.title }}</h3>

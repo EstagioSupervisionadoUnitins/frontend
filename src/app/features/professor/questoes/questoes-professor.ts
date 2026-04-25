@@ -8,6 +8,7 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { DifficultyPipe } from '../../../shared/pipes/difficulty.pipe';
 import { QuestionService } from '../../../domain/question/services/question.service';
 import { Question } from '../../../domain/question/models/question.interface';
 import { ClassroomService } from '../../../domain/classroom/services/classroom.service';
@@ -16,7 +17,7 @@ import { Classroom } from '../../../domain/classroom/models/classroom.interface'
 @Component({
   selector: 'app-questoes-professor',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, TagModule, ToastModule, SelectModule, FormsModule],
+  imports: [CommonModule, TableModule, ButtonModule, TagModule, ToastModule, SelectModule, FormsModule, DifficultyPipe],
   providers: [MessageService],
   templateUrl: './questoes-professor.html',
   styleUrl: './questoes-professor.css'

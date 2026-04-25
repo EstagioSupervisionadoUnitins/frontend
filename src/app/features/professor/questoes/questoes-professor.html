@@ -57,7 +57,7 @@
           <td class="font-semibold text-slate-700">{{ question.title }}</td>
           <td>
             <p-tag 
-              [value]="question.difficulty | uppercase" 
+              [value]="question.difficulty | difficulty" 
               [severity]="getSeverity(question.difficulty)">
             </p-tag>
           </td>

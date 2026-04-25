@@ -5,11 +5,12 @@ import { QuestionService } from '../../domain/question/services/question.service
 import { Question } from '../../domain/question/models/question.interface';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { DifficultyPipe } from '../../shared/pipes/difficulty.pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [HeroProgresso, InsightIa, RouterLink, CommonModule],
+  imports: [HeroProgresso, InsightIa, RouterLink, CommonModule, DifficultyPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
