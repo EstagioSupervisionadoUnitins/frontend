@@ -1,0 +1,45 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total de Alunos -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+            <i class="pi pi-users text-xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Total de Alunos</p>
+            <p class="text-2xl font-bold text-gray-900">{{ stats?.student_count || 0 }}</p>
+        </div>
+    </div>
+
+    <!-- Média de Pontuação -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600">
+            <i class="pi pi-trophy text-xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Média da Turma</p>
+            <p class="text-2xl font-bold text-gray-900">{{ (stats?.avg_score || 0) | number:'1.0-1' }} pts</p>
+        </div>
+    </div>
+
+    <!-- Questões -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+            <i class="pi pi-book text-xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Questões Criadas</p>
+            <p class="text-2xl font-bold text-gray-900">{{ stats?.question_count || 0 }}</p>
+        </div>
+    </div>
+
+    <!-- Submissões (Recentes) -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600">
+            <i class="pi pi-send text-xl"></i>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500 font-medium">Submissões Recentes</p>
+            <p class="text-2xl font-bold text-gray-900">{{ stats?.recent_submissions?.length || 0 }}</p>
+        </div>
+    </div>
+</div>

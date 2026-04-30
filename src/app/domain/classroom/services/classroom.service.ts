@@ -5,6 +5,7 @@ import { environment } from '../../../../environments/environment';
 import { Classroom } from '../models/classroom.interface';
 import { ClassroomRequest } from '../models/classroom-request.interface';
 import { JoinRequest } from '../models/join-request.interface';
+import { ClassroomStats } from '../models/classroom-stats.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +27,8 @@ export class ClassroomService {
     return this.http.get<Classroom>(`${this.API}/${id}`);
   }
 
-  getStats(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.API}/${id}/stats`);
+  getStats(id: number | string): Observable<ClassroomStats> {
+    return this.http.get<ClassroomStats>(`${this.API}/${id}/stats`);
   }
 
   create(data: ClassroomRequest): Observable<Classroom> {

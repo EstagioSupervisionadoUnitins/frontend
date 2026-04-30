@@ -4,8 +4,7 @@ export const sidebarDataProfessor: MenuItem[] = [
     {
         label: 'Dashboard',
         icon: 'pi pi-home',
-        routerLink: '/teacher/dashboard',
-        disabled: true
+        routerLink: '/professor/dashboard'
     },
     {
         label: 'Minhas Turmas',

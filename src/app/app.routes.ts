@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { classroomGuard } from './core/guards/classroom.guard';
+import { roleRedirectGuard } from './core/guards/role-redirect.guard';
 
 export const routes: Routes = [
     {
@@ -19,8 +20,9 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'aluno/dashboard', 
-                pathMatch: 'full'
+                canActivate: [roleRedirectGuard],
+                pathMatch: 'full',
+                children: [] // canActivate exige children ou component se não houver children, mas aqui apenas redireciona
             },
             {
                 path: 'onboarding',
@@ -51,6 +53,12 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio),
                 data: { roles: ['student'] },
                 canActivate: [roleGuard, classroomGuard]
+            },
+            {
+                path: 'professor/dashboard',
+                loadComponent: () => import('./features/professor/dashboard/dashboard-professor').then(m => m.DashboardProfessor),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
             },
             {
                 path: 'professor/questoes',

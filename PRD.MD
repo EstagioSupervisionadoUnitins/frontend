@@ -301,11 +301,13 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/teacher/dashboard` |
 | **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — habilitar link "Dashboard" para professor (`disabled: false`) |
 
+> **Observação de Evolução:** O endpoint `GET /classrooms/:id/stats` retornará futuramente o nome do aluno (`student_name`) e o título da questão (`question_title`) em `recent_submissions`. O frontend deverá ser ajustado para exibir esses nomes na tabela de submissões assim que a alteração no backend for implantada.
+
 **Critérios de Conclusão:**
-- [ ] Professor acessa dashboard e visualiza lista de suas turmas
-- [ ] Cada turma exibe métricas: nº de alunos, média de pontuação, questões associadas
-- [ ] Professor navega para detalhes de uma turma e vê lista de alunos com progresso
-- [ ] Link "Dashboard" habilitado e funcional na sidebar do professor
+- [x] Professor acessa dashboard e visualiza lista de suas turmas
+- [x] Cada turma exibe métricas: nº de alunos, média de pontuação, questões associadas
+- [x] Professor navega para detalhes de uma turma e vê lista de alunos com progresso
+- [x] Link "Dashboard" habilitado e funcional na sidebar do professor
 
 ---
 

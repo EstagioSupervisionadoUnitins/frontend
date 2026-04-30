@@ -1,0 +1,97 @@
+<div class="flex flex-col gap-6">
+  <!-- Alunos que precisam de atenção -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-red-50/30">
+      <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+        <i class="pi pi-exclamation-circle text-red-500"></i>
+        Alunos que precisam de atenção
+      </h3>
+      <span class="text-xs font-medium px-2 py-1 bg-red-100 text-red-600 rounded-full">
+        {{ studentsAttention.length }} Alunos
+      </span>
+    </div>
+
+    <p-table [value]="studentsAttention" [rows]="5" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nome do Aluno</th>
+          <th class="text-center">Total de Erros</th>
+          <th class="text-center">Status</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-student>
+        <tr>
+          <td class="font-medium text-gray-900">{{ student.name }}</td>
+          <td class="text-center">
+            <span class="font-semibold text-red-600">{{ student.error_count }} erros</span>
+          </td>
+          <td class="text-center">
+            <span class="text-xs px-2 py-1 bg-red-50 text-red-500 rounded-md font-medium uppercase"
+              >Alerta</span
+            >
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" class="text-center p-8 text-gray-500">
+            Nenhum aluno em estado crítico no momento. Bom trabalho!
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Últimas Submissões -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+      <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+        <i class="pi pi-history text-blue-500"></i>
+        Últimas Submissões
+      </h3>
+    </div>
+
+    <p-table 
+      [value]="recentSubmissions" 
+      [rows]="5" 
+      [paginator]="recentSubmissions.length > 5"
+      responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID Aluno</th>
+          <th class="text-center">ID Questão</th>
+          <th class="text-center">Data</th>
+          <th class="text-center">Resultado</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-submission>
+        <tr>
+          <td class="text-sm font-medium text-gray-700">#{{ submission.student_id }}</td>
+          <td class="text-center text-sm text-gray-600">Q#{{ submission.question_id }}</td>
+          <td class="text-center text-xs text-gray-500">
+            {{ submission.created_at | date: 'dd/MM HH:mm' }}
+          </td>
+          <td class="text-center">
+            <i
+              class="pi"
+              [pTooltip]="submission.is_correct ? 'Correto' : 'Incorreto'"
+              [ngClass]="
+                submission.is_correct
+                  ? 'pi-check-circle text-emerald-500'
+                  : 'pi-times-circle text-red-500'
+              "
+            >
+            </i>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center p-8 text-gray-500">
+            Nenhuma submissão recente registrada.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
