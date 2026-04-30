@@ -321,9 +321,9 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **UX** | Toggle/Seletor de escopo | **[CRIAR]** — alternância entre "Minha Turma" e "Global" no leaderboard |
 
 **Critérios de Conclusão:**
-- [ ] Ranking padrão exibe apenas alunos da turma do usuário
-- [ ] Aluno pode alternar entre ranking da turma e ranking global
-- [ ] Pontuações refletem dados reais filtrados corretamente
+- [x] Ranking padrão exibe apenas alunos da turma do usuário
+- [x] Aluno pode alternar entre ranking da turma e ranking global
+- [x] Pontuações refletem dados reais filtrados corretamente
 
 ---
 
