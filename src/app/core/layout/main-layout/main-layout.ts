@@ -6,10 +6,11 @@ import { SidebarAluno } from "../sidebar-aluno/sidebar-aluno";
 import { SidebarProfessor } from "../sidebar-professor/sidebar-professor";
 import { Header } from "../header/header";
 import { ClassroomService } from '../../../domain/classroom/services/classroom.service';
+import { BreadcrumbComponent } from '../../../shared/components/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, SidebarAluno, SidebarProfessor, Header],
+  imports: [RouterOutlet, SidebarAluno, SidebarProfessor, Header, BreadcrumbComponent],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })

@@ -48,13 +48,13 @@
             </div>
           </div>
           
-          @if (getPlaylistStatus(playlist) !== 'concluido' && (playlist.questions.length || 0) > 0) {
+          @if (getPlaylistStatus(playlist) !== 'concluido' && (playlist.questions?.length || 0) > 0) {
             <button 
               (click)="continuar(playlist)"
               class="w-fit px-6 py-2 bg-blue-600 text-white text-xs font-bold rounded-full hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
               {{ getPlaylistStatus(playlist) === 'em_andamento' ? 'Continuar Estudando' : 'Começar Trilha' }}
             </button>
-          } @else if ((playlist.questions.length || 0) === 0) {
+          } @else if ((playlist.questions?.length || 0) === 0) {
              <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Trilha sem questões</span>
           } @else {
             <span class="text-[10px] font-black uppercase tracking-widest text-green-600 italic font-bold">Trilha Concluída!</span>

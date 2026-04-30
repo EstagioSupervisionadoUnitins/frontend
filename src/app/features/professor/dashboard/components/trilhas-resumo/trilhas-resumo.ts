@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { PlaylistOverview } from '../../../../../domain/trilha/models/playlist-classroom-stats.interface';
 
 @Component({
   selector: 'app-trilhas-resumo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './trilhas-resumo.html',
 })
 export class TrilhasResumo {

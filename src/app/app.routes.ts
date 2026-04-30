@@ -27,101 +27,143 @@ export const routes: Routes = [
             {
                 path: 'onboarding',
                 loadComponent: () => import('./features/onboarding/onboarding').then(m => m.Onboarding),
-                data: { roles: ['student'] },
+                data: { roles: ['student'], breadcrumb: 'Boas-vindas' },
                 canActivate: [roleGuard]
             },
             {
                 path: 'turmas',
                 loadComponent: () => import('./features/turmas/turmas').then(m => m.Turmas),
-                data: { roles: ['teacher'] },
+                data: { roles: ['teacher'], breadcrumb: 'Minhas Turmas' },
                 canActivate: [roleGuard]
             },
             {
                 path: 'aluno/dashboard',
                 loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
-                data: { roles: ['student'] },
+                data: { roles: ['student'], breadcrumb: 'Dashboard' },
                 canActivate: [roleGuard, classroomGuard]
             },
             {
                 path: 'aluno/trilhas',
                 loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha),
-                data: { roles: ['student'] },
+                data: { roles: ['student'], breadcrumb: 'Trilhas' },
                 canActivate: [roleGuard, classroomGuard]
             },
             {
                 path: 'aluno/exercicio/:id',
                 loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio),
-                data: { roles: ['student'] },
+                data: { roles: ['student'], breadcrumb: 'Exercício' },
                 canActivate: [roleGuard, classroomGuard]
             },
             {
-                path: 'professor/dashboard',
-                loadComponent: () => import('./features/professor/dashboard/dashboard-professor').then(m => m.DashboardProfessor),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
+                path: 'professor',
+                children: [
+                    {
+                        path: 'dashboard',
+                        loadComponent: () => import('./features/professor/dashboard/dashboard-professor').then(m => m.DashboardProfessor),
+                        data: { roles: ['teacher'], breadcrumb: 'Dashboard' },
+                        canActivate: [roleGuard]
+                    },
+                    {
+                        path: 'questoes',
+                        data: { breadcrumb: 'Questões' },
+                        children: [
+                            {
+                                path: '',
+                                loadComponent: () => import('./features/professor/questoes/questoes-professor').then(m => m.QuestoesProfessor),
+                                data: { roles: ['teacher'] },
+                                canActivate: [roleGuard]
+                            },
+                            {
+                                path: 'nova',
+                                loadComponent: () => import('./features/professor/questoes/criar-questao/criar-questao').then(m => m.CriarQuestao),
+                                data: { roles: ['teacher'], breadcrumb: 'Nova Questão' },
+                                canActivate: [roleGuard]
+                            },
+                            {
+                                path: ':id/editar',
+                                loadComponent: () => import('./features/professor/questoes/editar-questao/editar-questao').then(m => m.EditarQuestao),
+                                data: { roles: ['teacher'], breadcrumb: 'Editar' },
+                                canActivate: [roleGuard]
+                            },
+                            {
+                                path: 'gerar',
+                                loadComponent: () => import('./features/professor/questoes/gerar-questao-ia/gerar-questao-ia').then(m => m.GerarQuestaoIA),
+                                data: { roles: ['teacher'], breadcrumb: 'Gerar com IA' },
+                                canActivate: [roleGuard]
+                            },
+                        ]
+                    },
+                    {
+                        path: 'trilhas',
+                        data: { breadcrumb: 'Trilhas' },
+                        children: [
+                            {
+                                path: '',
+                                loadComponent: () => import('./features/professor/trilhas/trilhas-professor').then(m => m.TrilhasProfessor),
+                                data: { roles: ['teacher'] },
+                                canActivate: [roleGuard]
+                            },
+                            {
+                                path: 'nova',
+                                loadComponent: () => import('./features/professor/trilhas/criar-trilha/criar-trilha').then(m => m.CriarTrilha),
+                                data: { roles: ['teacher'], breadcrumb: 'Nova Trilha' },
+                                canActivate: [roleGuard]
+                            },
+                            {
+                                path: ':id/editar',
+                                loadComponent: () => import('./features/professor/trilhas/editar-trilha/editar-trilha').then(m => m.EditarTrilha),
+                                data: { roles: ['teacher'], breadcrumb: 'Editar' },
+                                canActivate: [roleGuard]
+                            },
+                            {
+                                path: ':id/analytics',
+                                loadComponent: () => import('./features/professor/trilhas/analytics/analytics-trilha').then(m => m.AnalyticsTrilha),
+                                data: { roles: ['teacher'], breadcrumb: 'Analytics' },
+                                canActivate: [roleGuard]
+                            },
+                        ]
+                    },
+                ]
             },
             {
-                path: 'professor/questoes',
-                loadComponent: () => import('./features/professor/questoes/questoes-professor').then(m => m.QuestoesProfessor),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/questoes/nova',
-                loadComponent: () => import('./features/professor/questoes/criar-questao/criar-questao').then(m => m.CriarQuestao),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/questoes/:id/editar',
-                loadComponent: () => import('./features/professor/questoes/editar-questao/editar-questao').then(m => m.EditarQuestao),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/questoes/gerar',
-                loadComponent: () => import('./features/professor/questoes/gerar-questao-ia/gerar-questao-ia').then(m => m.GerarQuestaoIA),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/trilhas',
-                loadComponent: () => import('./features/professor/trilhas/trilhas-professor').then(m => m.TrilhasProfessor),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/trilhas/nova',
-                loadComponent: () => import('./features/professor/trilhas/criar-trilha/criar-trilha').then(m => m.CriarTrilha),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/trilhas/:id/editar',
-                loadComponent: () => import('./features/professor/trilhas/editar-trilha/editar-trilha').then(m => m.EditarTrilha),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
-            },
-            {
-                path: 'professor/trilhas/:id/analytics',
-                loadComponent: () => import('./features/professor/trilhas/analytics/analytics-trilha').then(m => m.AnalyticsTrilha),
-                data: { roles: ['teacher'] },
-                canActivate: [roleGuard]
+                path: 'aluno',
+                children: [
+                    {
+                        path: 'dashboard',
+                        loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
+                        data: { roles: ['student'], breadcrumb: 'Dashboard' },
+                        canActivate: [roleGuard, classroomGuard]
+                    },
+                    {
+                        path: 'trilhas',
+                        loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha),
+                        data: { roles: ['student'], breadcrumb: 'Minhas Trilhas' },
+                        canActivate: [roleGuard, classroomGuard]
+                    },
+                    {
+                        path: 'exercicio/:id',
+                        loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio),
+                        data: { roles: ['student'], breadcrumb: 'Exercício' },
+                        canActivate: [roleGuard, classroomGuard]
+                    },
+                ]
             },
             {
                 path: 'ranking',
                 loadComponent: () => import('./features/ranking/ranking').then(m => m.RankingPage),
+                data: { breadcrumb: 'Ranking' },
                 canActivate: [roleGuard]
             },
             {
                 path: 'perfil',
                 loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
-                data: { roles: ['student'] },
+                data: { roles: ['student'], breadcrumb: 'Meu Perfil' },
                 canActivate: [roleGuard]
             },
             {
                 path: 'teste',
-                loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
+                loadComponent: () => import('./features/teste/teste').then(m => m.Teste),
+                data: { breadcrumb: 'Página de Teste' }
             },
         ]
     },
