@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { ProgressBar } from 'primeng/progressbar';
 import { ButtonModule } from 'primeng/button';
-import { AlunoMockService } from '../../../../domain/aluno/services/aluno-mock.service';
+import { AlunoService } from '../../../../domain/aluno/services/aluno.service';
 
 @Component({
   selector: 'app-hero-progresso',
@@ -10,6 +10,12 @@ import { AlunoMockService } from '../../../../domain/aluno/services/aluno-mock.s
   styleUrl: './hero-progresso.css',
 })
 export class HeroProgresso {
-  private alunoService = inject(AlunoMockService);
-  progresso = this.alunoService.progresso;
+  private alunoService = inject(AlunoService);
+  stats = this.alunoService.stats;
+
+  percentual = computed(() => {
+    const s = this.stats();
+    if (!s || s.questions_attempted === 0) return 0;
+    return Math.round((s.questions_solved / s.questions_attempted) * 100);
+  });
 }

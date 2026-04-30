@@ -82,6 +82,12 @@ export const routes: Routes = [
                 canActivate: [roleGuard]
             },
             {
+                path: 'perfil',
+                loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
+                data: { roles: ['student'] },
+                canActivate: [roleGuard]
+            },
+            {
                 path: 'teste',
                 loadComponent: () => import('./features/teste/teste').then(m => m.Teste)
             },

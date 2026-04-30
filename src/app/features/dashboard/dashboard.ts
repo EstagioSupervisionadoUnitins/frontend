@@ -6,6 +6,7 @@ import { Question } from '../../domain/question/models/question.interface';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DifficultyPipe } from '../../shared/pipes/difficulty.pipe';
+import { AlunoService } from '../../domain/aluno/services/aluno.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,11 +17,13 @@ import { DifficultyPipe } from '../../shared/pipes/difficulty.pipe';
 })
 export class Dashboard implements OnInit {
   private questionService = inject(QuestionService);
+  private alunoService = inject(AlunoService);
   questions = signal<Question[]>([]);
 
   ngOnInit(): void {
     this.questionService.list().subscribe(data => {
       this.questions.set(data);
     });
+    this.alunoService.getStats().subscribe();
   }
 }

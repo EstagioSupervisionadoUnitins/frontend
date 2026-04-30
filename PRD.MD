@@ -94,10 +94,10 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Armazenamento** | `localStorage` ou `sessionStorage` | Persistir token JWT e dados do usuário |
 
 **Critérios de Conclusão:**
-- [ ] Login com credenciais válidas retorna token e redireciona ao dashboard
-- [ ] Signup cria conta e redireciona para login
-- [ ] Rotas protegidas redirecionam para `/login` sem token válido
-- [ ] Token expirado é tratado (logout automático)
+- [x] Login com credenciais válidas retorna token e redireciona ao dashboard
+- [x] Signup cria conta e redireciona para login
+- [x] Rotas protegidas redirecionam para `/login` sem token válido
+- [x] Token expirado é tratado (logout automático)
 
 ---
 
@@ -114,9 +114,9 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/turmas` |
 
 **Critérios de Conclusão:**
-- [ ] Professor cria turma e visualiza na listagem
-- [ ] Aluno entra na turma pelo código e visualiza na listagem
-- [ ] Listagem é filtrada por role (professor vê suas turmas, aluno vê onde está matriculado)
+- [x] Professor cria turma e visualiza na listagem
+- [x] Aluno entra na turma pelo código e visualiza na listagem
+- [x] Listagem é filtrada por role (professor vê suas turmas, aluno vê onde está matriculado)
 
 ---
 
@@ -127,16 +127,16 @@ Cada fase segue o mesmo ciclo de trabalho:
 | :--- | :--- | :--- |
 | **Models** | `domain/question/models/question.interface.ts` | **[CRIAR]** — `{ id, title, statement, difficulty, constraints }` |
 | **Models** | `domain/question/models/question-request.interface.ts` | **[CRIAR]** — body de criação manual |
-| **Models** | `domain/question/models/generate-request.interface.ts` | **[CRIAR]** — `{ context }` para geração via IA |
+| **Models** | `domain/question/models/generate-request.interface.ts` | **[CRIAR]** — `{ context, quantity, classroom_id }` para geração via IA |
 | **Service** | `domain/question/services/question.service.ts` | **[CRIAR]** — `list()`, `getById()`, `create()`, `generate()` |
 | **Feature** | `features/exercicio/` | **[ATUALIZAR]** — consumir questões reais da API em vez de dados mock |
 | **Feature** | `features/trilha/` | **[ATUALIZAR]** — listar questões da trilha vindas da API |
 
 **Critérios de Conclusão:**
-- [ ] Exercícios são carregados da API e exibidos corretamente
-- [ ] Professor consegue criar questão manual
-- [ ] Professor consegue gerar questões via IA informando contexto
-- [ ] Detalhe da questão (`/questions/:id`) renderiza statement e constraints
+- [x] Exercícios são carregados da API e exibidos corretamente
+- [x] Professor consegue criar questão manual
+- [x] Professor consegue gerar questões via IA informando contexto
+- [x] Detalhe da questão (`/questions/:id`) renderiza statement e constraints
 
 ---
 
@@ -153,10 +153,10 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Service** | `domain/aluno/services/aluno-mock.service.ts` | **[REMOVER/SUBSTITUIR]** — substituir mock por dados reais |
 
 **Critérios de Conclusão:**
-- [ ] Aluno submete código e recebe status `pending`
-- [ ] Polling consulta resultado até `completed`
-- [ ] Feedback socrático é exibido quando `is_correct = false`
-- [ ] Progresso do aluno é atualizado com base nos resultados reais
+- [x] Aluno submete código e recebe status `pending`
+- [x] Polling consulta resultado até `completed`
+- [x] Feedback socrático é exibido quando `is_correct = false`
+- [x] Progresso do aluno é atualizado com base nos resultados reais
 
 ---
 
@@ -172,9 +172,9 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Layout** | `core/layout/` | **[ATUALIZAR]** — adicionar link "Ranking" no menu lateral |
 
 **Critérios de Conclusão:**
-- [ ] Leaderboard exibe top 50 alunos com pontuação
-- [ ] Pontuação reflete regra: Fácil (10pts), Média (20pts), Difícil (30pts)
-- [ ] Tela acessível pelo menu principal
+- [x] Leaderboard exibe top 50 alunos com pontuação
+- [x] Pontuação reflete regra: Fácil (10pts), Média (20pts), Difícil (30pts)
+- [x] Tela acessível pelo menu principal
 
 ---
 
@@ -211,10 +211,10 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — exibir nome da turma ativa na sidebar |
 
 **Critérios de Conclusão:**
-- [ ] Aluno sem turma é redirecionado para a tela de onboarding
-- [ ] Após informar código válido, aluno é vinculado à turma e redirecionado ao dashboard
-- [ ] `classroom_id` é persistido e utilizado como filtro nos demais endpoints
-- [ ] Sidebar exibe a turma ativa do aluno
+- [x] Aluno sem turma é redirecionado para a tela de onboarding
+- [x] Após informar código válido, aluno é vinculado à turma e redirecionado ao dashboard
+- [x] `classroom_id` é persistido e utilizado como filtro nos demais endpoints
+- [x] Sidebar exibe a turma ativa do aluno
 
 ---
 
@@ -232,11 +232,11 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **UX** | Dialog de confirmação de exclusão | **[CRIAR]** — modal de confirmação antes de deletar questão |
 
 **Critérios de Conclusão:**
-- [ ] Professor edita uma questão existente e vê as alterações refletidas na listagem
-- [ ] Professor deleta uma questão com confirmação prévia
-- [ ] Listagem de questões filtra por `classroom_id` da turma ativa
-- [ ] Questões já respondidas pelo aluno exibem indicador visual (✅)
-- [ ] Questões são criadas com `classroom_id` vinculado à turma ativa do professor
+- [x] Professor edita uma questão existente e vê as alterações refletidas na listagem
+- [x] Professor deleta uma questão com confirmação prévia
+- [x] Listagem de questões filtra por `classroom_id` da turma ativa
+- [x] Questões já respondidas pelo aluno exibem indicador visual (✅)
+- [x] Questões são criadas com `classroom_id` vinculado à turma ativa do professor
 
 ---
 
@@ -255,10 +255,10 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — habilitar link de Perfil na sidebar |
 
 **Critérios de Conclusão:**
-- [ ] Dashboard do aluno exibe progresso real (não mockado)
-- [ ] Tela de perfil acessível via sidebar com métricas reais
-- [ ] `AlunoMockService` completamente removido sem quebrar funcionalidades
-- [ ] Insight IA do dashboard usa dados reais do backend
+- [x] Dashboard do aluno exibe progresso real (não mockado)
+- [x] Tela de perfil acessível via sidebar com métricas reais
+- [x] `AlunoMockService` completamente removido sem quebrar funcionalidades
+- [x] Insight IA do dashboard usa dados reais do backend
 
 ---
 
@@ -286,7 +286,7 @@ Cada fase segue o mesmo ciclo de trabalho:
 ---
 
 #### **Fase 9 — Dashboard do Professor** `(GAP-1.4, GAP-5.4)`
-> **Endpoints:** `GET /classrooms/:id/stats` · `GET /classrooms`
+> **Endpoints:** `GET /classrooms/:id/stats` · `GET /classrooms` · `GET /playlists/stats?classroom_id=X`
 
 | Camada | Artefato | Ação |
 | :--- | :--- | :--- |
@@ -295,6 +295,7 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Feature** | `features/dashboard-professor/` | **[CRIAR]** — dashboard com visão geral por turma |
 | **Feature** | `features/dashboard-professor/components/turma-resumo/` | **[CRIAR]** — card com nº de alunos, média, questões e submissões |
 | **Feature** | `features/dashboard-professor/components/alunos-lista/` | **[CRIAR]** — lista de alunos com status de progresso |
+| **Feature** | `features/dashboard-professor/components/trilhas-resumo/` | **[CRIAR]** — visão generalista das trilhas da turma (started vs finished) |
 | **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/teacher/dashboard` |
 | **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — habilitar link "Dashboard" para professor (`disabled: false`) |
 
@@ -320,6 +321,24 @@ Cada fase segue o mesmo ciclo de trabalho:
 - [ ] Aluno pode alternar entre ranking da turma e ranking global
 - [ ] Pontuações refletem dados reais filtrados corretamente
 
+---
+
+#### **Fase 11 — Analytics Detalhado de Trilhas** `(Novo módulo)`
+> **Endpoints:** `GET /playlists/:id/stats`
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/trilha/models/playlist-detailed-stats.interface.ts` | **[CRIAR]** — `{ playlist_id, user_stats, question_stats, insights }` |
+| **Service** | `domain/trilha/services/trilha.service.ts` | **[ATUALIZAR]** — implementar `getDetailedStats(id)` |
+| **Feature** | `features/trilha-professor/analytics/` | **[CRIAR]** — tela de "Raio-X" da trilha com ranking de questões mais difíceis |
+| **UX** | Gráficos de barra/pizza | **[CRIAR]** — visualização de erros comuns por questão |
+
+**Critérios de Conclusão:**
+- [ ] Professor visualiza quais questões tiveram mais tentativas antes do acerto
+- [ ] Professor identifica alunos que não iniciaram ou estão travados em questões específicas
+- [ ] Insights de IA (hardest_questions) são exibidos para auxiliar a intervenção docente
+
+---
 ---
 
 #### **Fase Transversal 2 — Limpeza e Qualidade**

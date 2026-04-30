@@ -1,0 +1,93 @@
+<div class="flex flex-col gap-8 w-full max-w-5xl mx-auto pb-12 animate-fade-in">
+  <!-- Header -->
+  <div class="flex flex-col gap-2">
+    <h1 class="text-2xl font-black text-slate-900 tracking-tight">Seu Perfil</h1>
+    <p class="text-slate-500 text-sm font-medium">Acompanhe seu desempenho e métricas gerais.</p>
+  </div>
+
+  @if (stats(); as userStats) {
+    <!-- Profile Card -->
+    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row items-center gap-6">
+      <p-avatar [label]="initial()" shape="circle" size="xlarge" styleClass="bg-emerald-600 text-white w-24 h-24 text-4xl shadow-md ring-4 ring-emerald-50"></p-avatar>
+      
+      <div class="flex flex-col text-center md:text-left">
+        <h2 class="text-3xl font-bold text-slate-800">{{ userStats.username }}</h2>
+        <p class="text-slate-500 font-medium">{{ userStats.email }}</p>
+        
+        <div class="flex items-center gap-3 mt-3 justify-center md:justify-start">
+          <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider">
+            Aluno
+          </span>
+          @if (userStats.classroom) {
+            <span class="px-3 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+              <i class="pi pi-bookmark-fill text-[10px]"></i>
+              {{ userStats.classroom.name }}
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Total Score -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-2 relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-100 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+        <div class="flex items-center gap-3 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center">
+            <i class="pi pi-star-fill text-lg"></i>
+          </div>
+          <span class="text-slate-500 text-sm font-bold uppercase tracking-wider">Pontuação</span>
+        </div>
+        <span class="text-4xl font-black text-slate-800 mt-2 relative z-10">{{ userStats.total_score }}</span>
+      </div>
+
+      <!-- Accuracy -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-2 relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-100 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+        <div class="flex items-center gap-3 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i class="pi pi-check-circle text-lg"></i>
+          </div>
+          <span class="text-slate-500 text-sm font-bold uppercase tracking-wider">Taxa de Acerto</span>
+        </div>
+        <span class="text-4xl font-black text-slate-800 mt-2 relative z-10">{{ accuracy() }}%</span>
+      </div>
+
+      <!-- Questions Solved -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-2 relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-100 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+        <div class="flex items-center gap-3 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center">
+            <i class="pi pi-check text-lg font-bold"></i>
+          </div>
+          <span class="text-slate-500 text-sm font-bold uppercase tracking-wider">Resolvidas</span>
+        </div>
+        <span class="text-4xl font-black text-slate-800 mt-2 relative z-10">{{ userStats.questions_solved }} <span class="text-lg text-slate-400 font-medium">/ {{ userStats.questions_attempted }}</span></span>
+      </div>
+
+      <!-- Total Submissions -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-2 relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-16 h-16 bg-purple-100 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+        <div class="flex items-center gap-3 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center">
+            <i class="pi pi-send text-lg"></i>
+          </div>
+          <span class="text-slate-500 text-sm font-bold uppercase tracking-wider">Submissões</span>
+        </div>
+        <span class="text-4xl font-black text-slate-800 mt-2 relative z-10">{{ userStats.total_submissions }}</span>
+      </div>
+    </div>
+
+    <!-- AI Insight (Reused) -->
+    <div class="mt-4">
+      <app-insight-ia></app-insight-ia>
+    </div>
+
+  } @else {
+    <div class="flex flex-col items-center justify-center py-20 gap-4">
+      <i class="pi pi-spin pi-spinner text-4xl text-emerald-600"></i>
+      <p class="text-slate-500 font-medium">Carregando seu perfil...</p>
+    </div>
+  }
+</div>
