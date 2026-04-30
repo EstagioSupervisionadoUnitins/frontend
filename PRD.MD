@@ -277,11 +277,13 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rotas `/trilha-professor` |
 
 **Critérios de Conclusão:**
-- [ ] Professor cria playlist selecionando questões da sua turma
-- [ ] Professor edita e remove playlists existentes
-- [ ] Aluno visualiza trilhas da sua turma com progresso baseado em questões respondidas
-- [ ] `TrilhaMockService` completamente removido sem quebrar funcionalidades
-- [ ] Playlists filtram por `classroom_id` da turma ativa
+- [x] Professor cria playlist selecionando questões da sua turma
+- [x] Professor edita e remove playlists existentes
+- [x] Aluno visualiza trilhas da sua turma com progresso baseado em questões respondidas
+- [x] Playlists filtram por `classroom_id` da turma ativa
+- [x] `TrilhaMockService` completamente removido sem quebrar funcionalidades
+
+> **Observação de Integração:** Atualmente o frontend envia os dados de criação/edição envelopados em uma chave `{ playlist: data }` para seguir o padrão Rails. O backend deve estar configurado para permitir `question_ids: []` no `PlaylistsController#playlist_params`.
 
 ---
 

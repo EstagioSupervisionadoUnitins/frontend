@@ -1,5 +1,6 @@
-import { Component, input } from '@angular/core';
-import { Modulo } from '../../../../domain/aluno/models/trilha.model';
+import { Component, input, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { Playlist } from '../../../../domain/trilha/models/playlist.interface';
 
 @Component({
   selector: 'app-trilha-timeline',
@@ -8,23 +9,48 @@ import { Modulo } from '../../../../domain/aluno/models/trilha.model';
   styleUrl: './trilha-timeline.css',
 })
 export class TrilhaTimeline {
-  modulos = input.required<Modulo[]>();
+  private router = inject(Router);
+  playlists = input.required<Playlist[]>();
 
-  getStatusClass(status: string): string {
+  getPlaylistStatus(playlist: Playlist): string {
+    const questions = playlist.questions || [];
+    const total = questions.length;
+    if (total === 0) return 'nao_iniciada';
+    
+    const answered = questions.filter(q => q.answered).length;
+    
+    if (answered === total) return 'concluido';
+    if (answered > 0) return 'em_andamento';
+    return 'nao_iniciada';
+  }
+
+  getStatusClass(playlist: Playlist): string {
+    const status = this.getPlaylistStatus(playlist);
     const classes: Record<string, string> = {
       concluido: 'bg-green-50 border-green-200 text-green-700',
       em_andamento: 'bg-blue-50 border-blue-200 text-blue-700',
+      nao_iniciada: 'bg-slate-50 border-slate-200 text-slate-600',
       bloqueado: 'bg-slate-50 border-slate-200 text-slate-400 opacity-60',
     };
     return classes[status] || 'bg-slate-50 border-slate-200';
   }
 
-  getDotClass(status: string): string {
+  getDotClass(playlist: Playlist): string {
+    const status = this.getPlaylistStatus(playlist);
     const classes: Record<string, string> = {
       concluido: 'bg-green-500 ring-green-200',
       em_andamento: 'bg-blue-500 ring-blue-100 animate-pulse',
+      nao_iniciada: 'bg-slate-300 ring-slate-100',
       bloqueado: 'bg-slate-300 ring-slate-100',
     };
     return classes[status] || 'bg-slate-300';
+  }
+
+  continuar(playlist: Playlist): void {
+    const questions = playlist.questions || [];
+    const nextQuestion = questions.find(q => !q.answered) || questions[0];
+    if (nextQuestion) {
+      this.router.navigate(['/aluno/exercicio', nextQuestion.id]);
+    }
   }
 }

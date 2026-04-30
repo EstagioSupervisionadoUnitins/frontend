@@ -77,6 +77,24 @@ export const routes: Routes = [
                 canActivate: [roleGuard]
             },
             {
+                path: 'professor/trilhas',
+                loadComponent: () => import('./features/professor/trilhas/trilhas-professor').then(m => m.TrilhasProfessor),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
+                path: 'professor/trilhas/nova',
+                loadComponent: () => import('./features/professor/trilhas/criar-trilha/criar-trilha').then(m => m.CriarTrilha),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
+                path: 'professor/trilhas/:id/editar',
+                loadComponent: () => import('./features/professor/trilhas/editar-trilha/editar-trilha').then(m => m.EditarTrilha),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
                 path: 'ranking',
                 loadComponent: () => import('./features/ranking/ranking').then(m => m.RankingPage),
                 canActivate: [roleGuard]

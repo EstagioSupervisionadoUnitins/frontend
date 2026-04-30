@@ -1,0 +1,69 @@
+<div class="p-6">
+    <p-toast></p-toast>
+    
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">Gerenciar Trilhas</h1>
+            <p class="text-slate-500">Organize as questões da sua turma em trilhas de aprendizado.</p>
+        </div>
+        <div class="flex gap-3">
+            <p-select 
+                [options]="classrooms()" 
+                [(ngModel)]="selectedClassroomId" 
+                optionLabel="name" 
+                optionValue="id"
+                placeholder="Selecione uma Turma"
+                (onChange)="onClassroomChange()"
+                class="w-64">
+            </p-select>
+            <button pButton label="Nova Trilha" icon="pi pi-plus" (click)="novaTrilha()" class="p-button-primary"></button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <p-table [value]="playlists()" [loading]="loading()" [rows]="10" [paginator]="true" 
+                responsiveLayout="scroll" [rowHover]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="bg-slate-50 text-slate-600 font-bold">ID</th>
+                    <th class="bg-slate-50 text-slate-600 font-bold">Título</th>
+                    <th class="bg-slate-50 text-slate-600 font-bold">Descrição</th>
+                    <th class="bg-slate-50 text-slate-600 font-bold text-center">Questões</th>
+                    <th class="bg-slate-50 text-slate-600 font-bold text-center">Ações</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-playlist>
+                <tr>
+                    <td class="text-slate-600">#{{playlist.id}}</td>
+                    <td class="font-semibold text-slate-800">{{playlist.title}}</td>
+                    <td class="text-slate-500 truncate max-w-xs">{{playlist.description}}</td>
+                    <td class="text-center">
+                        <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs font-bold border border-blue-100">
+                            {{playlist.questions?.length || 0}} questões
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="flex justify-center gap-2">
+                            <button pButton icon="pi pi-pencil" 
+                                    class="p-button-text p-button-rounded p-button-info" 
+                                    (click)="editarTrilha(playlist.id)"
+                                    title="Editar Trilha"></button>
+                            <button pButton icon="pi pi-trash" 
+                                    class="p-button-text p-button-rounded p-button-danger" 
+                                    (click)="excluirTrilha(playlist.id)"
+                                    title="Excluir Trilha"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center p-12 text-slate-400">
+                        <i class="pi pi-folder-open text-4xl mb-4 block"></i>
+                        Nenhuma trilha cadastrada para esta turma.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
