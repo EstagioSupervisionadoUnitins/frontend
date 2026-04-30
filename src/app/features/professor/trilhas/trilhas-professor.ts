@@ -83,6 +83,10 @@ export class TrilhasProfessor implements OnInit {
     this.router.navigate(['/professor/trilhas', id, 'editar']);
   }
 
+  verAnalytics(id: number): void {
+    this.router.navigate(['/professor/trilhas', id, 'analytics']);
+  }
+
   excluirTrilha(id: number): void {
     if (confirm('Tem certeza que deseja excluir esta trilha?')) {
       this.trilhaService.delete(id).subscribe({

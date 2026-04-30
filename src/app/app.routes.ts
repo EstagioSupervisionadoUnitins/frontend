@@ -103,6 +103,12 @@ export const routes: Routes = [
                 canActivate: [roleGuard]
             },
             {
+                path: 'professor/trilhas/:id/analytics',
+                loadComponent: () => import('./features/professor/trilhas/analytics/analytics-trilha').then(m => m.AnalyticsTrilha),
+                data: { roles: ['teacher'] },
+                canActivate: [roleGuard]
+            },
+            {
                 path: 'ranking',
                 loadComponent: () => import('./features/ranking/ranking').then(m => m.RankingPage),
                 canActivate: [roleGuard]

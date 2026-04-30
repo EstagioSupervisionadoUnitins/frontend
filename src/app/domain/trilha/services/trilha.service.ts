@@ -5,6 +5,7 @@ import { environment } from '../../../../environments/environment';
 import { Playlist } from '../models/playlist.interface';
 import { PlaylistRequest } from '../models/playlist-request.interface';
 import { PlaylistClassroomStats } from '../models/playlist-classroom-stats.interface';
+import { PlaylistDetailedStats } from '../models/playlist-detailed-stats.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -42,5 +43,9 @@ export class TrilhaService {
   getClassroomStats(classroomId: number): Observable<PlaylistClassroomStats> {
     const params = new HttpParams().set('classroom_id', classroomId.toString());
     return this.http.get<PlaylistClassroomStats>(`${this.API}/stats`, { params });
+  }
+
+  getDetailedStats(id: number): Observable<PlaylistDetailedStats> {
+    return this.http.get<PlaylistDetailedStats>(`${this.API}/${id}/stats`);
   }
 }

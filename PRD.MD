@@ -22,6 +22,7 @@ Resolver a dificuldade de abstração e a sobrecarga de informações que alunos
 ### **4. Stack Tecnológica**
 * **Framework:** [Angular 21.1](https://angular.dev/)
 * **Biblioteca de UI:** [PrimeNG](https://primeng.org/) (com foco em componentes funcionais e sérios), [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+* **Gráficos:** [PrimeNG Chart (`p-chart`)](https://primeng.org/chart) powered by [Chart.js v4](https://www.chartjs.org/) — instalado como peer dependency
 * **Gerenciamento de Estado:** Signals e RxJS (padrão Angular moderno)
 * **Estilização:** [TailwindCSS](https://tailwindcss.com/)
 * **Comunicação:** HttpClient para integração futura com o backend.
@@ -329,18 +330,26 @@ Cada fase segue o mesmo ciclo de trabalho:
 
 #### **Fase 11 — Analytics Detalhado de Trilhas** `(Novo módulo)`
 > **Endpoints:** `GET /playlists/:id/stats`
+> **Dependência instalada:** `chart.js ^4.x` (peer dependency do `p-chart` do PrimeNG)
 
 | Camada | Artefato | Ação |
 | :--- | :--- | :--- |
-| **Models** | `domain/trilha/models/playlist-detailed-stats.interface.ts` | **[CRIAR]** — `{ playlist_id, user_stats, question_stats, insights }` |
-| **Service** | `domain/trilha/services/trilha.service.ts` | **[ATUALIZAR]** — implementar `getDetailedStats(id)` |
-| **Feature** | `features/trilha-professor/analytics/` | **[CRIAR]** — tela de "Raio-X" da trilha com ranking de questões mais difíceis |
-| **UX** | Gráficos de barra/pizza | **[CRIAR]** — visualização de erros comuns por questão |
+| **Dependência** | `chart.js` (npm) | **[INSTALADO]** — peer dependency do `p-chart` do PrimeNG |
+| **Models** | `domain/trilha/models/playlist-detailed-stats.interface.ts` | **[CRIAR]** — `{ playlist_id, user_stats: UserPlaylistStat[], question_stats: QuestionStat[], insights }` |
+| **Service** | `domain/trilha/services/trilha.service.ts` | **[ATUALIZAR]** — implementar `getDetailedStats(id)` consumindo `GET /playlists/:id/stats` |
+| **Feature** | `features/professor/trilhas/analytics/` | **[CRIAR]** — tela de "Raio-X" com 4 seções: cards de resumo, gráfico de barras, gráfico de donut e tabela de alunos |
+| **UX** | Gráfico de Barras Horizontal (`p-chart` type='bar') | **[CRIAR]** — taxa de erro por questão, ordenado do mais difícil; dados de `question_stats` |
+| **UX** | Gráfico de Rosca/Donut (`p-chart` type='doughnut') | **[CRIAR]** — distribuição de status dos alunos (Concluído / Em andamento / Não iniciado); dados de `user_stats` |
+| **UX** | Tabela de Alunos (`p-table`) | **[CRIAR]** — nome, questões respondidas, acertos, tentativas totais, badge de status |
+| **Feature** | `features/professor/trilhas/trilhas-professor.html` | **[ATUALIZAR]** — adicionar botão "Ver Analytics" em cada linha da tabela |
+| **Feature** | `features/professor/trilhas/trilhas-professor.ts` | **[ATUALIZAR]** — método `verAnalytics(id)` para navegação |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/professor/trilhas/:id/analytics` |
 
 **Critérios de Conclusão:**
-- [ ] Professor visualiza quais questões tiveram mais tentativas antes do acerto
-- [ ] Professor identifica alunos que não iniciaram ou estão travados em questões específicas
-- [ ] Insights de IA (hardest_questions) são exibidos para auxiliar a intervenção docente
+- [ ] Professor visualiza quais questões tiveram mais tentativas antes do acerto (gráfico de barras)
+- [ ] Professor identifica alunos que não iniciaram ou estão travados em questões específicas (tabela + gráfico donut)
+- [ ] Insights de IA (`hardest_questions`) são exibidos em card de destaque para auxiliar a intervenção docente
+- [ ] Empty state exibido quando não há dados suficientes na trilha
 
 ---
 ---

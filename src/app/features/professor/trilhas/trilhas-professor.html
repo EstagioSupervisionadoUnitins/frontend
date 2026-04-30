@@ -44,6 +44,10 @@
                     </td>
                     <td class="text-center">
                         <div class="flex justify-center gap-2">
+                            <button pButton icon="pi pi-chart-bar" 
+                                    class="p-button-text p-button-rounded p-button-success" 
+                                    (click)="verAnalytics(playlist.id)"
+                                    title="Ver Analytics"></button>
                             <button pButton icon="pi pi-pencil" 
                                     class="p-button-text p-button-rounded p-button-info" 
                                     (click)="editarTrilha(playlist.id)"
