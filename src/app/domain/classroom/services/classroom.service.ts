@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Classroom } from '../models/classroom.interface';
 import { ClassroomRequest } from '../models/classroom-request.interface';
@@ -15,12 +15,31 @@ export class ClassroomService {
   private http = inject(HttpClient);
 
   // Estado da turma ativa
-  private activeClassroomSignal = signal<Classroom | null>(this.loadFromStorage());
+  private activeClassroomSignal = signal<Classroom | null>(null);
+  private loadedSignal = signal(false);
 
   activeClassroom = this.activeClassroomSignal.asReadonly();
+  loaded = this.loadedSignal.asReadonly();
 
   list(): Observable<Classroom[]> {
     return this.http.get<Classroom[]>(this.API);
+  }
+
+  loadActiveClassroom(): Observable<Classroom | null> {
+    // Se já carregou, retorna o valor atual
+    if (this.loaded()) {
+      return of(this.activeClassroom());
+    }
+
+    return this.list().pipe(
+      map(classrooms => {
+        // No MVP o aluno só tem uma turma ativa
+        const classroom = classrooms.length > 0 ? classrooms[0] : null;
+        this.activeClassroomSignal.set(classroom);
+        this.loadedSignal.set(true);
+        return classroom;
+      })
+    );
   }
 
   getById(id: number | string): Observable<Classroom> {
@@ -35,20 +54,24 @@ export class ClassroomService {
     return this.http.post<Classroom>(this.API, data);
   }
 
-  join(data: JoinRequest): Observable<Classroom> {
-    return this.http.post<Classroom>(`${this.API}/join`, data);
+  join(data: JoinRequest): Observable<any> {
+    return this.http.post<any>(`${this.API}/join`, data).pipe(
+      tap(res => {
+        const classroom = res.classroom || (res.id ? res : null);
+        if (classroom) {
+          this.setActiveClassroom(classroom);
+        }
+      })
+    );
   }
 
   setActiveClassroom(data: any | null): void {
     if (data) {
-      // A API pode retornar { message: string, classroom: Classroom } ou apenas Classroom
       const classroom = data.classroom || (data.id ? data : null);
-      
       if (classroom) {
-        // Remove campos indesejados se existirem (ex: 'message' no nível da turma)
         const { message, ...cleanClassroom } = classroom;
         this.activeClassroomSignal.set(cleanClassroom);
-        localStorage.setItem('active_classroom', JSON.stringify(cleanClassroom));
+        this.loadedSignal.set(true);
       } else {
         this.clearActiveClassroom();
       }
@@ -57,14 +80,9 @@ export class ClassroomService {
     }
   }
 
-  private clearActiveClassroom(): void {
+  clearActiveClassroom(): void {
     this.activeClassroomSignal.set(null);
-    localStorage.removeItem('active_classroom');
-  }
-
-  private loadFromStorage(): Classroom | null {
-    const saved = localStorage.getItem('active_classroom');
-    return saved ? JSON.parse(saved) : null;
+    this.loadedSignal.set(false);
   }
 
   generateCode(): string {

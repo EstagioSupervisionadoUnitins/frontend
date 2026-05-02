@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { map, of } from 'rxjs';
 import { AuthService } from '../../domain/auth/service/auth.service';
 import { ClassroomService } from '../../domain/classroom/services/classroom.service';
 
@@ -13,12 +14,26 @@ export const classroomGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Se for estudante e tiver turma ativa, permite
-  if (classroomService.activeClassroom()) {
+  // Se já carregou e tem turma ativa, permite
+  if (classroomService.loaded() && classroomService.activeClassroom()) {
     return true;
   }
 
-  // Se não tiver turma ativa, redireciona para onboarding
-  router.navigate(['/onboarding']);
-  return false;
+  // Se já carregou e NÃO tem turma, redireciona para onboarding
+  if (classroomService.loaded() && !classroomService.activeClassroom()) {
+    router.navigate(['/onboarding']);
+    return false;
+  }
+
+  // Ainda não carregou — busca da API
+  return classroomService.loadActiveClassroom().pipe(
+    map(classroom => {
+      if (classroom) {
+        return true;
+      }
+      
+      router.navigate(['/onboarding']);
+      return false;
+    })
+  );
 };

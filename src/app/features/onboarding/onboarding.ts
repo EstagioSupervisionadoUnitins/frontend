@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ import { AuthService } from '../../domain/auth/service/auth.service';
   templateUrl: './onboarding.html',
   styleUrl: './onboarding.css'
 })
-export class Onboarding {
+export class Onboarding implements OnInit {
   private classroomService = inject(ClassroomService);
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
@@ -33,6 +33,15 @@ export class Onboarding {
 
   code = signal('');
   loading = signal(false);
+
+  ngOnInit(): void {
+    // Se o aluno já possui uma turma (ex: acessando de outro navegador), redireciona direto
+    this.classroomService.loadActiveClassroom().subscribe(classroom => {
+      if (classroom) {
+        this.router.navigate(['/aluno/dashboard']);
+      }
+    });
+  }
 
   joinClassroom() {
     if (!this.code()) {
@@ -57,12 +66,33 @@ export class Onboarding {
         setTimeout(() => this.router.navigate(['/aluno/dashboard']), 1500);
       },
       error: (err) => {
-        this.loading.set(false);
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Erro', 
-          detail: 'Código inválido ou erro ao entrar na turma.' 
-        });
+        // Se o erro for que o aluno já está em uma turma (unique constraint ou regra de negócio)
+        if (err.status === 422) {
+          this.classroomService.loadActiveClassroom().subscribe(classroom => {
+            if (classroom) {
+              this.messageService.add({ 
+                severity: 'info', 
+                summary: 'Turma Detectada', 
+                detail: 'Você já está vinculado a uma turma. Redirecionando...' 
+              });
+              setTimeout(() => this.router.navigate(['/aluno/dashboard']), 1500);
+            } else {
+              this.loading.set(false);
+              this.messageService.add({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: err.error?.error || 'Erro ao entrar na turma.' 
+              });
+            }
+          });
+        } else {
+          this.loading.set(false);
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Erro', 
+            detail: 'Código inválido ou erro ao entrar na turma.' 
+          });
+        }
       }
     });
   }

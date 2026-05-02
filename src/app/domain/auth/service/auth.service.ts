@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { LoginRequest } from '../models/login-request.interface';
 import { SignupRequest } from '../models/signup-request.interface';
 import { AuthResponse } from '../models/auth-response.interface';
+import { ClassroomService } from '../../classroom/services/classroom.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class AuthService {
 
   private http = inject(HttpClient);
   private router = inject(Router);
+  private classroomService = inject(ClassroomService);
 
   private usuarioSubject = new BehaviorSubject<UsuarioResponse | null>(null);
   public usuario$ = this.usuarioSubject.asObservable();
@@ -58,6 +60,7 @@ export class AuthService {
   logout(redirect: boolean = true): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.usuarioSubject.next(null);
+    this.classroomService.clearActiveClassroom();
     if (redirect) {
       this.router.navigate(['/login']);
     }
