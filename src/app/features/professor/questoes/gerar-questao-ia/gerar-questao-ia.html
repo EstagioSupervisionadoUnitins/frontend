@@ -16,7 +16,7 @@
       Gerar Questões com IA
     </h1>
     <p class="text-slate-500">
-      Descreva o tema ou contexto e a IA do Gemini criará 3 questões inéditas para você.
+      Descreva o tema ou contexto e a IA do Gemini criará {{ quantity() }} {{ quantity() === 1 ? 'questão inédita' : 'questões inéditas' }} para você.
     </p>
   </div>
 
@@ -34,6 +34,25 @@
           [loading]="loadingClassrooms()"
           styleClass="w-full">
         </p-select>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="quantity" class="font-bold text-slate-700">Quantidade de Questões (1-10)</label>
+        <p-inputNumber
+          id="quantity"
+          [(ngModel)]="quantity"
+          [min]="1"
+          [max]="10"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          spinnerMode="horizontal"
+          decrementButtonClass="p-button-secondary"
+          incrementButtonClass="p-button-secondary"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus"
+          styleClass="w-full"
+          inputStyleClass="text-center"
+        ></p-inputNumber>
       </div>
     </div>
 
@@ -75,7 +94,8 @@
             <ng-template pTemplate="header">
               <div class="p-4 border-b border-slate-50 flex justify-between items-start">
                 <p-tag
-                  [value]="q.difficulty | uppercase"
+                  [value]="q.difficulty | difficulty | uppercase"
+
                   [severity]="getSeverity(q.difficulty)"
                 ></p-tag>
                 <i class="pi pi-check-circle text-green-500 text-lg"></i>
@@ -91,18 +111,6 @@
               </div>
             }
 
-            <div
-              class="pt-4 mt-auto border-t border-slate-50 flex justify-between items-center text-xs text-slate-400"
-            >
-              <span>Automaticamente salva</span>
-              <p-button
-                icon="pi pi-eye"
-                [rounded]="true"
-                [text]="true"
-                size="small"
-                pTooltip="Ver Detalhes"
-              ></p-button>
-            </div>
           </p-card>
         }
       </div>

@@ -30,9 +30,10 @@ export class QuestionService {
     return this.http.post<Question>(this.apiUrl, req);
   }
 
-  generate(req: GenerateRequest): Observable<Question[]> {
-    return this.http.post<Question[]>(`${this.apiUrl}/generate`, req);
+  generate(req: GenerateRequest): Observable<{ message: string, questions: Question[] }> {
+    return this.http.post<{ message: string, questions: Question[] }>(`${this.apiUrl}/generate`, req);
   }
+
 
   update(id: number, req: QuestionUpdate): Observable<Question> {
     return this.http.patch<Question>(`${this.apiUrl}/${id}`, req);

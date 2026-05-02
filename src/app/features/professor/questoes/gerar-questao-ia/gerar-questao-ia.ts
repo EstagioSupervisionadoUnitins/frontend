@@ -8,11 +8,13 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
 import { QuestionService } from '../../../../domain/question/services/question.service';
 import { Question } from '../../../../domain/question/models/question.interface';
 import { ClassroomService } from '../../../../domain/classroom/services/classroom.service';
 import { Classroom } from '../../../../domain/classroom/models/classroom.interface';
+import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
 
 @Component({
   selector: 'app-gerar-questao-ia',
@@ -25,7 +27,9 @@ import { Classroom } from '../../../../domain/classroom/models/classroom.interfa
     ButtonModule, 
     ToastModule, 
     CardModule,
-    TagModule
+    TagModule,
+    InputNumberModule,
+    DifficultyPipe
   ],
   providers: [MessageService],
   templateUrl: './gerar-questao-ia.html',
@@ -40,6 +44,7 @@ export class GerarQuestaoIA {
   classrooms = signal<Classroom[]>([]);
   selectedClassroomId = signal<number | null>(null);
   context = signal('');
+  quantity = signal<number>(3);
   loadingClassrooms = signal(false);
   loading = signal(false);
   generatedQuestions = signal<Question[]>([]);
@@ -82,12 +87,21 @@ export class GerarQuestaoIA {
     const classroomId = this.selectedClassroomId();
     if (!classroomId) return; // double check for safety
 
-    this.questionService.generate({ context: this.context(), classroom_id: classroomId }).subscribe({
-      next: (questions) => {
-        this.generatedQuestions.set(questions);
+    this.questionService.generate({ 
+      context: this.context(), 
+      classroom_id: classroomId,
+      quantity: this.quantity() 
+    }).subscribe({
+      next: (res) => {
+        this.generatedQuestions.set(res.questions);
         this.loading.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'IA gerou 3 novas questões!' });
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Sucesso', 
+          detail: `IA gerou ${res.questions.length} novas questões!` 
+        });
       },
+
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao gerar questões via IA.' });
         this.loading.set(false);

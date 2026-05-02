@@ -15,6 +15,7 @@ import { ClassroomService } from '../../../../domain/classroom/services/classroo
 import { QuestionService } from '../../../../domain/question/services/question.service';
 import { Classroom } from '../../../../domain/classroom/models/classroom.interface';
 import { Question } from '../../../../domain/question/models/question.interface';
+import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
 
 @Component({
   selector: 'app-criar-trilha',
@@ -28,7 +29,8 @@ import { Question } from '../../../../domain/question/models/question.interface'
     ButtonModule, 
     ToastModule,
     TableModule,
-    TagModule
+    TagModule,
+    DifficultyPipe
   ],
   providers: [MessageService],
   templateUrl: './criar-trilha.html',

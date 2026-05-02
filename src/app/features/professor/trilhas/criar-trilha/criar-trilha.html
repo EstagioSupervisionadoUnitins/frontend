@@ -70,7 +70,7 @@
                             </td>
                             <td class="font-medium text-slate-700">{{question.title}}</td>
                             <td class="text-center">
-                                <p-tag [value]="question.difficulty" [severity]="getSeverity(question.difficulty)"></p-tag>
+                                <p-tag [value]="question.difficulty | difficulty | uppercase" [severity]="getSeverity(question.difficulty)"></p-tag>
                             </td>
                         </tr>
                     </ng-template>
