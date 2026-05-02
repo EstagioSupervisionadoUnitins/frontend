@@ -40,6 +40,17 @@ export class AuthService {
     return this.http.post(`${this.API}/signup`, dados);
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.API}/forgot_password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.API}/reset_password`, { 
+      token, 
+      new_password: newPassword 
+    });
+  }
+
   me(): Observable<UsuarioResponse | null> {
     return this.usuario$;
   }

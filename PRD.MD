@@ -81,6 +81,7 @@ Cada fase segue o mesmo ciclo de trabalho:
 
 #### **Fase 0 — Autenticação** `(RF01)`
 > **Endpoints:** `POST /auth/signup` · `POST /auth/login`
+> **Endpoints disponíveis (implementados na Fase 12):** `POST /auth/forgot_password` · `POST /auth/reset_password`
 
 | Camada | Artefato | Ação |
 | :--- | :--- | :--- |
@@ -143,6 +144,7 @@ Cada fase segue o mesmo ciclo de trabalho:
 
 #### **Fase 3 — Submissões (Submissions)** `(RF02, RF04, RF05, RF07)`
 > **Endpoints:** `POST /submissions` · `GET /submissions/:id`
+> **Endpoint disponível (implementado na Fase 13):** `GET /submissions` (listagem/histórico)
 
 | Camada | Artefato | Ação |
 | :--- | :--- | :--- |
@@ -352,6 +354,53 @@ Cada fase segue o mesmo ciclo de trabalho:
 - [ ] Empty state exibido quando não há dados suficientes na trilha
 
 ---
+
+#### **Fase 12 — Recuperação de Senha** `(RF01 — Complemento)`
+> **Endpoints:** `POST /auth/forgot_password` · `POST /auth/reset_password`
+> **Integração externa:** O backend dispara e-mail de recuperação via workflow n8n (`notifications_hub → password_reset`). O frontend **não** envia o e-mail — apenas aciona o endpoint e apresenta a UI.
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/auth/models/forgot-password-request.interface.ts` | **[CRIAR]** — `{ email: string }` |
+| **Models** | `domain/auth/models/reset-password-request.interface.ts` | **[CRIAR]** — `{ token: string, new_password: string }` |
+| **Service** | `domain/auth/service/auth.service.ts` | **[ATUALIZAR]** — implementar `forgotPassword(email)` consumindo `POST /auth/forgot_password` e `resetPassword(token, newPassword)` consumindo `POST /auth/reset_password` |
+| **Feature** | `features/login/` | **[ATUALIZAR]** — adicionar link "Esqueci minha senha" na tela de login |
+| **Feature** | `features/forgot-password/` | **[CRIAR]** — tela com formulário de e-mail para solicitar recuperação |
+| **Feature** | `features/reset-password/` | **[CRIAR]** — tela com formulário de token + nova senha (acessada via link do e-mail) |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rotas `/forgot-password` e `/reset-password` (rotas públicas, sem guard) |
+| **UX** | Validação e feedback | **[CRIAR]** — mensagens de sucesso ("E-mail enviado") e erro ("Token inválido ou expirado"), com redirecionamento para login após reset bem-sucedido |
+
+**Critérios de Conclusão:**
+- [x] Link "Esqueci minha senha" visível e funcional na tela de login
+- [x] Tela de forgot-password envia e-mail e exibe confirmação (sem revelar se o e-mail existe)
+- [x] Tela de reset-password aceita token + nova senha e redireciona para login
+- [x] Erros do backend (token inválido/expirado, 401) são tratados com mensagem clara
+- [x] Fluxo completo testado: forgot → e-mail recebido (n8n) → reset → login com nova senha
+
+---
+
+#### **Fase 13 — Histórico de Submissões do Aluno** `(RF07 — Complemento)`
+> **Endpoints:** `GET /submissions`
+> **Contexto:** O swagger revela `GET /submissions` (listagem), que não era consumido pelo frontend. Permite ao aluno revisar seu histórico de tentativas.
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Service** | `domain/submission/services/submission.service.ts` | **[ATUALIZAR]** — implementar `list()` consumindo `GET /submissions` |
+| **Models** | `domain/submission/models/submission.interface.ts` | **[ATUALIZAR]** — garantir que a interface suporta todos os campos retornados pela listagem (incluir `question_title`, `created_at`) |
+| **Feature** | `features/historico-submissoes/` | **[CRIAR]** — tela de histórico com tabela (`p-table`) exibindo: questão, código submetido, status, resultado, data |
+| **Feature** | `features/dashboard/` | **[ATUALIZAR]** — adicionar card/link "Minhas Submissões" ou "Histórico" no dashboard do aluno |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/historico` |
+| **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — adicionar link "Histórico" na sidebar do aluno |
+| **UX** | Filtros e ordenação | **[CRIAR]** — filtrar por status (correto/incorreto) e ordenar por data |
+
+**Critérios de Conclusão:**
+- [ ] Aluno acessa tela de histórico via sidebar
+- [ ] Tabela exibe todas as submissões do aluno com paginação
+- [ ] Aluno pode filtrar por resultado (acerto/erro) e ordenar por data
+- [ ] Clique em uma submissão expande ou navega para detalhes (feedback, código)
+- [ ] Empty state exibido quando não há submissões
+
+---
 ---
 
 #### **Fase Transversal 2 — Limpeza e Qualidade**
@@ -364,3 +413,6 @@ Cada fase segue o mesmo ciclo de trabalho:
 | Sidebar (ambos os roles) | **[VERIFICAR]** — todos os links devem estar habilitados e funcionais |
 | Todas as rotas | **[VERIFICAR]** — nenhuma rota deve apontar para componentes inexistentes |
 | Guards | **[VERIFICAR]** — `ClassroomGuard` protege rotas que exigem turma ativa |
+| Fluxo de recuperação de senha | **[VERIFICAR]** — `forgot-password` e `reset-password` funcionam end-to-end com n8n |
+| Histórico de submissões | **[VERIFICAR]** — `GET /submissions` retorna dados corretamente e tabela renderiza |
+| Cobertura de endpoints | **[VERIFICAR]** — nenhum endpoint da API documentada sem consumo no frontend |
