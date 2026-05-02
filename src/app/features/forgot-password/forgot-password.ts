@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
 
@@ -19,6 +19,7 @@ export class ForgotPassword {
   private formBuilder = inject(FormBuilder);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
+  private router = inject(Router);
   
   loading = signal(false);
   enviado = signal(false);
