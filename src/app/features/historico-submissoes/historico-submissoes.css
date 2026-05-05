@@ -1,0 +1,11 @@
+/* Estilos customizados para a tela de histórico de submissões do aluno */
+:host {
+    display: block;
+    width: 100%;
+}
+
+pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+}

@@ -8,6 +8,7 @@ import { PainelEditor } from './components/painel-editor/painel-editor';
 import { SubmissionService } from '../../domain/submission/services/submission.service';
 import { Submission } from '../../domain/submission/models/submission.interface';
 import { ToastService } from '../../shared/services/toast.service';
+import { TrilhaService } from '../../domain/trilha/services/trilha.service';
 
 @Component({
   selector: 'app-exercicio',
@@ -21,10 +22,12 @@ export class Exercicio implements OnInit {
   private submissionService = inject(SubmissionService);
   private toastService = inject(ToastService);
   private destroyRef = inject(DestroyRef);
+  private trilhaService = inject(TrilhaService);
 
   question = signal<Question | null>(null);
   avaliando = signal(false);
   feedback = signal<Submission | null>(null);
+  proximaQuestaoId = signal<number | null>(null);
   
   codigoSelecionado = '# Escreva sua solução aqui em Python\n\ndef solution():\n    pass';
 
@@ -33,11 +36,19 @@ export class Exercicio implements OnInit {
       const id = Number(params.get('id'));
       console.log('[Exercicio] Carregando ID:', id);
       
+      // Reseta estados para a nova questão
+      this.question.set(null);
+      this.feedback.set(null);
+      this.avaliando.set(false);
+      this.proximaQuestaoId.set(null);
+      this.codigoSelecionado = '# Escreva sua solução aqui em Python\n\ndef solution():\n    pass';
+      
       if (id) {
         this.questionService.getById(id).subscribe({
           next: (q) => {
             console.log('[Exercicio] Questão carregada:', q.title);
             this.question.set(q);
+            this.carregarProximaQuestao(q);
           },
           error: (err) => {
             console.error('[Exercicio] Erro ao carregar questão:', err);
@@ -49,6 +60,39 @@ export class Exercicio implements OnInit {
       }
     });
   }
+
+  carregarProximaQuestao(q: Question): void {
+    if (!q.classroom_id) {
+      this.proximaQuestaoId.set(null);
+      return;
+    }
+    
+    this.trilhaService.list(q.classroom_id).subscribe({
+      next: (playlists) => {
+        let proximaId: number | null = null;
+        const todasQuestoes: Question[] = [];
+        
+        playlists.forEach(playlist => {
+          if (playlist.questions) {
+            todasQuestoes.push(...playlist.questions);
+          }
+        });
+        
+        const indexAtual = todasQuestoes.findIndex(quest => quest.id === q.id);
+        if (indexAtual !== -1 && indexAtual < todasQuestoes.length - 1) {
+          proximaId = todasQuestoes[indexAtual + 1].id;
+        }
+        
+        console.log('[Exercicio] Próxima questão ID calculada:', proximaId);
+        this.proximaQuestaoId.set(proximaId);
+      },
+      error: (err) => {
+        console.error('[Exercicio] Erro ao carregar playlists para próxima questão:', err);
+        this.proximaQuestaoId.set(null);
+      }
+    });
+  }
+
 
   submitCodigo(): void {
     const questionVal = this.question();

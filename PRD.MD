@@ -188,8 +188,8 @@ Cada fase segue o mesmo ciclo de trabalho:
 | :--- | :--- |
 | `environments/environment.ts` | **[ATUALIZAR]** — adicionar `apiBaseUrl` |
 | `environments/environment.prod.ts` | **[ATUALIZAR]** — URL do backend em produção |
-| `core/interceptors/error.interceptor.ts` | **[CRIAR]** — tratamento global de erros HTTP (401, 403, 500) |
-| `shared/services/toast.service.ts` | **[ATUALIZAR]** — integrar com mensagens de erro da API |
+| `core/interceptors/error.interceptor.ts` | **[CRIAR]** — tratamento global de erros HTTP mapeando o novo payload padrão da API (`{ error, message, errors }`) |
+| `shared/services/toast.service.ts` | **[ATUALIZAR]** — extrair e exibir o campo `message` retornado pelas exceções padronizadas do backend |
 | Remoção de mocks | **[EXECUTAR]** — remover todos os `*-mock.service.ts` ao final das fases |
 
 ---
@@ -275,7 +275,7 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Models** | `domain/trilha/models/playlist-request.interface.ts` | **[CRIAR]** — body para criação e edição |
 | **Service** | `domain/trilha/services/trilha.service.ts` | **[CRIAR]** — `list()`, `getById()`, `create()`, `update()`, `delete()` consumindo `/playlists` |
 | **Service** | `domain/aluno/services/trilha-mock.service.ts` | **[REMOVER]** — substituído pelo service real |
-| **Feature** | `features/trilha/` | **[ATUALIZAR]** — consumir dados reais da API de playlists |
+| **Feature** | `features/trilha/` | **[ATUALIZAR]** — consumir as playlists utilizando o novo campo `status` (`solved`, `pending`, `not_started`) injetado nativamente pela API |
 | **Feature** | `features/trilha-professor/` | **[CRIAR]** — tela para professor criar, editar e deletar playlists com seleção de questões |
 | **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rotas `/trilha-professor` |
 
@@ -348,10 +348,10 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Routing** | `app.routes.ts` | **[ATUALIZAR]** — adicionar rota `/professor/trilhas/:id/analytics` |
 
 **Critérios de Conclusão:**
-- [ ] Professor visualiza quais questões tiveram mais tentativas antes do acerto (gráfico de barras)
-- [ ] Professor identifica alunos que não iniciaram ou estão travados em questões específicas (tabela + gráfico donut)
-- [ ] Insights de IA (`hardest_questions`) são exibidos em card de destaque para auxiliar a intervenção docente
-- [ ] Empty state exibido quando não há dados suficientes na trilha
+- [x] Professor visualiza quais questões tiveram mais tentativas antes do acerto (gráfico de barras)
+- [x] Professor identifica alunos que não iniciaram ou estão travados em questões específicas (tabela + gráfico donut)
+- [x] Insights de IA (`hardest_questions`) são exibidos em card de destaque para auxiliar a intervenção docente
+- [x] Empty state exibido quando não há dados suficientes na trilha
 
 ---
 
@@ -394,11 +394,11 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **UX** | Filtros e ordenação | **[CRIAR]** — filtrar por status (correto/incorreto) e ordenar por data |
 
 **Critérios de Conclusão:**
-- [ ] Aluno acessa tela de histórico via sidebar
-- [ ] Tabela exibe todas as submissões do aluno com paginação
+- [x] Aluno acessa tela de histórico via sidebar
+- [x] Tabela exibe todas as submissões do aluno com paginação
 - [ ] Aluno pode filtrar por resultado (acerto/erro) e ordenar por data
-- [ ] Clique em uma submissão expande ou navega para detalhes (feedback, código)
-- [ ] Empty state exibido quando não há submissões
+- [x] Clique em uma submissão expande ou navega para detalhes (feedback, código)
+- [x] Empty state exibido quando não há submissões
 
 ---
 ---

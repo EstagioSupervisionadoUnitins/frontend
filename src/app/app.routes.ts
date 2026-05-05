@@ -154,6 +154,12 @@ export const routes: Routes = [
                         data: { roles: ['student'], breadcrumb: 'Exercício' },
                         canActivate: [roleGuard, classroomGuard]
                     },
+                    {
+                        path: 'historico',
+                        loadComponent: () => import('./features/historico-submissoes/historico-submissoes').then(m => m.HistoricoSubmissoes),
+                        data: { roles: ['student'], breadcrumb: 'Histórico de Submissões' },
+                        canActivate: [roleGuard, classroomGuard]
+                    },
                 ]
             },
             {

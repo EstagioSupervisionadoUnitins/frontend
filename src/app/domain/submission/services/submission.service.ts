@@ -14,6 +14,13 @@ export class SubmissionService {
   private apiUrl = `${environment.apiUrl}/submissions`;
 
   /**
+   * Lista o histórico de submissões do aluno logado.
+   */
+  list(): Observable<Submission[]> {
+    return this.http.get<Submission[]>(this.apiUrl);
+  }
+
+  /**
    * Envia o código para avaliação.
    */
   submit(req: SubmissionRequest): Observable<Submission> {

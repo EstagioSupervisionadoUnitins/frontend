@@ -7,52 +7,46 @@
   <div class="flex flex-col gap-8 pb-12 animate-fade-in">
     <app-hero-progresso></app-hero-progresso>
 
-    <!-- Mural de Exercícios -->
-    <section>
-        <div class="flex items-center justify-between mb-6 px-2">
-            <div>
-                <h2 class="text-xl font-bold text-slate-800">Próximos Desafios</h2>
-                <p class="text-sm text-slate-500">Continue sua jornada de aprendizado</p>
-            </div>
-            <a routerLink="/aluno/trilhas" class="text-sm font-semibold text-primary-600 hover:text-primary-700">Ver todas as trilhas</a>
+    <!-- Seção de Ações Rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card Histórico -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-300">
+        <div class="flex gap-4 items-start">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <i class="pi pi-history text-xl"></i>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg font-bold text-slate-800">Histórico de Submissões</h3>
+            <p class="text-slate-500 text-sm leading-relaxed">Revise as soluções enviadas anteriormente, veja dicas socráticas recebidas e os feedbacks detalhados da inteligência artificial.</p>
+          </div>
         </div>
+        <div class="mt-6 flex justify-end">
+          <a routerLink="/aluno/historico" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold rounded-xl transition-colors text-sm">
+            Ver Meu Histórico
+            <i class="pi pi-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @for (q of questions(); track q.id) {
-                <div [routerLink]="['/aluno/exercicio', q.id]" 
-                     class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-500 hover:shadow-md transition-all cursor-pointer group">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <span class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center font-bold">
-                                {{ q.id }}
-                            </span>
-                            @if (q.answered) {
-                                <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase flex items-center gap-1 border border-emerald-200">
-                                    <i class="pi pi-check text-[8px]"></i>
-                                    Respondida
-                                </span>
-                            }
-                        </div>
-                        <span [ngClass]="{
-                            'bg-emerald-50 text-emerald-600 border-emerald-100': q.difficulty === 'easy',
-                            'bg-amber-50 text-amber-600 border-amber-100': q.difficulty === 'medium',
-                            'bg-rose-50 text-rose-600 border-rose-100': q.difficulty === 'hard'
-                        }" class="px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider">
-                            {{ q.difficulty | difficulty }}
-                        </span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 group-hover:text-primary-700 transition-colors mb-2">{{ q.title }}</h3>
-                    <p class="text-sm text-slate-500 line-clamp-2 leading-relaxed">
-                        {{ q.statement }}
-                    </p>
-                </div>
-            } @empty {
-                <div class="col-span-full py-12 text-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                    <p class="text-slate-400">Nenhum exercício disponível no momento.</p>
-                </div>
-            }
+      <!-- Card Desafios/Trilhas -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-300">
+        <div class="flex gap-4 items-start">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i class="pi pi-briefcase text-xl"></i>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg font-bold text-slate-800">Trilha de Aprendizado</h3>
+            <p class="text-slate-500 text-sm leading-relaxed">Continue sua jornada de estudos resolvendo problemas práticos de lógica gerados especificamente para o seu nível.</p>
+          </div>
         </div>
-    </section>
+        <div class="mt-6 flex justify-end">
+          <a routerLink="/aluno/trilhas" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold rounded-xl transition-colors text-sm">
+            Ir para Trilhas
+            <i class="pi pi-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+    </div>
 
     <app-insight-ia></app-insight-ia>
   </div>
