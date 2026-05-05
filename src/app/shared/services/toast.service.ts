@@ -1,5 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { HttpErrorResponse } from '@angular/common/http';
+
+export interface ApiErrorPayload {
+  error?: string;
+  message?: string;
+  errors?: any;
+}
 
 export interface ToastOptions {
   severity: 'success' | 'info' | 'warn' | 'error';
@@ -65,5 +72,21 @@ export class ToastService {
 
   clear(): void {
     this.messageService.clear('app');
+  }
+
+  showApiError(errorResponse: HttpErrorResponse): void {
+    let apiMessage = 'Ocorreu um erro inesperado.';
+    
+    if (errorResponse.error && errorResponse.error.message) {
+      apiMessage = errorResponse.error.message;
+    } else if (errorResponse.message) {
+      apiMessage = errorResponse.message;
+    }
+
+    if (errorResponse.status >= 500) {
+      this.showError('Erro de Servidor', 'Ocorreu um erro interno no servidor.');
+    } else {
+      this.showError('Erro', apiMessage);
+    }
   }
 }
