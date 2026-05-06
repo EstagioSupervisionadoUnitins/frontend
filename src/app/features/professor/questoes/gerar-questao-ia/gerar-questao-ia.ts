@@ -15,6 +15,7 @@ import { Question } from '../../../../domain/question/models/question.interface'
 import { ClassroomService } from '../../../../domain/classroom/services/classroom.service';
 import { Classroom } from '../../../../domain/classroom/models/classroom.interface';
 import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
+import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-gerar-questao-ia',
@@ -29,7 +30,8 @@ import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
     CardModule,
     TagModule,
     InputNumberModule,
-    DifficultyPipe
+    DifficultyPipe,
+    MarkdownComponent
   ],
   providers: [MessageService],
   templateUrl: './gerar-questao-ia.html',

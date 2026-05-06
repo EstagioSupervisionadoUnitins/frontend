@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { Submission } from '../../../../domain/submission/models/submission.interface';
 import { Question } from '../../../../domain/question/models/question.interface';
 import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
+import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-painel-instrucao',
-  imports: [CommonModule, DifficultyPipe],
+  imports: [CommonModule, DifficultyPipe, MarkdownComponent],
   templateUrl: './painel-instrucao.html',
   styleUrl: './painel-instrucao.css',
 })

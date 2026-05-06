@@ -58,8 +58,8 @@
         <i class="pi pi-align-left text-xs"></i>
         Enunciado
       </h3>
-      <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed" [innerHTML]="question().statement">
-      </div>
+      <markdown class="prose prose-slate max-w-none text-slate-600 leading-relaxed block" [data]="question().statement">
+      </markdown>
     </section>
 
     <!-- Restrições (se houver) -->
@@ -113,9 +113,10 @@
             <h4 class="font-bold text-lg" [class]="feedback()?.is_correct ? 'text-green-900' : 'text-red-900'">
               Feedback da IA
             </h4>
-            <p class="text-sm font-medium leading-relaxed" [class]="feedback()?.is_correct ? 'text-green-900' : 'text-red-900'">
-              {{ feedback()?.feedback }}
-            </p>
+            <markdown class="prose prose-sm max-w-none text-sm font-medium leading-relaxed block" 
+              [class]="feedback()?.is_correct ? 'text-green-900 prose-p:text-green-900 prose-strong:text-green-900' : 'text-red-900 prose-p:text-red-900 prose-strong:text-red-900'"
+              [data]="feedback()?.feedback ?? ''">
+            </markdown>
 
             @if (feedback()?.socratic_hint) {
               <div class="mt-2 flex flex-col gap-2 p-3 bg-white/60 rounded border border-red-100">
@@ -123,9 +124,9 @@
                   <i class="pi pi-lightbulb"></i>
                   Dica Socrática
                 </span>
-                <p class="text-sm text-red-800 leading-relaxed font-medium">
-                  {{ feedback()?.socratic_hint }}
-                </p>
+                <markdown class="prose prose-sm max-w-none text-sm text-red-800 leading-relaxed font-medium block prose-p:text-red-800 prose-strong:text-red-800"
+                  [data]="feedback()?.socratic_hint ?? ''">
+                </markdown>
               </div>
             }
 
