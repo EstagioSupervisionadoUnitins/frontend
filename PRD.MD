@@ -396,7 +396,7 @@ Cada fase segue o mesmo ciclo de trabalho:
 **Critérios de Conclusão:**
 - [x] Aluno acessa tela de histórico via sidebar
 - [x] Tabela exibe todas as submissões do aluno com paginação
-- [ ] Aluno pode filtrar por resultado (acerto/erro) e ordenar por data
+- [x] Aluno pode filtrar por resultado (acerto/erro) e ordenar por data
 - [x] Clique em uma submissão expande ou navega para detalhes (feedback, código)
 - [x] Empty state exibido quando não há submissões
 

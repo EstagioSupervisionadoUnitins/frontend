@@ -1,10 +1,12 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { SelectModule } from 'primeng/select';
 import { RouterLink } from '@angular/router';
 import { SubmissionService } from '../../domain/submission/services/submission.service';
 import { Submission } from '../../domain/submission/models/submission.interface';
@@ -15,11 +17,13 @@ import { ToastService } from '../../shared/services/toast.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     TableModule,
     TagModule,
     DialogModule,
     ButtonModule,
     TooltipModule,
+    SelectModule,
     RouterLink
   ],
   templateUrl: './historico-submissoes.html',
@@ -29,8 +33,28 @@ export class HistoricoSubmissoes implements OnInit {
   private submissionService = inject(SubmissionService);
   private toastService = inject(ToastService);
 
-  submissions = signal<Submission[]>([]);
+  rawSubmissions = signal<Submission[]>([]);
+  filterResult = signal<string>('ALL');
   loading = signal(false);
+
+  filterOptions = [
+    { label: 'Todos os resultados', value: 'ALL' },
+    { label: 'Apenas corretos', value: 'CORRECT' },
+    { label: 'Apenas incorretos', value: 'INCORRECT' }
+  ];
+
+  submissions = computed(() => {
+    const raw = this.rawSubmissions();
+    const filter = this.filterResult();
+
+    if (filter === 'CORRECT') {
+      return raw.filter(sub => sub.status === 'completed' && sub.is_correct);
+    }
+    if (filter === 'INCORRECT') {
+      return raw.filter(sub => sub.status === 'completed' && !sub.is_correct);
+    }
+    return raw;
+  });
 
   // Modal para detalhe da submissão
   displayDetailModal = signal(false);
@@ -49,7 +73,7 @@ export class HistoricoSubmissoes implements OnInit {
           if (!a.created_at || !b.created_at) return 0;
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         });
-        this.submissions.set(sorted);
+        this.rawSubmissions.set(sorted);
         this.loading.set(false);
       },
       error: (err) => {

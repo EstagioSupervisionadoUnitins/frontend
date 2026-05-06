@@ -23,13 +23,32 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <p-table [value]="submissions()" [loading]="loading()" [rows]="10" [paginator]="true"
                  [rowsPerPageOptions]="[10, 20, 50]"
+                 sortField="created_at" [sortOrder]="-1"
                  styleClass="p-datatable-sm p-datatable-hoverable-rows"
                  responsiveLayout="scroll"
                  currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} tentativas"
                  [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-slate-50/50 border-b border-slate-200">
+                    <span class="text-base font-semibold text-slate-700">Histórico de Exercícios</span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filtrar Resultado:</span>
+                        <p-select [options]="filterOptions" 
+                                  [ngModel]="filterResult()" 
+                                  (ngModelChange)="filterResult.set($event)"
+                                  optionLabel="label" 
+                                  optionValue="value" 
+                                  styleClass="w-52 text-sm rounded-xl border-slate-200 shadow-sm"
+                                  placeholder="Selecione">
+                        </p-select>
+                    </div>
+                </div>
+            </ng-template>
             <ng-template pTemplate="header">
                 <tr class="bg-slate-50 border-b border-slate-200">
-                    <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 pl-6 w-44">Data / Hora</th>
+                    <th pSortableColumn="created_at" class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 pl-6 w-44 cursor-pointer hover:bg-slate-100 transition-colors">
+                        Data / Hora <p-sortIcon field="created_at"></p-sortIcon>
+                    </th>
                     <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4">Questão</th>
                     <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4">Código Enviado</th>
                     <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 w-32">Status</th>
