@@ -4,13 +4,14 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [IconFieldModule, InputIconModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink],
+  imports: [IconFieldModule, InputIconModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, InputTextModule, RouterLink],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })
