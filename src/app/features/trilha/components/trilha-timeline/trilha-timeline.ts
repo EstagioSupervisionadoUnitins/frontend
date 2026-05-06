@@ -63,7 +63,9 @@ export class TrilhaTimeline {
     const questions = playlist.questions || [];
     const nextQuestion = questions.find(q => !q.answered) || questions[0];
     if (nextQuestion) {
-      this.router.navigate(['/aluno/exercicio', nextQuestion.id]);
+      this.router.navigate(['/aluno/exercicio', nextQuestion.id], {
+        queryParams: { playlist_id: playlist.id }
+      });
     }
   }
 }

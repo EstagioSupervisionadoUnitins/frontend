@@ -1,6 +1,6 @@
 import { Component, input, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Submission } from '../../../../domain/submission/models/submission.interface';
 import { Question } from '../../../../domain/question/models/question.interface';
 import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
@@ -20,6 +20,7 @@ export class PainelInstrucao {
   
   private location = inject(Location);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   voltar(): void {
     this.location.back();
@@ -28,7 +29,14 @@ export class PainelInstrucao {
   irParaProxima(): void {
     const nextId = this.proximaQuestaoId();
     if (nextId) {
-      this.router.navigate(['/aluno/exercicio', nextId]);
+      const playlistId = this.route.snapshot.queryParamMap.get('playlist_id');
+      if (playlistId) {
+        this.router.navigate(['/aluno/exercicio', nextId], {
+          queryParams: { playlist_id: playlistId }
+        });
+      } else {
+        this.router.navigate(['/aluno/exercicio', nextId]);
+      }
     }
   }
 }

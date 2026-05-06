@@ -62,6 +62,35 @@ export class Exercicio implements OnInit {
   }
 
   carregarProximaQuestao(q: Question): void {
+    const playlistIdStr = this.route.snapshot.queryParamMap.get('playlist_id');
+    const playlistId = playlistIdStr ? Number(playlistIdStr) : null;
+    
+    if (playlistId) {
+      // Método robusto: busca diretamente a trilha específica passada por query param
+      this.trilhaService.getById(playlistId).subscribe({
+        next: (playlist) => {
+          const questions = playlist.questions || [];
+          const indexAtual = questions.findIndex(quest => quest.id === q.id);
+          
+          let proximaId: number | null = null;
+          if (indexAtual !== -1 && indexAtual < questions.length - 1) {
+            proximaId = questions[indexAtual + 1].id;
+          }
+          
+          console.log('[Exercicio] Próxima questão ID calculada na playlist ' + playlistId + ':', proximaId);
+          this.proximaQuestaoId.set(proximaId);
+        },
+        error: (err) => {
+          console.error('[Exercicio] Erro ao carregar playlist específica:', err);
+          this.carregarProximaQuestaoFallback(q);
+        }
+      });
+    } else {
+      this.carregarProximaQuestaoFallback(q);
+    }
+  }
+
+  private carregarProximaQuestaoFallback(q: Question): void {
     if (!q.classroom_id) {
       this.proximaQuestaoId.set(null);
       return;
@@ -70,24 +99,28 @@ export class Exercicio implements OnInit {
     this.trilhaService.list(q.classroom_id).subscribe({
       next: (playlists) => {
         let proximaId: number | null = null;
-        const todasQuestoes: Question[] = [];
         
-        playlists.forEach(playlist => {
-          if (playlist.questions) {
-            todasQuestoes.push(...playlist.questions);
+        // Encontra a primeira playlist que contém a questão atual
+        const playlistDestaQuestao = playlists.find(playlist => 
+          playlist.questions?.some(quest => quest.id === q.id)
+        );
+        
+        if (playlistDestaQuestao && playlistDestaQuestao.questions) {
+          const questions = playlistDestaQuestao.questions;
+          const indexAtual = questions.findIndex(quest => quest.id === q.id);
+          
+          if (indexAtual !== -1 && indexAtual < questions.length - 1) {
+            proximaId = questions[indexAtual + 1].id;
           }
-        });
-        
-        const indexAtual = todasQuestoes.findIndex(quest => quest.id === q.id);
-        if (indexAtual !== -1 && indexAtual < todasQuestoes.length - 1) {
-          proximaId = todasQuestoes[indexAtual + 1].id;
+          console.log('[Exercicio] Próxima questão ID calculada via Fallback (Playlist ' + playlistDestaQuestao.id + '):', proximaId);
+        } else {
+          console.log('[Exercicio] Questão atual não encontrada em nenhuma playlist.');
         }
         
-        console.log('[Exercicio] Próxima questão ID calculada:', proximaId);
         this.proximaQuestaoId.set(proximaId);
       },
       error: (err) => {
-        console.error('[Exercicio] Erro ao carregar playlists para próxima questão:', err);
+        console.error('[Exercicio] Erro no fallback de playlists:', err);
         this.proximaQuestaoId.set(null);
       }
     });
