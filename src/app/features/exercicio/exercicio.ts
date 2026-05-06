@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionService } from '../../domain/question/services/question.service';
 import { Question } from '../../domain/question/models/question.interface';
 import { PainelInstrucao } from './components/painel-instrucao/painel-instrucao';
@@ -18,6 +18,7 @@ import { TrilhaService } from '../../domain/trilha/services/trilha.service';
 })
 export class Exercicio implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private questionService = inject(QuestionService);
   private submissionService = inject(SubmissionService);
   private toastService = inject(ToastService);
@@ -25,6 +26,7 @@ export class Exercicio implements OnInit {
   private trilhaService = inject(TrilhaService);
 
   question = signal<Question | null>(null);
+  playlistId = signal<number | null>(null);
   avaliando = signal(false);
   feedback = signal<Submission | null>(null);
   proximaQuestaoId = signal<number | null>(null);
@@ -38,6 +40,7 @@ export class Exercicio implements OnInit {
       
       // Reseta estados para a nova questão
       this.question.set(null);
+      this.playlistId.set(null);
       this.feedback.set(null);
       this.avaliando.set(false);
       this.proximaQuestaoId.set(null);
@@ -49,6 +52,7 @@ export class Exercicio implements OnInit {
             console.log('[Exercicio] Questão carregada:', q.title);
             this.question.set(q);
             this.carregarProximaQuestao(q);
+            this.validarAcessoQuestao(q);
           },
           error: (err) => {
             console.error('[Exercicio] Erro ao carregar questão:', err);
@@ -66,6 +70,7 @@ export class Exercicio implements OnInit {
     const playlistId = playlistIdStr ? Number(playlistIdStr) : null;
     
     if (playlistId) {
+      this.playlistId.set(playlistId);
       // Método robusto: busca diretamente a trilha específica passada por query param
       this.trilhaService.getById(playlistId).subscribe({
         next: (playlist) => {
@@ -106,6 +111,7 @@ export class Exercicio implements OnInit {
         );
         
         if (playlistDestaQuestao && playlistDestaQuestao.questions) {
+          this.playlistId.set(playlistDestaQuestao.id);
           const questions = playlistDestaQuestao.questions;
           const indexAtual = questions.findIndex(quest => quest.id === q.id);
           
@@ -126,17 +132,60 @@ export class Exercicio implements OnInit {
     });
   }
 
+  validarAcessoQuestao(q: Question): void {
+    if (!q.classroom_id) return;
+
+    this.trilhaService.list(q.classroom_id).subscribe({
+      next: (playlists) => {
+        const targetPlaylistId = this.playlistId() || playlists.find(p => p.questions?.some(quest => quest.id === q.id))?.id;
+
+        if (targetPlaylistId) {
+          const currentPlaylistIndex = playlists.findIndex(p => p.id === targetPlaylistId);
+
+          if (currentPlaylistIndex !== -1) {
+            let isBlocked = false;
+            
+            // Verifica se todas as playlists anteriores estão concluídas
+            for (let i = 0; i < currentPlaylistIndex; i++) {
+              const playlistAnterior = playlists[i];
+              const todasRespondidas = playlistAnterior.questions?.every(quest => quest.answered) ?? false;
+
+              if (!todasRespondidas) {
+                isBlocked = true;
+                break;
+              }
+            }
+
+            if (isBlocked) {
+              this.toastService.showError('Bloqueado', 'Você precisa concluir as trilhas anteriores para liberar este exercício!');
+              this.router.navigate(['/aluno/trilhas']);
+            }
+          }
+        }
+      },
+      error: (err) => {
+        console.error('[Exercicio] Erro ao validar progressão:', err);
+      }
+    });
+  }
 
   submitCodigo(): void {
     const questionVal = this.question();
     if (!questionVal) return;
+
+    const pId = this.playlistId();
+    if (!pId) {
+      this.toastService.showError('Erro ao enviar', 'Não foi possível associar este exercício a uma trilha.');
+      return;
+    }
 
     this.avaliando.set(true);
     this.feedback.set(null); // Limpa o feedback anterior
 
     const req = {
       question_id: questionVal.id,
-      code: this.codigoSelecionado
+      code: this.codigoSelecionado,
+      playlist_id: pId
     };
 
     this.submissionService.submit(req).pipe(

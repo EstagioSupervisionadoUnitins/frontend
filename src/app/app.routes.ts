@@ -45,24 +45,6 @@ export const routes: Routes = [
                 canActivate: [roleGuard]
             },
             {
-                path: 'aluno/dashboard',
-                loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
-                data: { roles: ['student'], breadcrumb: 'Dashboard' },
-                canActivate: [roleGuard, classroomGuard]
-            },
-            {
-                path: 'aluno/trilhas',
-                loadComponent: () => import('./features/trilha/trilha').then(m => m.Trilha),
-                data: { roles: ['student'], breadcrumb: 'Trilhas' },
-                canActivate: [roleGuard, classroomGuard]
-            },
-            {
-                path: 'aluno/exercicio/:id',
-                loadComponent: () => import('./features/exercicio/exercicio').then(m => m.Exercicio),
-                data: { roles: ['student'], breadcrumb: 'Exercício' },
-                canActivate: [roleGuard, classroomGuard]
-            },
-            {
                 path: 'professor',
                 children: [
                     {

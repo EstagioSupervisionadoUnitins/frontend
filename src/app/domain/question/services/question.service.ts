@@ -30,8 +30,24 @@ export class QuestionService {
     return this.http.post<Question>(this.apiUrl, req);
   }
 
-  generate(req: GenerateRequest): Observable<{ message: string, questions: Question[] }> {
-    return this.http.post<{ message: string, questions: Question[] }>(`${this.apiUrl}/generate`, req);
+  generate(req: GenerateRequest): Observable<{ message: string; log_id: number; status_url: string }> {
+    return this.http.post<{ message: string; log_id: number; status_url: string }>(`${this.apiUrl}/generate`, req);
+  }
+
+  getGenerationLog(logId: number): Observable<{
+    id: number;
+    status: 'pending' | 'completed' | 'failed';
+    generated_response?: { questions?: Question[] };
+    created_at: string;
+    updated_at: string;
+  }> {
+    return this.http.get<{
+      id: number;
+      status: 'pending' | 'completed' | 'failed';
+      generated_response?: { questions?: Question[] };
+      created_at: string;
+      updated_at: string;
+    }>(`${environment.apiUrl}/ai_generation_logs/${logId}`);
   }
 
 

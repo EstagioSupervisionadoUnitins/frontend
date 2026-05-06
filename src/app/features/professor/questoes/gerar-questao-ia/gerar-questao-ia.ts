@@ -2,6 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { timer } from 'rxjs';
+import { switchMap, takeWhile, filter } from 'rxjs/operators';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -95,17 +97,52 @@ export class GerarQuestaoIA {
       quantity: this.quantity() 
     }).subscribe({
       next: (res) => {
-        this.generatedQuestions.set(res.questions);
-        this.loading.set(false);
+        const logId = res.log_id;
         this.messageService.add({ 
-          severity: 'success', 
-          summary: 'Sucesso', 
-          detail: `IA gerou ${res.questions.length} novas questões!` 
+          severity: 'info', 
+          summary: 'Geração Iniciada', 
+          detail: 'A inteligência artificial está criando suas questões. Isso pode levar alguns segundos...' 
+        });
+
+        // Polling para consultar o status da geração de 3 em 3 segundos
+        timer(0, 3000).pipe(
+          switchMap(() => this.questionService.getGenerationLog(logId)),
+          takeWhile((log) => log.status === 'pending', true),
+          filter((log) => log.status === 'completed' || log.status === 'failed')
+        ).subscribe({
+          next: (finalLog) => {
+            this.loading.set(false);
+            if (finalLog.status === 'completed') {
+              const questions = finalLog.generated_response?.questions || [];
+              this.generatedQuestions.set(questions);
+              
+              this.messageService.add({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: `IA gerou ${questions.length} novas questões com sucesso!` 
+              });
+            } else {
+              this.messageService.add({ 
+                severity: 'error', 
+                summary: 'Falha na Geração', 
+                detail: 'A geração via IA falhou no processamento do backend.' 
+              });
+            }
+          },
+          error: (err) => {
+            console.error('[Polling IA Error]:', err);
+            this.loading.set(false);
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Erro', 
+              detail: 'Não foi possível rastrear o progresso da geração.' 
+            });
+          }
         });
       },
 
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao gerar questões via IA.' });
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao solicitar geração via IA.' });
         this.loading.set(false);
       }
     });
