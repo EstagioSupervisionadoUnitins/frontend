@@ -1,34 +1,86 @@
-<div class="p-8 rounded-xl text-white relative overflow-hidden bg-linear-to-br from-green-900 via-green-800 to-green-950">
-  <div class="relative z-10 flex flex-col gap-6">
-    <div class="flex flex-col gap-2">
-      <span class="inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider w-fit">
-        <i class="pi pi-book"></i>
-        Progresso Geral
-      </span>
-      <h2 class="text-3xl font-extrabold tracking-tight">Estatísticas da Turma</h2>
-      <p class="text-white/80 text-sm max-w-2xl leading-relaxed">Acompanhe seu desempenho nas atividades da turma {{ stats()?.classroom?.name || '...' }}.</p>
-    </div>
-
-    <div class="flex flex-col gap-3 max-w-md">
-      <div class="flex justify-between items-end">
-        <span class="text-white/60 text-xs font-medium uppercase tracking-wide">Taxa de Acertos</span>
-        <span class="text-green-300 text-lg font-bold">{{ percentual() }}%</span>
+<div class="p-8 rounded-2xl text-white relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 border border-emerald-800/60 shadow-xl">
+  <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    
+    <!-- Coluna Esquerda: Texto e Ação -->
+    <div class="lg:col-span-5 flex flex-col gap-6">
+      <div class="flex flex-col gap-2">
+        <span class="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider w-fit">
+          <i class="pi pi-bolt text-emerald-400"></i>
+          Sua Jornada
+        </span>
+        <h2 class="text-3xl lg:text-4xl font-black tracking-tight leading-none mt-1">Seu Progresso</h2>
+        <p class="text-emerald-100/80 text-sm leading-relaxed mt-2">
+          Acompanhe seu desempenho nas atividades da turma <strong class="text-white">{{ stats()?.classroom?.name || '...' }}</strong>.
+        </p>
       </div>
-      <p-progressbar
-        [value]="percentual()"
-        [showValue]="false"
-        styleClass="hero-progressbar h-2 rounded-full bg-white/15">
-      </p-progressbar>
+
+      <p-button
+        label="Continuar Trilha"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        styleClass="w-fit px-6 py-3 bg-white text-emerald-900 hover:text-emerald-950 font-extrabold border-none rounded-xl transition-all hover:scale-105 shadow-md hover:shadow-lg">
+      </p-button>
     </div>
 
-    <p-button
-      label="Continuar Trilha"
-      icon="pi pi-arrow-right"
-      iconPos="right"
-      styleClass="w-fit px-8 py-3 bg-white text-green-900 font-bold border-none transition-transform hover:scale-105">
-    </p-button>
+    <!-- Coluna Direita: Cards de Métricas em Glassmorphism -->
+    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
+      
+      <!-- Card 1: Aproveitamento de Exercícios -->
+      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 flex flex-col gap-4 shadow-sm hover:border-emerald-500/30 transition-all duration-300">
+        <div class="flex justify-between items-start">
+          <div class="flex flex-col gap-0.5">
+            <span class="text-emerald-300/90 text-[10px] font-extrabold uppercase tracking-wider">Aproveitamento</span>
+            <span class="text-white font-bold text-sm">Exercícios Resolvidos</span>
+          </div>
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center shadow-inner">
+            <i class="pi pi-book text-sm"></i>
+          </div>
+        </div>
+        
+        <div class="flex flex-col gap-2 mt-1">
+          <div class="flex justify-between items-baseline">
+            <span class="text-3xl font-black text-white leading-none">{{ aproveitamento() }}%</span>
+            <span class="text-[10px] text-white/50 font-medium">{{ stats()?.questions_solved || 0 }} / {{ stats()?.questions_attempted || 0 }} resolvidos</span>
+          </div>
+          <p-progressbar
+            [value]="aproveitamento()"
+            [showValue]="false"
+            styleClass="aproveitamento-progressbar h-2 rounded-full bg-white/10">
+          </p-progressbar>
+        </div>
+        <p class="text-white/60 text-[11px] leading-relaxed">Sua taxa de sucesso em resolver os exercícios que você iniciou na trilha.</p>
+      </div>
+
+      <!-- Card 2: Precisão de Código -->
+      <div class="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 flex flex-col gap-4 shadow-sm hover:border-blue-500/30 transition-all duration-300">
+        <div class="flex justify-between items-start">
+          <div class="flex flex-col gap-0.5">
+            <span class="text-blue-300/90 text-[10px] font-extrabold uppercase tracking-wider">Eficácia</span>
+            <span class="text-white font-bold text-sm">Precisão de Código</span>
+          </div>
+          <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-300 flex items-center justify-center shadow-inner">
+            <i class="pi pi-check-circle text-sm"></i>
+          </div>
+        </div>
+        
+        <div class="flex flex-col gap-2 mt-1">
+          <div class="flex justify-between items-baseline">
+            <span class="text-3xl font-black text-white leading-none">{{ precisao() }}%</span>
+            <span class="text-[10px] text-white/50 font-medium">{{ stats()?.correct_submissions || 0 }} / {{ stats()?.total_submissions || 0 }} submissões</span>
+          </div>
+          <p-progressbar
+            [value]="precisao()"
+            [showValue]="false"
+            styleClass="precisao-progressbar h-2 rounded-full bg-white/10">
+          </p-progressbar>
+        </div>
+        <p class="text-white/60 text-[11px] leading-relaxed">Taxa de acertos diretos para cada tentativa de envio de código enviada.</p>
+      </div>
+
+    </div>
   </div>
 
-  <!-- Decorative background element -->
-  <div class="absolute -top-1/2 -right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- Elementos decorativos de fundo para efeito de profundidade -->
+  <div class="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -top-24 -right-24 w-80 h-80 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
 </div>

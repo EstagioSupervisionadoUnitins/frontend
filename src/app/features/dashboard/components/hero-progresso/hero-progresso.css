@@ -1,4 +1,9 @@
-:host ::ng-deep .hero-progressbar .p-progressbar-value {
-  background: linear-gradient(90deg, #22c55e, #86efac);
+:host ::ng-deep .aproveitamento-progressbar .p-progressbar-value {
+  background: linear-gradient(90deg, #10b981, #34d399) !important;
+  border-radius: 9999px;
+}
+
+:host ::ng-deep .precisao-progressbar .p-progressbar-value {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa) !important;
   border-radius: 9999px;
 }

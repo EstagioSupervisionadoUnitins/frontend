@@ -18,10 +18,16 @@ export class Perfil implements OnInit {
   
   stats = this.alunoService.stats;
 
-  accuracy = computed(() => {
+  aproveitamento = computed(() => {
     const s = this.stats();
     if (!s || s.questions_attempted === 0) return 0;
     return Math.round((s.questions_solved / s.questions_attempted) * 100);
+  });
+
+  precisao = computed(() => {
+    const s = this.stats();
+    if (!s || s.total_submissions === 0) return 0;
+    return Math.round((s.correct_submissions / s.total_submissions) * 100);
   });
 
   initial = computed(() => {
