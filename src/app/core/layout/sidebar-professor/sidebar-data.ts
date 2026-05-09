@@ -25,11 +25,5 @@ export const sidebarDataProfessor: MenuItem[] = [
         label: 'Ranking',
         icon: 'pi pi-trophy',
         routerLink: '/ranking'
-    },
-    {
-        label: 'Perfil',
-        icon: 'pi pi-user',
-        routerLink: '/perfil',
-        disabled: true
     }
 ];

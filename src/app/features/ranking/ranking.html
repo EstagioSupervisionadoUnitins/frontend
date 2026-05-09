@@ -5,10 +5,10 @@
                 <i class="pi pi-trophy text-2xl"></i>
             </div>
             <div>
-                <h1 class="text-3xl font-bold text-slate-800">
+                <h1 class="text-3xl font-bold text-surface-800">
                     {{ scope() === 'turma' ? 'Ranking da Turma' : 'Ranking Global' }}
                 </h1>
-                <p class="text-slate-500">
+                <p class="text-surface-500 text-sm">
                     {{ scope() === 'turma' ? 'Veja como você se destaca entre seus colegas de classe.' : 'Compita com outros alunos resolvendo exercícios e ganhando pontos.' }}
                 </p>
             </div>
@@ -26,52 +26,203 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <p-table [value]="leaderboard()" [loading]="loading()" [rows]="50" 
-                 styleClass="p-datatable-sm p-datatable-hoverable-rows"
-                 responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-                <tr class="bg-slate-50">
-                    <th class="w-20 text-center text-slate-400 font-semibold uppercase text-xs tracking-wider py-4">Posição</th>
-                    <th class="text-slate-400 font-semibold uppercase text-xs tracking-wider py-4">Aluno</th>
-                    <th class="w-32 text-right text-slate-400 font-semibold uppercase text-xs tracking-wider py-4">Pontuação</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rank>
-                <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
-                    <td class="text-center py-4">
-                        @if (rank.position === 1) {
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 text-amber-600 font-bold">1</span>
-                        } @else if (rank.position === 2) {
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold">2</span>
-                        } @else if (rank.position === 3) {
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-orange-600 font-bold">3</span>
-                        } @else {
-                            <span class="text-slate-500 font-medium">{{ rank.position }}</span>
-                        }
-                    </td>
-                    <td class="py-4">
-                        <div class="flex items-center gap-3">
-                            <span class="font-semibold text-slate-700">{{ rank.user_name }}</span>
+    <!-- ESTADO DE CARREGAMENTO (LOADING) -->
+    @if (loading()) {
+        <!-- Skeleton do Pódio -->
+        <div class="grid grid-cols-3 gap-4 md:gap-8 items-end justify-center mb-12 max-w-xl mx-auto pt-8">
+            <!-- 2º Lugar Skeleton -->
+            <div class="flex flex-col items-center w-full">
+                <p-skeleton shape="circle" size="4rem" styleClass="mb-3"></p-skeleton>
+                <p-skeleton width="80%" height="1rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="50%" height="0.75rem" styleClass="mb-3"></p-skeleton>
+                <p-skeleton height="5rem" styleClass="rounded-t-xl w-full"></p-skeleton>
+            </div>
+            <!-- 1º Lugar Skeleton -->
+            <div class="flex flex-col items-center w-full">
+                <p-skeleton shape="circle" size="5rem" styleClass="mb-3"></p-skeleton>
+                <p-skeleton width="90%" height="1.2rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="60%" height="0.75rem" styleClass="mb-3"></p-skeleton>
+                <p-skeleton height="7rem" styleClass="rounded-t-xl w-full"></p-skeleton>
+            </div>
+            <!-- 3º Lugar Skeleton -->
+            <div class="flex flex-col items-center w-full">
+                <p-skeleton shape="circle" size="3.5rem" styleClass="mb-3"></p-skeleton>
+                <p-skeleton width="75%" height="1rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="45%" height="0.75rem" styleClass="mb-3"></p-skeleton>
+                <p-skeleton height="4rem" styleClass="rounded-t-xl w-full"></p-skeleton>
+            </div>
+        </div>
+
+        <!-- Skeleton da Tabela -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <div class="flex flex-col gap-4">
+                @for (i of [1, 2, 3, 4, 5]; track i) {
+                    <div class="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                        <div class="flex items-center gap-4">
+                            <p-skeleton shape="circle" size="2rem"></p-skeleton>
+                            <p-skeleton width="12rem" height="1.2rem"></p-skeleton>
                         </div>
-                    </td>
-                    <td class="text-right py-4 pr-6">
-                        <span class="px-3 py-1 bg-primary-50 text-primary-700 font-bold rounded-lg text-sm">
-                            {{ rank.score }} pts
+                        <p-skeleton width="4rem" height="1.5rem"></p-skeleton>
+                    </div>
+                }
+            </div>
+        </div>
+    } @else {
+        <!-- ESTADO VAZIO -->
+        @if (leaderboard().length === 0) {
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center max-w-xl mx-auto my-8 animate-fade-in">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 border border-slate-100 shadow-sm">
+                        <i class="pi pi-users text-3xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-surface-800">Nenhum aluno no ranking ainda</h3>
+                        <p class="text-surface-500 text-sm mt-1 max-w-xs mx-auto">
+                            Seja o primeiro a resolver exercícios e acumular pontos para brilhar neste ranking!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        } @else {
+            <!-- PÓDIO (TOP 3) -->
+            <div class="grid grid-cols-3 gap-3 md:gap-6 items-end justify-center mb-12 max-w-xl mx-auto pt-10">
+                <!-- 2º Lugar -->
+                @if (top3().length > 1) {
+                    <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 100ms;">
+                        <div class="relative mb-3">
+                            <p-avatar 
+                                [label]="getInitials(top3()[1].user_name)" 
+                                shape="circle" 
+                                styleClass="w-14 h-14 md:w-16 md:h-16 text-lg font-bold bg-slate-100 border-2 border-slate-300 text-slate-700 shadow-md">
+                            </p-avatar>
+                            <div class="absolute -top-1 -right-1 bg-slate-300 text-slate-800 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs shadow-sm">
+                                2
+                            </div>
+                        </div>
+                        <span class="font-bold text-xs md:text-sm text-surface-700 text-center truncate max-w-full px-1" [class.text-primary-600]="isCurrentUser(top3()[1].user_name)">
+                            {{ top3()[1].user_name }}
                         </span>
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="3" class="text-center py-12">
-                        <div class="flex flex-col items-center gap-2">
-                             <i class="pi pi-users text-4xl text-slate-200"></i>
-                             <p class="text-slate-400">Nenhum aluno no ranking ainda.</p>
+                        <span class="text-[10px] md:text-xs text-surface-500 font-semibold mb-2">
+                            {{ top3()[1].score }} pts
+                        </span>
+                        <div class="w-full bg-slate-100 border border-slate-200 border-b-0 rounded-t-xl h-20 md:h-24 flex items-center justify-center shadow-inner">
+                            <span class="text-xl md:text-2xl font-black text-slate-400">2º</span>
                         </div>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+                    </div>
+                } @else {
+                    <div></div>
+                }
+
+                <!-- 1º Lugar -->
+                @if (top3().length > 0) {
+                    <div class="flex flex-col items-center animate-fade-in-up">
+                        <div class="relative mb-3">
+                            <div class="absolute -top-7 left-1/2 -translate-x-1/2 text-amber-500 animate-bounce">
+                                <i class="pi pi-crown text-2xl md:text-3xl"></i>
+                            </div>
+                            <p-avatar 
+                                [label]="getInitials(top3()[0].user_name)" 
+                                shape="circle" 
+                                styleClass="w-16 h-16 md:w-20 md:h-20 text-xl font-bold bg-amber-50 border-3 border-amber-400 text-amber-800 shadow-lg">
+                            </p-avatar>
+                            <div class="absolute -top-1 -right-1 bg-amber-400 text-amber-950 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs md:text-sm shadow-md animate-pulse">
+                                1
+                            </div>
+                        </div>
+                        <span class="font-extrabold text-xs md:text-base text-surface-800 text-center truncate max-w-full px-1" [class.text-primary-600]="isCurrentUser(top3()[0].user_name)">
+                            {{ top3()[0].user_name }}
+                        </span>
+                        <span class="text-[10px] md:text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold mb-2">
+                            {{ top3()[0].score }} pts
+                        </span>
+                        <div class="w-full bg-amber-50/50 border border-amber-200 border-b-0 rounded-t-xl h-28 md:h-32 flex items-center justify-center shadow-md">
+                            <span class="text-3xl md:text-4xl font-black text-amber-500">1º</span>
+                        </div>
+                    </div>
+                } @else {
+                    <div></div>
+                }
+
+                <!-- 3º Lugar -->
+                @if (top3().length > 2) {
+                    <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 200ms;">
+                        <div class="relative mb-3">
+                            <p-avatar 
+                                [label]="getInitials(top3()[2].user_name)" 
+                                shape="circle" 
+                                styleClass="w-12 h-12 md:w-14 md:h-14 text-base font-bold bg-orange-50 border-2 border-orange-200 text-orange-700 shadow-md">
+                            </p-avatar>
+                            <div class="absolute -top-1 -right-1 bg-orange-200 text-orange-800 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs shadow-sm">
+                                3
+                            </div>
+                        </div>
+                        <span class="font-bold text-xs md:text-sm text-surface-700 text-center truncate max-w-full px-1" [class.text-primary-600]="isCurrentUser(top3()[2].user_name)">
+                            {{ top3()[2].user_name }}
+                        </span>
+                        <span class="text-[10px] md:text-xs text-surface-500 font-semibold mb-2">
+                            {{ top3()[2].score }} pts
+                        </span>
+                        <div class="w-full bg-orange-50/30 border border-orange-100 border-b-0 rounded-t-xl h-16 md:h-18 flex items-center justify-center shadow-inner">
+                            <span class="text-lg md:text-xl font-black text-orange-400">3º</span>
+                        </div>
+                    </div>
+                } @else {
+                    <div></div>
+                }
+            </div>
+
+            <!-- TABELA (RESTO DO RANKING) -->
+            @if (remaining().length > 0) {
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-fade-in" style="animation-delay: 300ms;">
+                    <p-table [value]="remaining()" [loading]="loading()" [rows]="50" 
+                             styleClass="p-datatable-sm p-datatable-hoverable-rows"
+                             responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr class="bg-slate-50/50">
+                                <th class="w-24 text-center text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4">Posição</th>
+                                <th class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4">Aluno</th>
+                                <th class="w-36 text-right text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4 pr-6">Pontuação</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rank>
+                            <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/30 transition-colors"
+                                [class.bg-primary-50\/40]="isCurrentUser(rank.user_name)">
+                                <td class="text-center py-3.5">
+                                    <span class="text-slate-500 font-semibold text-sm">{{ rank.position }}</span>
+                                </td>
+                                <td class="py-3.5">
+                                    <div class="flex items-center gap-3">
+                                        <p-avatar 
+                                            [label]="getInitials(rank.user_name)" 
+                                            shape="circle" 
+                                            styleClass="w-8 h-8 text-xs font-semibold"
+                                            [class.bg-primary-600]="isCurrentUser(rank.user_name)"
+                                            [class.text-white]="isCurrentUser(rank.user_name)"
+                                            [class.bg-slate-100]="!isCurrentUser(rank.user_name)"
+                                            [class.text-slate-700]="!isCurrentUser(rank.user_name)">
+                                        </p-avatar>
+                                        <span class="font-medium text-slate-700 text-sm" [class.font-bold]="isCurrentUser(rank.user_name)">
+                                            {{ rank.user_name }}
+                                        </span>
+                                        @if (isCurrentUser(rank.user_name)) {
+                                            <p-tag severity="success" value="Você" styleClass="text-[10px] font-bold px-1.5 py-0.5 rounded-md"></p-tag>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="text-right py-3.5 pr-6">
+                                    <span class="px-2.5 py-1 font-bold rounded-lg text-xs"
+                                          [class.bg-primary-100]="isCurrentUser(rank.user_name)"
+                                          [class.text-primary-800]="isCurrentUser(rank.user_name)"
+                                          [class.bg-slate-50]="!isCurrentUser(rank.user_name)"
+                                          [class.text-slate-600]="!isCurrentUser(rank.user_name)">
+                                        {{ rank.score }} pts
+                                    </span>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            }
+        }
+    }
 </div>
