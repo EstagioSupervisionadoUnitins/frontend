@@ -22,6 +22,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/reset-password/reset-password').then(m => m.ResetPassword)
     },
     {
+        path: 'onboarding',
+        loadComponent: () => import('./features/onboarding/onboarding').then(m => m.Onboarding),
+        canActivate: [authGuard, roleGuard],
+        data: { roles: ['student'] }
+    },
+    {
         path: '',
         loadComponent: () => import('./core/layout/main-layout/main-layout').then(m => m.MainLayout),
         canActivate: [authGuard],
@@ -31,12 +37,6 @@ export const routes: Routes = [
                 canActivate: [roleRedirectGuard],
                 pathMatch: 'full',
                 children: [] // canActivate exige children ou component se não houver children, mas aqui apenas redireciona
-            },
-            {
-                path: 'onboarding',
-                loadComponent: () => import('./features/onboarding/onboarding').then(m => m.Onboarding),
-                data: { roles: ['student'], breadcrumb: 'Boas-vindas' },
-                canActivate: [roleGuard]
             },
             {
                 path: 'turmas',

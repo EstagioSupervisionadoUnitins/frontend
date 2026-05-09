@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ClassroomService } from '../../domain/classroom/services/classroom.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-onboarding',
@@ -19,7 +20,8 @@ import { AuthService } from '../../domain/auth/service/auth.service';
     InputTextModule,
     ButtonModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    FloatLabelModule
   ],
   providers: [MessageService],
   templateUrl: './onboarding.html',

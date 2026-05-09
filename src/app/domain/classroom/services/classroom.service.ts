@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -6,6 +6,7 @@ import { Classroom } from '../models/classroom.interface';
 import { ClassroomRequest } from '../models/classroom-request.interface';
 import { JoinRequest } from '../models/join-request.interface';
 import { ClassroomStats } from '../models/classroom-stats.interface';
+import { SKIP_GLOBAL_ERROR } from '../../../core/interceptors/error.interceptor';
 
 @Injectable({
   providedIn: 'root',
@@ -55,7 +56,9 @@ export class ClassroomService {
   }
 
   join(data: JoinRequest): Observable<any> {
-    return this.http.post<any>(`${this.API}/join`, data).pipe(
+    return this.http.post<any>(`${this.API}/join`, data, {
+      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true)
+    }).pipe(
       tap(res => {
         const classroom = res.classroom || (res.id ? res : null);
         if (classroom) {

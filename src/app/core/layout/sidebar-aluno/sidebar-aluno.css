@@ -1,0 +1,42 @@
+.sidebar-menu-item {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar-menu-item .menu-icon {
+    color: #64748b; /* slate-500 */
+}
+
+.sidebar-menu-item:hover {
+    background-color: #f8fafc; /* slate-50 */
+    padding-left: 1rem !important; /* transição sutil para a direita */
+    color: #1e293b !important; /* slate-800 */
+}
+
+.sidebar-menu-item:hover .menu-icon {
+    color: #10b981; /* emerald-500 */
+}
+
+/* Rota Ativa */
+.active-menu-item {
+    background-color: #ecfdf5 !important; /* emerald-50 */
+    color: #047857 !important; /* emerald-700 */
+    font-weight: 700 !important;
+    padding-left: 1rem !important;
+}
+
+.active-menu-item .menu-icon {
+    color: #10b981 !important; /* emerald-500 */
+}
+
+.active-menu-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 25%;
+    height: 50%;
+    width: 4px;
+    background-color: #10b981;
+    border-radius: 0 4px 4px 0;
+}

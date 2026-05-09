@@ -4,9 +4,16 @@
             <!-- Seção Superior: Identidade da Turma -->
             <div class="px-6 pt-6 shrink-0">
                 <div class="flex items-center justify-between mb-6">
-                    <span class="text-3xl font-black tracking-tighter text-emerald-600 uppercase italic">LogikeIA</span>
+                    <div class="flex items-center gap-2.5">
+                        <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                            <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                        </div>
+                        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">LogikeIA</span>
+                    </div>
                     <p-button type="button" (click)="closeCallback($event)" icon="pi pi-times" [rounded]="true"
-                        [text]="true" severity="secondary" styleClass="h-10 w-10 hover:bg-surface-100"></p-button>
+                        [text]="true" severity="secondary" styleClass="h-10 w-10 hover:bg-slate-100"></p-button>
                 </div>
 
                 @if ((authService.usuario$ | async)?.role === 'student') {
@@ -38,30 +45,33 @@
                 }
             </div>
 
-            <div class="overflow-y-auto mt-4">
-                <ul class="list-none p-2 m-0">
-                        <ul class="list-none p-0 m-0">
-                            @for(item of sidebarData; track $index) {
-                            <li>
-                                @if(item.disabled) {
-                                    <div
-                                        class="flex items-center p-3 mx-2 rounded-border text-surface-400 cursor-not-allowed opacity-60 relative group">
-                                        <i class="{{item.icon}} mr-2 text-lg"></i>
-                                        <span class="font-medium">{{item.label}}</span>
-                                        <span class="ml-auto px-2 py-0.5 text-xs font-medium bg-surface-200 text-surface-500 rounded-full">
-                                            Em breve
-                                        </span>
-                                    </div>
-                                } @else {
-                                    <a pRipple [routerLink]="item.routerLink" (click)="onMenuItemClick()"
-                                        class="flex items-center cursor-pointer p-3 mx-2 rounded-border text-surface-700 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-700 duration-150 transition-colors p-ripple">
-                                        <i class="{{item.icon}} mr-2 text-lg"></i>
-                                        <span class="font-medium">{{item.label}}</span>
-                                    </a>
-                                }
-                            </li>
-                            }
-                        </ul>
+            <div class="overflow-y-auto mt-4 flex-1">
+                <div class="px-6 mb-2">
+                    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block">Navegação Geral</span>
+                </div>
+                <ul class="list-none p-2 m-0 flex flex-col gap-1">
+                    @for(item of sidebarData; track $index) {
+                    <li>
+                        @if(item.disabled) {
+                            <div class="flex items-center p-3 mx-2 rounded-xl text-slate-400 cursor-not-allowed opacity-60 relative group text-sm font-medium">
+                                <i class="{{item.icon}} mr-3 text-lg opacity-80"></i>
+                                <span>{{item.label}}</span>
+                                <span class="ml-auto px-2 py-0.5 text-[9px] font-bold bg-slate-100 text-slate-500 rounded-full uppercase tracking-wider">
+                                    Em breve
+                                </span>
+                            </div>
+                        } @else {
+                            <a pRipple 
+                               [routerLink]="item.routerLink" 
+                               routerLinkActive="active-menu-item"
+                               (click)="onMenuItemClick()"
+                               class="sidebar-menu-item flex items-center cursor-pointer p-3 mx-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all duration-200 p-ripple text-sm font-medium">
+                                <i class="{{item.icon}} mr-3 text-lg menu-icon transition-colors duration-200"></i>
+                                <span>{{item.label}}</span>
+                            </a>
+                        }
+                    </li>
+                    }
                 </ul>
             </div>
 

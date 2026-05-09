@@ -1,81 +1,195 @@
-<div class="min-h-screen flex bg-slate-50 overflow-hidden">
+<div class="min-h-screen flex bg-slate-50 font-sans overflow-hidden">
+  <!-- Painel Esquerdo (Imersivo/Escuro) - Visível apenas em telas grandes -->
+  <div
+    class="dark-hero-panel hidden lg:flex lg:w-1/2 bg-slate-950 text-white relative overflow-hidden flex-col items-center justify-center p-16"
+  >
+    <!-- Efeitos Aurora de Fundo -->
+    <div
+      class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-500/15 blur-[120px]"
+    ></div>
+    <div
+      class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-600/10 blur-[130px]"
+    ></div>
 
-    <!-- Lado Esquerdo: Ilustração/Branding -->
-    <div class="hidden lg:flex lg:w-1/2 bg-emerald-50 items-center justify-center p-12 relative overflow-hidden">
-        <!-- Overlay decorativo -->
-        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-100 rounded-full opacity-50"></div>
-        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-96 h-96 bg-emerald-100 rounded-full opacity-30"></div>
-        
-        <div class="max-w-lg text-center z-10">
-            <div class="bg-white p-6 rounded-circle inline-flex mb-8 shadow-sm">
-                <i class="pi pi-graduation-cap text-6xl text-emerald-600"></i>
-            </div>
-            <h2 class="text-4xl font-bold text-slate-800 tracking-tight">Quase lá, Guerreiro!</h2>
-            <p class="mt-6 text-slate-600 text-lg leading-relaxed">
-                Você está a um passo de desbloquear o seu potencial em lógica de programação. 
-                Vincule-se à sua turma para começar a resolver desafios reais com IA.
-            </p>
-            
-            <div class="mt-12 flex justify-center gap-8">
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-emerald-700">100%</p>
-                    <p class="text-xs text-emerald-600 uppercase font-bold tracking-wider font-medium">Interativo</p>
-                </div>
-                <div class="w-px h-10 bg-emerald-200"></div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-emerald-700">IA</p>
-                    <p class="text-xs text-emerald-600 uppercase font-bold tracking-wider font-medium">Socrática</p>
-                </div>
-            </div>
+    <!-- Malha de Grade Sutil -->
+    <div
+      class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"
+    ></div>
+
+    <!-- Conteúdo do Painel Esquerdo -->
+    <div class="relative z-10 w-full max-w-lg flex flex-col items-center gap-10 text-center">
+      <!-- Branding LogikeIA -->
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+        >
+          <svg
+            class="w-6 h-6 text-emerald-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            />
+          </svg>
         </div>
-    </div>
+        <span
+          class="text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-400 via-emerald-300 to-teal-400 bg-clip-text text-transparent"
+          >LogikeIA</span
+        >
+      </div>
 
-    <!-- Lado Direito: Formulário -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div class="w-full max-w-md bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-slate-100 animate-fadein">
-            
-            <div class="mb-10">
-                <h1 class="text-3xl font-bold text-slate-900 mb-2">Vincular Turma</h1>
-                <p class="text-slate-500">Insira o código fornecido pelo seu professor para acessar seu conteúdo.</p>
-            </div>
+      <!-- Cartão de Acesso Digital Vitrificado (Glassmorphism) -->
+      <div
+        class="digital-badge-card w-full bg-slate-900/65 backdrop-blur-lg rounded-3xl border border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-6 relative overflow-hidden text-left"
+      >
+        <!-- Efeito Holográfico ou Linhas de Alta Tecnologia -->
+        <div
+          class="absolute right-[-40px] bottom-[-40px] w-48 h-48 rounded-full bg-emerald-500/10 blur-3xl"
+        ></div>
 
-            <div class="flex flex-col gap-6">
-                <div class="flex flex-col gap-2">
-                    <label for="code" class="text-sm font-semibold text-slate-700 ml-1">Código da Turma</label>
-                    <span class="p-input-icon-left w-full">
-                        <i class="pi pi-key"></i>
-                        <input 
-                            pInputText 
-                            id="code" 
-                            [(ngModel)]="code" 
-                            placeholder="Ex: LOG-123456" 
-                            class="w-full !p-3 !pl-10 !rounded-xl !border-slate-200 focus:!border-emerald-500"
-                            [disabled]="loading()"
-                        />
-                    </span>
-                </div>
-
-                <p-button 
-                    label="Validar e Entrar" 
-                    icon="pi pi-check-circle" 
-                    styleClass="w-full !py-4 !rounded-xl !bg-emerald-600 !border-emerald-600 shadow-sm font-semibold text-lg"
-                    [loading]="loading()"
-                    (onClick)="joinClassroom()"
-                ></p-button>
-
-                <div class="flex items-center justify-center mt-4">
-                    <button 
-                        (click)="logout()" 
-                        class="text-sm font-semibold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-2"
-                    >
-                        <i class="pi pi-sign-out"></i>
-                        Sair da conta
-                    </button>
-                </div>
-            </div>
+        <!-- Badge Header -->
+        <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+          <div class="flex items-center gap-2">
+            <span
+              class="inline-block px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md"
+            >
+              Logike Passport
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          </div>
+          <i class="pi pi-shield text-slate-500 text-lg"></i>
         </div>
-    </div>
 
+        <!-- Badge Content -->
+        <div class="flex gap-4 items-center mb-6">
+          <div
+            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/5 border border-white/10 flex items-center justify-center shadow-inner relative group"
+          >
+            <!-- Neon glow de capelo -->
+            <i class="pi pi-graduation-cap text-3xl text-emerald-400 animate-bounce-slow"></i>
+          </div>
+          <div class="flex-1">
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+              >Aspirante</span
+            >
+            <h3 class="text-lg font-black text-white leading-tight tracking-tight">
+              Guerreiro da Lógica
+            </h3>
+            <p class="text-xs text-emerald-400 font-mono mt-0.5">Vínculo: Pendente...</p>
+          </div>
+        </div>
+
+        <!-- Footer do Cartão (Metas) -->
+        <div class="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
+          <div>
+            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block"
+              >Método</span
+            >
+            <span class="text-xs font-semibold text-slate-200">100% Interativo</span>
+          </div>
+          <div>
+            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block"
+              >Tutor de IA</span
+            >
+            <span class="text-xs font-semibold text-slate-200">Socrático Inteligente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensagem Motivacional -->
+      <div class="space-y-3">
+        <h3 class="text-2xl font-bold text-white tracking-tight">Quase lá!</h3>
+        <p class="text-slate-400 text-sm max-w-md mx-auto leading-relaxed">
+          Você está a um passo de desbloquear o seu potencial. Vincule-se à sua turma para começar a
+          resolver desafios reais de programação com ajuda do nosso tutor inteligente.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painel Direito (Formulário Claro) -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-slate-50/50">
+    <div
+      class="form-card w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(16,185,129,0.04)] border border-slate-100/80 transition-all duration-300 hover:shadow-[0_20px_50px_rgba(16,185,129,0.06)] animate-fade-in-up"
+    >
+      <!-- Logo Mobile -->
+      <div class="lg:hidden flex items-center gap-2.5 mb-8 justify-center">
+        <div
+          class="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20"
+        >
+          <svg
+            class="w-5 h-5 text-emerald-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            />
+          </svg>
+        </div>
+        <span
+          class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent"
+          >LogikeIA</span
+        >
+      </div>
+
+      <!-- Cabeçalho do Form -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Vincular Turma</h1>
+        <p class="text-slate-500 text-sm">
+          Insira o código enviado pelo seu professor para acessar seu conteúdo exclusivo.
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <!-- Campo de Código -->
+        <div class="flex flex-col gap-2">
+          <p-float-label variant="on" class="block w-full">
+            <input
+              pInputText
+              id="code"
+              type="text"
+              [(ngModel)]="code"
+              class="w-full"
+              autocomplete="off"
+              [disabled]="loading()"
+            />
+            <label for="code">Código da Turma (Ex: LOG-123456)</label>
+          </p-float-label>
+        </div>
+
+        <!-- Botão de Validar -->
+        <p-button
+          label="Validar e Entrar"
+          type="button"
+          severity="primary"
+          [loading]="loading()"
+          (onClick)="joinClassroom()"
+          styleClass="w-full !py-3 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+        ></p-button>
+
+        <!-- Botão Sair -->
+        <div class="flex items-center justify-center mt-2">
+          <button
+            (click)="logout()"
+            class="text-sm font-semibold text-slate-400 hover:text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+          >
+            <i class="pi pi-sign-out"></i>
+            Sair da conta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <p-toast position="bottom-right"></p-toast>
