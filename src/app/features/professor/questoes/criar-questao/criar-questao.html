@@ -26,9 +26,7 @@
           formControlName="title" 
           placeholder="Ex: Estruturas de Repetição com For"
           class="w-full" />
-        @if (recipeForm.get('title')?.invalid && recipeForm.get('title')?.touched) {
-          <small class="text-rose-500 font-medium">O título deve ter pelo menos 5 caracteres.</small>
-        }
+        <app-form-error [control]="recipeForm.get('title')"></app-form-error>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -44,9 +42,7 @@
             placeholder="Selecione uma turma"
             [style]="{'width':'100%'}">
           </p-select>
-          @if (recipeForm.get('classroom_id')?.invalid && recipeForm.get('classroom_id')?.touched) {
-            <small class="text-rose-500 font-medium">A seleção da turma é obrigatória.</small>
-          }
+          <app-form-error [control]="recipeForm.get('classroom_id')"></app-form-error>
         </div>
 
         <!-- Dificuldade -->
@@ -73,9 +69,7 @@
           rows="8" 
           placeholder="Descreva o que o aluno deve fazer. Você pode usar tags HTML básicas."
           class="w-full"></textarea>
-        @if (recipeForm.get('statement')?.invalid && recipeForm.get('statement')?.touched) {
-          <small class="text-rose-500 font-medium">O enunciado deve ter pelo menos 20 caracteres.</small>
-        }
+        <app-form-error [control]="recipeForm.get('statement')"></app-form-error>
       </div>
 
       <!-- Restrições -->

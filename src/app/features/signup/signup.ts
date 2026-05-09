@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -12,9 +12,11 @@ import { ToastService } from '../../shared/services/toast.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
 import { SignupRequest } from '../../domain/auth/models/signup-request.interface';
 
+import { FormError } from '../../shared/components/form-error/form-error';
+
 @Component({
   selector: 'app-signup',
-  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink, SelectModule, InputTextModule],
+  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink, SelectModule, InputTextModule, FormError],
   templateUrl: './signup.html',
   styleUrl: './signup.css',
 })
@@ -38,10 +40,10 @@ export class Signup {
 
   private criarSignupForm() {
     this.signupForm = this.formBuilder.group({
-      name: [''],
-      email: [''],
-      password: [''],
-      role: [this.roles[0].value]
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      role: [this.roles[0].value, Validators.required]
     });
   }
 

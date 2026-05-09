@@ -18,6 +18,8 @@ import { Question } from '../../../../domain/question/models/question.interface'
 import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
 import { forkJoin } from 'rxjs';
 
+import { FormError } from '../../../../shared/components/form-error/form-error';
+
 @Component({
   selector: 'app-editar-trilha',
   standalone: true,
@@ -31,7 +33,8 @@ import { forkJoin } from 'rxjs';
     ToastModule,
     TableModule,
     TagModule,
-    DifficultyPipe
+    DifficultyPipe,
+    FormError
   ],
   providers: [MessageService],
   templateUrl: './editar-trilha.html',
@@ -126,6 +129,7 @@ export class EditarTrilha implements OnInit {
 
   onSubmit(): void {
     if (this.trilhaForm.invalid) {
+      this.trilhaForm.markAllAsTouched();
       this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha os campos obrigatórios.' });
       return;
     }

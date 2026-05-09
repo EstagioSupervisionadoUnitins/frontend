@@ -13,6 +13,8 @@ import { QuestionUpdate } from '../../../../domain/question/models/question-upda
 import { ClassroomService } from '../../../../domain/classroom/services/classroom.service';
 import { Classroom } from '../../../../domain/classroom/models/classroom.interface';
 
+import { FormError } from '../../../../shared/components/form-error/form-error';
+
 @Component({
   selector: 'app-editar-questao',
   standalone: true,
@@ -23,7 +25,8 @@ import { Classroom } from '../../../../domain/classroom/models/classroom.interfa
     TextareaModule, 
     SelectModule, 
     ButtonModule, 
-    ToastModule
+    ToastModule,
+    FormError
   ],
   providers: [MessageService],
   templateUrl: './editar-questao.html',
@@ -97,6 +100,7 @@ export class EditarQuestao implements OnInit {
 
   onSubmit(): void {
     if (this.recipeForm.invalid) {
+      this.recipeForm.markAllAsTouched();
       this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Por favor, preencha todos os campos obrigatórios corretamente.' });
       return;
     }

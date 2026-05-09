@@ -17,6 +17,8 @@ import { Classroom } from '../../../../domain/classroom/models/classroom.interfa
 import { Question } from '../../../../domain/question/models/question.interface';
 import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
 
+import { FormError } from '../../../../shared/components/form-error/form-error';
+
 @Component({
   selector: 'app-criar-trilha',
   standalone: true,
@@ -30,7 +32,8 @@ import { DifficultyPipe } from '../../../../shared/pipes/difficulty.pipe';
     ToastModule,
     TableModule,
     TagModule,
-    DifficultyPipe
+    DifficultyPipe,
+    FormError
   ],
   providers: [MessageService],
   templateUrl: './criar-trilha.html',
@@ -104,6 +107,7 @@ export class CriarTrilha implements OnInit {
 
   onSubmit(): void {
     if (this.trilhaForm.invalid) {
+      this.trilhaForm.markAllAsTouched();
       this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha os campos obrigatórios.' });
       return;
     }

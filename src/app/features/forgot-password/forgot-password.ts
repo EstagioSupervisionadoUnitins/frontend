@@ -9,9 +9,11 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
 
+import { FormError } from '../../shared/components/form-error/form-error';
+
 @Component({
   selector: 'app-forgot-password',
-  imports: [IconFieldModule, InputIconModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, InputTextModule, RouterLink],
+  imports: [IconFieldModule, InputIconModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, InputTextModule, RouterLink, FormError],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })

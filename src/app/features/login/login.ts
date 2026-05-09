@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -10,9 +10,11 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
 
+import { FormError } from '../../shared/components/form-error/form-error';
+
 @Component({
   selector: 'app-login',
-  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink, InputTextModule],
+  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink, InputTextModule, FormError],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -32,8 +34,8 @@ export class Login {
 
   private criarLoginForm() {
     this.loginForm = this.formBuilder.group({
-      email: [''],
-      senha: ['']
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', Validators.required]
     });
   }
 

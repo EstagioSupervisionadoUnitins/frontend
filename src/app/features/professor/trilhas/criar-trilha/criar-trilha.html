@@ -17,7 +17,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="flex flex-col gap-2">
                     <label for="title" class="text-sm font-bold text-slate-700">Título da Trilha</label>
-                    <input pInputText id="title" formControlName="title" placeholder="Ex: Fundamentos de Variáveis" class="w-full" />
+                    <input pInputText id="title" formControlName="title" placeholder="Ex: Fundamentos de Variáveis" class="w-full"
+                        [class.border-red-500]="trilhaForm.get('title')?.invalid && trilhaForm.get('title')?.touched" />
+                    <app-form-error [control]="trilhaForm.get('title')"></app-form-error>
                 </div>
 
                 <div class="flex flex-col gap-2">
@@ -28,13 +30,17 @@
                         optionLabel="name" 
                         optionValue="id"
                         placeholder="Selecione a turma"
-                        class="w-full">
+                        class="w-full"
+                        [class.border-red-500]="trilhaForm.get('classroom_id')?.invalid && trilhaForm.get('classroom_id')?.touched">
                     </p-select>
+                    <app-form-error [control]="trilhaForm.get('classroom_id')"></app-form-error>
                 </div>
 
                 <div class="flex flex-col gap-2 md:col-span-2">
                     <label for="description" class="text-sm font-bold text-slate-700">Descrição</label>
-                    <textarea pTextarea id="description" formControlName="description" rows="3" placeholder="O que os alunos aprenderão nesta trilha?" class="w-full"></textarea>
+                    <textarea pTextarea id="description" formControlName="description" rows="3" placeholder="O que os alunos aprenderão nesta trilha?" class="w-full"
+                        [class.border-red-500]="trilhaForm.get('description')?.invalid && trilhaForm.get('description')?.touched"></textarea>
+                    <app-form-error [control]="trilhaForm.get('description')"></app-form-error>
                 </div>
             </div>
         </div>

@@ -106,6 +106,7 @@
                             [class.border-red-500]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
                         <label for="email">E-mail</label>
                     </p-float-label>
+                    <app-form-error [control]="loginForm.get('email')"></app-form-error>
                 </div>
 
                 <!-- Input Senha -->
@@ -116,6 +117,7 @@
                             [inputStyleClass]="'w-full ' + (loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched ? 'border-red-500' : '')" />
                         <label for="senha">Senha</label>
                     </p-float-label>
+                    <app-form-error [control]="loginForm.get('senha')"></app-form-error>
                 </div>
 
                 <!-- Esqueci Senha Link -->
