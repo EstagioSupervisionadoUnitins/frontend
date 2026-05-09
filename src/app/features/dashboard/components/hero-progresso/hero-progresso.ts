@@ -2,10 +2,11 @@ import { Component, inject, computed } from '@angular/core';
 import { ProgressBar } from 'primeng/progressbar';
 import { ButtonModule } from 'primeng/button';
 import { AlunoService } from '../../../../domain/aluno/services/aluno.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-hero-progresso',
-  imports: [ProgressBar, ButtonModule],
+  imports: [ProgressBar, ButtonModule, RouterLink],
   templateUrl: './hero-progresso.html',
   styleUrl: './hero-progresso.css',
 })

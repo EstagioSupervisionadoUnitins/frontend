@@ -37,17 +37,11 @@ export class QuestionService {
   getGenerationLog(logId: number): Observable<{
     id: number;
     status: 'pending' | 'completed' | 'failed';
-    generated_response?: { questions?: Question[] };
+    generated_response?: string | any;
     created_at: string;
     updated_at: string;
   }> {
-    return this.http.get<{
-      id: number;
-      status: 'pending' | 'completed' | 'failed';
-      generated_response?: { questions?: Question[] };
-      created_at: string;
-      updated_at: string;
-    }>(`${environment.apiUrl}/ai_generation_logs/${logId}`);
+    return this.http.get<any>(`${environment.apiUrl}/ai_generation_logs/${logId}`);
   }
 
 

@@ -113,7 +113,24 @@ export class GerarQuestaoIA {
           next: (finalLog) => {
             this.loading.set(false);
             if (finalLog.status === 'completed') {
-              const questions = finalLog.generated_response?.questions || [];
+              let questions: Question[] = [];
+              const response = finalLog.generated_response;
+              
+              if (response) {
+                if (typeof response === 'string') {
+                  try {
+                    const parsed = JSON.parse(response);
+                    questions = Array.isArray(parsed) ? parsed : (parsed.questions || []);
+                  } catch (e) {
+                    console.error('[Parsing AI questions error]:', e);
+                  }
+                } else if (Array.isArray(response)) {
+                  questions = response;
+                } else if (typeof response === 'object') {
+                  questions = response.questions || [];
+                }
+              }
+
               this.generatedQuestions.set(questions);
               
               this.messageService.add({ 

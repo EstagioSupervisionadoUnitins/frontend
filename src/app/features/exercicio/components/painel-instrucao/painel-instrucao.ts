@@ -26,6 +26,10 @@ export class PainelInstrucao {
     this.location.back();
   }
 
+  irParaTrilhas(): void {
+    this.router.navigate(['/aluno/trilhas']);
+  }
+
   irParaProxima(): void {
     const nextId = this.proximaQuestaoId();
     if (nextId) {
