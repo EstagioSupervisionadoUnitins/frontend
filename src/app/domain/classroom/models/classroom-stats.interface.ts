@@ -19,16 +19,11 @@ export interface StudentNeedingAttention {
 
 export interface RecentSubmission {
   id: number;
-  attempt_number: number;
-  code: string;
-  created_at: string;
-  feedback: string;
+  student_name: string;
+  question_title: string;
   is_correct: boolean;
-  question_id: number;
-  socratic_hint: string;
   status: string;
-  student_id: number;
-  updated_at: string;
+  created_at: string;
 }
 
 export interface ClassroomStats {

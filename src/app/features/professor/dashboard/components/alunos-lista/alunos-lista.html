@@ -58,16 +58,16 @@
       responsiveLayout="scroll">
       <ng-template pTemplate="header">
         <tr>
-          <th>ID Aluno</th>
-          <th class="text-center">ID Questão</th>
+          <th>Aluno</th>
+          <th class="text-center">Questão</th>
           <th class="text-center">Data</th>
           <th class="text-center">Resultado</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-submission>
         <tr>
-          <td class="text-sm font-medium text-gray-700">#{{ submission.student_id }}</td>
-          <td class="text-center text-sm text-gray-600">Q#{{ submission.question_id }}</td>
+          <td class="text-sm font-medium text-gray-700">{{ submission.student_name }}</td>
+          <td class="text-center text-sm text-gray-600">{{ submission.question_title }}</td>
           <td class="text-center text-xs text-gray-500">
             {{ submission.created_at | date: 'dd/MM HH:mm' }}
           </td>

@@ -5,6 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { SkeletonModule } from 'primeng/skeleton';
 import { MessageService } from 'primeng/api';
 import { ClassroomService } from '../../domain/classroom/services/classroom.service';
 import { AuthService } from '../../domain/auth/service/auth.service';
@@ -22,6 +24,8 @@ import { TooltipModule } from 'primeng/tooltip';
     CardModule,
     DialogModule,
     InputTextModule,
+    TextareaModule,
+    SkeletonModule,
     ToastModule,
     TooltipModule
   ],
@@ -39,6 +43,7 @@ export class Turmas implements OnInit {
   // Professor Creation Modal
   displayCreateModal = signal(false);
   newClassName = signal('');
+  newClassDescription = signal('');
   generatedCode = signal('');
 
   ngOnInit(): void {
@@ -61,6 +66,7 @@ export class Turmas implements OnInit {
 
   openCreateModal(): void {
     this.newClassName.set('');
+    this.newClassDescription.set('');
     this.generatedCode.set(this.classroomService.generateCode());
     this.displayCreateModal.set(true);
   }
@@ -74,7 +80,8 @@ export class Turmas implements OnInit {
     this.classroomService.create({
       classroom: {
         name: this.newClassName(),
-        code: this.generatedCode()
+        code: this.generatedCode(),
+        description: this.newClassDescription() || undefined
       }
     }).subscribe({
       next: () => {
