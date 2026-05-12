@@ -30,7 +30,8 @@
     <ngx-monaco-editor 
       class="absolute inset-0 w-full h-full"
       [options]="editorOptions" 
-      [(ngModel)]="codigo">
+      [(ngModel)]="codigo"
+      (onInit)="onEditorInit($event)">
     </ngx-monaco-editor>
   </div>
 </div>
