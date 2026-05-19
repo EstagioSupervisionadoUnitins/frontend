@@ -1,5 +1,5 @@
 export interface UsuarioResponse {
   username: string;
   email: string;
-  role: 'student' | 'teacher';
+  role: 'student' | 'teacher' | 'super_admin';
 }

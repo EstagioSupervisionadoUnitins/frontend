@@ -7,6 +7,8 @@
       <app-sidebar-aluno [(visible)]="sidebarVisible"></app-sidebar-aluno>
     } @else if (usuario()?.role === 'teacher') {
       <app-sidebar-professor [(visible)]="sidebarVisible"></app-sidebar-professor>
+    } @else if (usuario()?.role === 'super_admin') {
+      <app-sidebar-admin [(visible)]="sidebarVisible"></app-sidebar-admin>
     }
   }
   <div class="flex-1 overflow-x-hidden overflow-y-auto flex flex-col">

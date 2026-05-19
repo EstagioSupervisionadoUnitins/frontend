@@ -4,6 +4,7 @@ import { map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Classroom } from '../models/classroom.interface';
 import { ClassroomRequest } from '../models/classroom-request.interface';
+import { ClassroomRequestUser } from '../models/classroom-request-user.interface';
 import { JoinRequest } from '../models/join-request.interface';
 import { ClassroomStats } from '../models/classroom-stats.interface';
 import { SKIP_GLOBAL_ERROR } from '../../../core/interceptors/error.interceptor';
@@ -96,4 +97,17 @@ export class ClassroomService {
     }
     return result;
   }
+
+  getJoinRequests(classroomId: number | string): Observable<ClassroomRequestUser[]> {
+    return this.http.get<ClassroomRequestUser[]>(`${this.API}/${classroomId}/requests`);
+  }
+
+  approveJoinRequest(classroomId: number | string, userId: number | string): Observable<any> {
+    return this.http.patch<any>(`${this.API}/${classroomId}/requests/${userId}/approve`, {});
+  }
+
+  rejectJoinRequest(classroomId: number | string, userId: number | string): Observable<any> {
+    return this.http.patch<any>(`${this.API}/${classroomId}/requests/${userId}/reject`, {});
+  }
 }
+

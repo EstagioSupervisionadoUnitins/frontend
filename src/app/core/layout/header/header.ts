@@ -27,7 +27,7 @@ export class Header {
   canShowMenu = computed(() => {
     const u = this.user();
     if (!u) return false;
-    if (u.role === 'teacher') return true;
+    if (u.role === 'teacher' || u.role === 'super_admin') return true;
     return !!this.classroomService.activeClassroom();
   });
 

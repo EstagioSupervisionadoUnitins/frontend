@@ -85,7 +85,15 @@
                     </p-avatar>
                     <div class="flex-1 min-w-0">
                         <p class="font-bold text-slate-800 truncate text-sm">{{ user.username }}</p>
-                        <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">{{ user.role === 'student' ? 'Estudante' : 'Professor' }}</p>
+                        <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+                            @if (user.role === 'student') {
+                                Estudante
+                            } @else if (user.role === 'super_admin') {
+                                Administrador
+                            } @else {
+                                Professor
+                            }
+                        </p>
                     </div>
                     <button 
                         (click)="logout()" 

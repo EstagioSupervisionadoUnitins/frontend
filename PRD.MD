@@ -86,18 +86,20 @@ Cada fase segue o mesmo ciclo de trabalho:
 | Camada | Artefato | Ação |
 | :--- | :--- | :--- |
 | **Models** | `domain/auth/models/login-request.interface.ts` | **[CRIAR]** — `{ email, password }` |
-| **Models** | `domain/auth/models/signup-request.interface.ts` | **[CRIAR]** — `{ name, email, password, role }` |
+| **Models** | `domain/auth/models/signup-request.interface.ts` | **[ATUALIZAR]** — `{ name, email, password }` (A role sempre será `"student"`, não enviar `role`) |
 | **Models** | `domain/auth/models/auth-response.interface.ts` | **[CRIAR]** — `{ token, exp, username, role }` |
 | **Models** | `domain/auth/models/usuario-response.interface.ts` | **[ATUALIZAR]** — alinhar com resposta real da API |
 | **Service** | `domain/auth/service/auth.service.ts` | **[ATUALIZAR]** — implementar `login()` e `signup()` com `HttpClient` |
 | **Interceptor** | `core/interceptors/auth.interceptor.ts` | **[CRIAR]** — injetar `Bearer token` em todas as requisições |
 | **Guard** | `core/guards/auth.guard.ts` | **[CRIAR]** — proteger rotas que exigem autenticação |
-| **Feature** | `features/login/` | **[ATUALIZAR]** — conectar formulário ao `auth.service` real |
+| **Feature** | `features/login/` | **[ATUALIZAR]** — remover opções de Professor/Aluno no cadastro (Registro cria apenas alunos). |
 | **Armazenamento** | `localStorage` ou `sessionStorage` | Persistir token JWT e dados do usuário |
+
+> **Nota sobre Perfis:** Conforme a nova lógica da API, o fluxo de signup (`POST /auth/signup`) é exclusivo para alunos. Administradores iniciam o fluxo para professores, criando suas contas e enviando convites via `POST /admin/users`.
 
 **Critérios de Conclusão:**
 - [x] Login com credenciais válidas retorna token e redireciona ao dashboard
-- [x] Signup cria conta e redireciona para login
+- [x] Signup cria conta exclusivamente de aluno e redireciona para login
 - [x] Rotas protegidas redirecionam para `/login` sem token válido
 - [x] Token expirado é tratado (logout automático)
 
@@ -416,3 +418,52 @@ Cada fase segue o mesmo ciclo de trabalho:
 | Fluxo de recuperação de senha | **[VERIFICAR]** — `forgot-password` e `reset-password` funcionam end-to-end com n8n |
 | Histórico de submissões | **[VERIFICAR]** — `GET /submissions` retorna dados corretamente e tabela renderiza |
 | Cobertura de endpoints | **[VERIFICAR]** — nenhum endpoint da API documentada sem consumo no frontend |
+
+---
+
+#### **Fase 14 — Fluxo de Aprovação de Alunos** `(Novo módulo)`
+> **Endpoints:** `POST /classrooms/join` · `GET /classrooms/:id/requests` · `PATCH /classrooms/:id/requests/:user_id/approve` · `PATCH /classrooms/:id/requests/:user_id/reject`
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/classroom/models/classroom-request-user.interface.ts` | **[CRIAR]** — `{ id, name, email, requested_at }` |
+| **Service** | `domain/classroom/services/classroom.service.ts` | **[ATUALIZAR]** — Adicionar `getJoinRequests()`, `approveJoinRequest()`, `rejectJoinRequest()` |
+| **Feature** | `features/onboarding/` | **[ATUALIZAR]** — Tratar retorno do `join` de forma pendente e exibir tela de "Aguardando aprovação" com feedback claro |
+| **Guard** | `core/guards/classroom.guard.ts` | **[ATUALIZAR]** — Bloquear alunos pendentes e redirecionar para tela de onboarding ("Aguardando aprovação") |
+| **Feature** | `features/solicitacoes-turma/` | **[CRIAR]** — Tela/aba para professor aprovar/rejeitar alunos nas turmas |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — Adicionar rotas de gerenciamento de solicitações no painel do professor |
+| **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — Adicionar item de menu "Solicitações" no perfil de professor |
+
+**Critérios de Conclusão:**
+- [ ] Ao submeter o código de uma turma no Onboarding, o aluno visualiza estado de "Aguardando aprovação do professor"
+- [ ] O professor pode acessar aba "Solicitações" e menu "Solicitações de Entrada" para ver pedidos pendentes
+- [ ] O professor pode aprovar solicitações, o que automaticamente desbloqueia o aluno ao dashboard
+- [ ] O professor pode rejeitar solicitações, permitindo ao aluno tentar inserir um novo código
+- [ ] `ClassroomGuard` restringe o acesso de alunos não aprovados para as rotas protegidas
+
+---
+
+#### **Fase 15 — Painel de Administração (Super Admin)** `(Novo módulo)`
+> **Endpoints:** `POST /admin/users`
+> **Contexto:** Super Admin precisa de uma interface própria para cadastrar professores e gerenciar convites.
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/auth/models/admin-user-request.interface.ts` | **[CRIAR]** — `{ user: { name, email } }` |
+| **Service** | `domain/auth/service/auth.service.ts` | **[ATUALIZAR]** — Adicionar `createTeacher(name, email)` consumindo `POST /admin/users` |
+| **Guard** | `core/guards/role.guard.ts` | **[ATUALIZAR]** — Dar suporte à role `super_admin` e redirecionamento de acessos negados |
+| **Guard** | `core/guards/role-redirect.guard.ts` | **[ATUALIZAR]** — Redirecionar `super_admin` para `/admin/dashboard` |
+| **Feature** | `features/admin/` | **[CRIAR]** — Módulo contendo telas de gerenciamento do Super Admin |
+| **Feature** | `features/admin/dashboard/` | **[CRIAR]** — Dashboard do Super Admin contendo estatísticas rápidas e o formulário de convite |
+| **Feature** | `features/admin/professores/` | **[CRIAR]** — Tela de criação e listagem dos convites/professores criados (historico local) |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — Adicionar rota `/admin/dashboard` e `/admin/professores` com proteção de role `super_admin` |
+| **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — Customizar menu lateral para exibir opções de administração apenas quando logado como `super_admin` |
+
+**Critérios de Conclusão:**
+- [ ] Usuário com role `super_admin` é redirecionado corretamente para `/admin/dashboard` após o login.
+- [ ] Super Admin visualiza formulário para cadastrar novos professores com validação de nome e e-mail.
+- [ ] Envio do formulário faz chamada ao `POST /admin/users` e exibe feedback de sucesso ("Professor criado e convite enviado").
+- [ ] Histórico de professores cadastrados na sessão/localStorage é exibido em uma tabela elegante.
+- [ ] Menu lateral adapta-se dinamicamente às permissões de `super_admin`.
+
+

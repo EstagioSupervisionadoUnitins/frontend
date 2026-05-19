@@ -142,52 +142,108 @@
         >
       </div>
 
-      <!-- Cabeçalho do Form -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Vincular Turma</h1>
-        <p class="text-slate-500 text-sm">
-          Insira o código enviado pelo seu professor para acessar seu conteúdo exclusivo.
-        </p>
-      </div>
-
-      <div class="flex flex-col gap-6">
-        <!-- Campo de Código -->
-        <div class="flex flex-col gap-2">
-          <p-float-label variant="on" class="block w-full">
-            <input
-              pInputText
-              id="code"
-              type="text"
-              [(ngModel)]="code"
-              class="w-full"
-              autocomplete="off"
-              [disabled]="loading()"
-            />
-            <label for="code">Código da Turma (Ex: LOG-123456)</label>
-          </p-float-label>
+      @if (!pendingClassroom()) {
+        <!-- Cabeçalho do Form -->
+        <div class="mb-8">
+          <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Vincular Turma</h1>
+          <p class="text-slate-500 text-sm">
+            Insira o código enviado pelo seu professor para acessar seu conteúdo exclusivo.
+          </p>
         </div>
 
-        <!-- Botão de Validar -->
-        <p-button
-          label="Validar e Entrar"
-          type="button"
-          severity="primary"
-          [loading]="loading()"
-          (onClick)="joinClassroom()"
-          styleClass="w-full !py-3 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
-        ></p-button>
+        <div class="flex flex-col gap-6">
+          <!-- Campo de Código -->
+          <div class="flex flex-col gap-2">
+            <p-float-label variant="on" class="block w-full">
+              <input
+                pInputText
+                id="code"
+                type="text"
+                [(ngModel)]="code"
+                class="w-full"
+                autocomplete="off"
+                [disabled]="loading()"
+              />
+              <label for="code">Código da Turma (Ex: LOG-123456)</label>
+            </p-float-label>
+          </div>
 
-        <!-- Botão Sair -->
-        <div class="flex items-center justify-center mt-2">
-          <button
-            (click)="logout()"
-            class="text-sm font-semibold text-slate-400 hover:text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
-          >
-            <i class="pi pi-sign-out"></i>
-            Sair da conta
-          </button>
+          <!-- Botão de Validar -->
+          <p-button
+            label="Validar e Entrar"
+            type="button"
+            severity="primary"
+            [loading]="loading()"
+            (onClick)="joinClassroom()"
+            styleClass="w-full !py-3 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+          ></p-button>
+
+          <!-- Botão Sair -->
+          <div class="flex items-center justify-center mt-2">
+            <button
+              (click)="logout()"
+              class="text-sm font-semibold text-slate-400 hover:text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+            >
+              <i class="pi pi-sign-out"></i>
+              Sair da conta
+            </button>
+          </div>
         </div>
-      </div>
+      } @else {
+        <!-- Estado de Aguardando Aprovação -->
+        <div class="text-center">
+          <div class="flex items-center justify-center w-20 h-20 mx-auto rounded-full bg-amber-50 border border-amber-100 mb-6 relative overflow-hidden group shadow-inner">
+            <span class="absolute inset-0 bg-amber-500/5 animate-pulse"></span>
+            <i class="pi pi-clock text-3xl text-amber-500 animate-spin-slow"></i>
+          </div>
+
+          <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Aguardando Aprovação</h1>
+          <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+            Sua solicitação de entrada na turma <strong class="text-slate-800">{{ pendingClassroom()?.name }}</strong> foi enviada e está sob análise do professor.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-amber-50/50 border border-amber-100/50 mb-8 text-left space-y-3">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400">Turma solicitada:</span>
+              <span class="font-bold text-slate-700">{{ pendingClassroom()?.name }}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400">Código:</span>
+              <span class="font-mono bg-white px-2 py-0.5 rounded border text-slate-600">{{ pendingClassroom()?.code }}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400">Status:</span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+                Pendente
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <!-- Botão de Atualizar Status -->
+            <p-button
+              label="Verificar Aprovação"
+              type="button"
+              severity="primary"
+              [loading]="checkingStatus()"
+              (onClick)="checkStatus()"
+              styleClass="w-full !py-3 shadow-md hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+            ></p-button>
+
+            <!-- Botão Sair -->
+            <div class="flex items-center justify-center mt-2">
+              <button
+                (click)="logout()"
+                class="text-sm font-semibold text-slate-400 hover:text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+              >
+                <i class="pi pi-sign-out"></i>
+                Sair da conta
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>

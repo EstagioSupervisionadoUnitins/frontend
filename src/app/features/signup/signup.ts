@@ -5,7 +5,6 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PasswordModule } from 'primeng/password';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
@@ -16,7 +15,7 @@ import { FormError } from '../../shared/components/form-error/form-error';
 
 @Component({
   selector: 'app-signup',
-  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink, SelectModule, InputTextModule, FormError],
+  imports: [IconFieldModule, InputIconModule, PasswordModule, ReactiveFormsModule, ButtonModule, FloatLabelModule, RouterLink, InputTextModule, FormError],
   templateUrl: './signup.html',
   styleUrl: './signup.css',
 })
@@ -29,11 +28,6 @@ export class Signup {
   private authService = inject(AuthService);
   loading = signal(false);
 
-  roles = [
-    { label: 'Aluno', value: 'student' },
-    { label: 'Professor', value: 'teacher' }
-  ];
-
   constructor() {
     this.criarSignupForm();
   }
@@ -42,8 +36,7 @@ export class Signup {
     this.signupForm = this.formBuilder.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      role: [this.roles[0].value, Validators.required]
+      password: ['', Validators.required]
     });
   }
 
@@ -58,8 +51,7 @@ export class Signup {
     const dados: SignupRequest = {
       name: this.signupForm.value.name,
       email: this.signupForm.value.email,
-      password: this.signupForm.value.password,
-      role: this.signupForm.value.role
+      password: this.signupForm.value.password
     };
 
     this.authService.signup(dados).subscribe({
@@ -69,10 +61,12 @@ export class Signup {
         // Auto-login
         this.authService.login({ email: dados.email, password: dados.password }).subscribe({
           next: (response) => {
-            if (response.role === 'student') {
-              this.router.navigate(['/aluno/dashboard']);
+            if (response.role === 'super_admin') {
+              this.router.navigate(['/admin/professores']);
+            } else if (response.role === 'teacher') {
+              this.router.navigate(['/professor/dashboard']);
             } else {
-              this.router.navigate(['/professor/questoes']);
+              this.router.navigate(['/aluno/dashboard']);
             }
             this.loading.set(false);
           },

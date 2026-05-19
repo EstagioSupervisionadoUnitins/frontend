@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
@@ -9,6 +9,7 @@ import { LoginRequest } from '../models/login-request.interface';
 import { SignupRequest } from '../models/signup-request.interface';
 import { AuthResponse } from '../models/auth-response.interface';
 import { ClassroomService } from '../../classroom/services/classroom.service';
+import { SKIP_GLOBAL_ERROR } from '../../../core/interceptors/error.interceptor';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,14 @@ export class AuthService {
     return this.http.post(`${this.API}/reset_password`, { 
       token, 
       new_password: newPassword 
+    });
+  }
+
+  createTeacher(name: string, email: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/admin/users`, {
+      user: { name, email }
+    }, {
+      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true)
     });
   }
 
@@ -116,7 +125,7 @@ export class AuthService {
         // Prioriza dados passados (login) ou os presentes no novo payload do JWT (refresh)
         username: username || decoded.name || decoded.username || 'Usuário',
         email: decoded.email || '',
-        role: (role || decoded.role) as 'student' | 'teacher'
+        role: (role || decoded.role) as 'student' | 'teacher' | 'super_admin'
       };
       this.usuarioSubject.next(usuario);
     } catch (error) {

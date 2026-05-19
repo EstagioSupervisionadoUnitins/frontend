@@ -13,6 +13,7 @@ import { AuthService } from '../../domain/auth/service/auth.service';
 import { Classroom } from '../../domain/classroom/models/classroom.interface';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-turmas',
@@ -27,7 +28,8 @@ import { TooltipModule } from 'primeng/tooltip';
     TextareaModule,
     SkeletonModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    RouterLink
   ],
   templateUrl: './turmas.html',
   styleUrl: './turmas.css',

@@ -54,6 +54,12 @@ export const routes: Routes = [
                         canActivate: [roleGuard]
                     },
                     {
+                        path: 'solicitacoes',
+                        loadComponent: () => import('./features/professor/solicitacoes/solicitacoes').then(m => m.SolicitacoesProfessor),
+                        data: { roles: ['teacher'], breadcrumb: 'Solicitações de Entrada' },
+                        canActivate: [roleGuard]
+                    },
+                    {
                         path: 'questoes',
                         data: { breadcrumb: 'Questões' },
                         children: [
@@ -113,6 +119,17 @@ export const routes: Routes = [
                             },
                         ]
                     },
+                ]
+            },
+            {
+                path: 'admin',
+                children: [
+                    {
+                        path: 'professores',
+                        loadComponent: () => import('./features/admin/professores/professores-admin').then(m => m.ProfessoresAdmin),
+                        data: { roles: ['super_admin'], breadcrumb: 'Gerenciamento de Professores' },
+                        canActivate: [roleGuard]
+                    }
                 ]
             },
             {
