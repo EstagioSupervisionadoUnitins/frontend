@@ -435,11 +435,11 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — Adicionar item de menu "Solicitações" no perfil de professor |
 
 **Critérios de Conclusão:**
-- [ ] Ao submeter o código de uma turma no Onboarding, o aluno visualiza estado de "Aguardando aprovação do professor"
-- [ ] O professor pode acessar aba "Solicitações" e menu "Solicitações de Entrada" para ver pedidos pendentes
-- [ ] O professor pode aprovar solicitações, o que automaticamente desbloqueia o aluno ao dashboard
-- [ ] O professor pode rejeitar solicitações, permitindo ao aluno tentar inserir um novo código
-- [ ] `ClassroomGuard` restringe o acesso de alunos não aprovados para as rotas protegidas
+- [x] Ao submeter o código de uma turma no Onboarding, o aluno visualiza estado de "Aguardando aprovação do professor"
+- [x] O professor pode acessar aba "Solicitações" e menu "Solicitações de Entrada" para ver pedidos pendentes
+- [x] O professor pode aprovar solicitações, o que automaticamente desbloqueia o aluno ao dashboard
+- [x] O professor pode rejeitar solicitações, permitindo ao aluno tentar inserir um novo código
+- [x] `ClassroomGuard` restringe o acesso de alunos não aprovados para as rotas protegidas
 
 ---
 
@@ -452,18 +452,17 @@ Cada fase segue o mesmo ciclo de trabalho:
 | **Models** | `domain/auth/models/admin-user-request.interface.ts` | **[CRIAR]** — `{ user: { name, email } }` |
 | **Service** | `domain/auth/service/auth.service.ts` | **[ATUALIZAR]** — Adicionar `createTeacher(name, email)` consumindo `POST /admin/users` |
 | **Guard** | `core/guards/role.guard.ts` | **[ATUALIZAR]** — Dar suporte à role `super_admin` e redirecionamento de acessos negados |
-| **Guard** | `core/guards/role-redirect.guard.ts` | **[ATUALIZAR]** — Redirecionar `super_admin` para `/admin/dashboard` |
+| **Guard** | `core/guards/role-redirect.guard.ts` | **[ATUALIZAR]** — Redirecionar `super_admin` para `/admin/professores` |
 | **Feature** | `features/admin/` | **[CRIAR]** — Módulo contendo telas de gerenciamento do Super Admin |
-| **Feature** | `features/admin/dashboard/` | **[CRIAR]** — Dashboard do Super Admin contendo estatísticas rápidas e o formulário de convite |
-| **Feature** | `features/admin/professores/` | **[CRIAR]** — Tela de criação e listagem dos convites/professores criados (historico local) |
-| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — Adicionar rota `/admin/dashboard` e `/admin/professores` com proteção de role `super_admin` |
+| **Feature** | `features/admin/professores/` | **[CRIAR]** — Tela de criação e convite direto centralizada para novos professores |
+| **Routing** | `app.routes.ts` | **[ATUALIZAR]** — Adicionar rota `/admin/professores` com proteção de role `super_admin` |
 | **Layout** | `core/layout/sidebar/` | **[ATUALIZAR]** — Customizar menu lateral para exibir opções de administração apenas quando logado como `super_admin` |
 
 **Critérios de Conclusão:**
-- [ ] Usuário com role `super_admin` é redirecionado corretamente para `/admin/dashboard` após o login.
-- [ ] Super Admin visualiza formulário para cadastrar novos professores com validação de nome e e-mail.
-- [ ] Envio do formulário faz chamada ao `POST /admin/users` e exibe feedback de sucesso ("Professor criado e convite enviado").
-- [ ] Histórico de professores cadastrados na sessão/localStorage é exibido em uma tabela elegante.
-- [ ] Menu lateral adapta-se dinamicamente às permissões de `super_admin`.
+- [x] Usuário com role `super_admin` é redirecionado corretamente para `/admin/professores` após o login.
+- [x] Super Admin visualiza formulário para cadastrar novos professores com validação de nome e e-mail.
+- [x] Envio do formulário faz chamada ao `POST /admin/users` e exibe feedback de sucesso ("Professor criado e convite enviado").
+- [x] Menu lateral adapta-se dinamicamente às permissões de `super_admin` exibindo a barra de navegação dedicada.
+
 
 

@@ -129,6 +129,13 @@ export const routes: Routes = [
                         loadComponent: () => import('./features/admin/professores/professores-admin').then(m => m.ProfessoresAdmin),
                         data: { roles: ['super_admin'], breadcrumb: 'Gerenciamento de Professores' },
                         canActivate: [roleGuard]
+                    },
+                    {
+                        path: 'status',
+                        // Monitor de Integridade dos Servidores (Fase 16)
+                        loadComponent: () => import('./features/admin/status/status-admin').then(m => m.StatusAdmin),
+                        data: { roles: ['super_admin'], breadcrumb: 'Status do Sistema' },
+                        canActivate: [roleGuard]
                     }
                 ]
             },
