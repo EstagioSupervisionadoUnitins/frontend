@@ -54,13 +54,6 @@ export class AuthService {
     });
   }
 
-  createTeacher(name: string, email: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/admin/users`, {
-      user: { name, email }
-    }, {
-      context: new HttpContext().set(SKIP_GLOBAL_ERROR, true)
-    });
-  }
 
   me(): Observable<UsuarioResponse | null> {
     return this.usuario$;

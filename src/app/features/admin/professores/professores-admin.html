@@ -1,42 +1,244 @@
-<div class="min-h-[80vh] flex items-center justify-center p-4 md:p-8 animate-fade-in">
-  <div class="w-full max-w-lg bg-white border border-slate-100 p-8 md:p-10 rounded-3xl shadow-[0_20px_50px_rgba(99,102,241,0.04)] hover:shadow-[0_20px_50px_rgba(99,102,241,0.06)] transition-all duration-300">
-    
-    <!-- Cabeçalho do Card -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 shadow-sm mb-4">
-        <i class="pi pi-user-plus text-indigo-600 text-2xl"></i>
+<div class="p-6 md:p-8 animate-fade-in max-w-6xl mx-auto">
+  <!-- CABEÇALHO -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
+        <i class="pi pi-users text-2xl"></i>
       </div>
-      <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Convidar Professor</h1>
-      <p class="text-slate-500 text-sm mt-2 max-w-sm mx-auto">
-        Cadastre um novo docente no sistema. Ele receberá um convite por e-mail para configurar sua senha de acesso.
-      </p>
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900">Gestão de Professores</h1>
+        <p class="text-slate-500 text-sm">
+          Cadastre novos docentes, gerencie informações de contas e reenvie convites de primeiro acesso.
+        </p>
+      </div>
     </div>
 
-    <!-- Formulário -->
-    <form [formGroup]="inviteForm" (ngSubmit)="enviarConvite()" class="flex flex-col gap-6">
-      
-      <!-- Nome -->
-      <div class="flex flex-col gap-1.5">
-        <p-float-label variant="on" class="block w-full">
-          <input pInputText id="name" type="text" formControlName="name" class="w-full !py-3"
-            [class.border-red-500]="inviteForm.get('name')?.invalid && inviteForm.get('name')?.touched" />
-          <label for="name">Nome Completo</label>
-        </p-float-label>
-        <app-form-error [control]="inviteForm.get('name')"></app-form-error>
-      </div>
-
-      <!-- Email -->
-      <div class="flex flex-col gap-1.5">
-        <p-float-label variant="on" class="block w-full">
-          <input pInputText id="email" type="email" formControlName="email" class="w-full !py-3"
-            [class.border-red-500]="inviteForm.get('email')?.invalid && inviteForm.get('email')?.touched" />
-          <label for="email">E-mail Docente</label>
-        </p-float-label>
-        <app-form-error [control]="inviteForm.get('email')"></app-form-error>
-      </div>
-
-      <!-- Botão Convidar -->
-      <p-button label="Enviar Convite" type="submit" severity="primary" styleClass="w-full !py-3.5 font-bold shadow-sm hover:shadow-indigo-500/10 transition-all duration-200" [loading]="loading()"></p-button>
-    </form>
+    <div>
+      <p-button 
+        label="Convidar Professor" 
+        icon="pi pi-user-plus" 
+        (onClick)="abrirModalNovo()" 
+        severity="primary" 
+        styleClass="shadow-sm hover:shadow-indigo-500/10 transition-all duration-200">
+      </p-button>
+    </div>
   </div>
+
+  <!-- TABELA DE PROFESSORES -->
+  @if (loading()) {
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+      <div class="flex flex-col gap-4">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="flex items-center justify-between py-3 border-b border-slate-50 last:border-0">
+            <div class="flex items-center gap-4 w-1/3">
+              <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+              <p-skeleton width="70%" height="1.2rem"></p-skeleton>
+            </div>
+            <p-skeleton width="25%" height="1.2rem"></p-skeleton>
+            <p-skeleton width="15%" height="1.5rem"></p-skeleton>
+            <p-skeleton width="10%" height="2rem"></p-skeleton>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    @if (teachers().length === 0) {
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center max-w-xl mx-auto my-8 animate-fade-in">
+        <div class="flex flex-col items-center gap-4">
+          <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 border border-slate-100 shadow-sm">
+            <i class="pi pi-user text-3xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Nenhum professor cadastrado</h3>
+            <p class="text-slate-500 text-sm mt-1 max-w-xs mx-auto">
+              Clique em "Convidar Professor" para adicionar o primeiro docente à plataforma.
+            </p>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-fade-in">
+        <p-table [value]="teachers()" [rows]="10" [paginator]="true"
+                 styleClass="p-datatable-sm p-datatable-hoverable-rows"
+                 responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr class="bg-slate-50/50">
+              <th class="pl-6 text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4">Nome</th>
+              <th class="text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4">E-mail</th>
+              <th class="w-48 text-center text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4">Status da Conta</th>
+              <th class="w-48 text-center text-slate-400 font-semibold uppercase text-[10px] tracking-wider py-4 pr-6">Ações</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-teacher>
+            <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/30 transition-colors">
+              <td class="pl-6 py-3.5 font-medium text-slate-700 text-sm">
+                {{ teacher.name }}
+              </td>
+              <td class="py-3.5 text-slate-600 text-sm">
+                {{ teacher.email }}
+              </td>
+              <td class="text-center py-3.5">
+                <p-tag 
+                  [severity]="teacher.account_status === 'active' ? 'success' : 'warn'" 
+                  [value]="teacher.account_status === 'active' ? 'Ativo' : 'Pendente'" 
+                  styleClass="text-[10px] font-bold px-2 py-0.5 rounded-md">
+                </p-tag>
+              </td>
+              <td class="text-center py-3.5 pr-6">
+                <div class="flex items-center justify-center gap-2">
+                  <!-- Botão Reenviar Convite -->
+                  @if (teacher.account_status === 'pending') {
+                    <p-button 
+                      icon="pi pi-send" 
+                      [loading]="resendLoading() === teacher.id"
+                      (onClick)="reenviarConvite(teacher)" 
+                      severity="secondary" 
+                      [text]="true"
+                      pTooltip="Reenviar convite de acesso" 
+                      tooltipPosition="top"
+                      styleClass="!p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg">
+                    </p-button>
+                  }
+                  
+                  <!-- Botão Editar -->
+                  <p-button 
+                    icon="pi pi-pencil" 
+                    (onClick)="abrirModalEdicao(teacher)" 
+                    severity="secondary" 
+                    [text]="true"
+                    pTooltip="Editar professor" 
+                    tooltipPosition="top"
+                    styleClass="!p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                  </p-button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
+  }
+
+  <!-- MODAL DE CADASTRO -->
+  <p-dialog 
+    header="Convidar Professor" 
+    [(visible)]="showCreateDialog" 
+    [modal]="true" 
+    [draggable]="false"
+    [resizable]="false"
+    appendTo="body"
+    [style]="{ width: '450px' }">
+    
+    <div class="flex flex-col gap-6 pt-4">
+      <p class="text-slate-500 text-sm">
+        Cadastre um novo docente no sistema. Ele receberá um convite por e-mail para configurar sua senha de acesso.
+      </p>
+
+      <form [formGroup]="inviteForm" (ngSubmit)="enviarConvite()" class="flex flex-col gap-5">
+        <!-- Nome -->
+        <div class="flex flex-col gap-1.5">
+          <p-float-label variant="on" class="block w-full">
+            <input pInputText id="create_name" type="text" formControlName="name" class="w-full"
+              [class.border-red-500]="inviteForm.get('name')?.invalid && inviteForm.get('name')?.touched" />
+            <label for="create_name">Nome Completo</label>
+          </p-float-label>
+          <app-form-error [control]="inviteForm.get('name')"></app-form-error>
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col gap-1.5">
+          <p-float-label variant="on" class="block w-full">
+            <input pInputText id="create_email" type="email" formControlName="email" class="w-full"
+              [class.border-red-500]="inviteForm.get('email')?.invalid && inviteForm.get('email')?.touched" />
+            <label for="create_email">E-mail Docente</label>
+          </p-float-label>
+          <app-form-error [control]="inviteForm.get('email')"></app-form-error>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex justify-end gap-3 mt-4">
+          <p-button 
+            label="Cancelar" 
+            severity="secondary" 
+            [text]="true"
+            (onClick)="showCreateDialog.set(false)" 
+            styleClass="font-medium">
+          </p-button>
+          <p-button 
+            label="Enviar Convite" 
+            type="submit" 
+            severity="primary" 
+            [loading]="submitLoading()" 
+            styleClass="font-semibold shadow-sm">
+          </p-button>
+        </div>
+      </form>
+    </div>
+  </p-dialog>
+
+  <!-- MODAL DE EDIÇÃO -->
+  <p-dialog 
+    header="Editar Professor" 
+    [(visible)]="showEditDialog" 
+    [modal]="true" 
+    [draggable]="false"
+    [resizable]="false"
+    appendTo="body"
+    [style]="{ width: '450px' }">
+    
+    <div class="flex flex-col gap-6 pt-4">
+      <p class="text-slate-500 text-sm">
+        Altere as informações cadastrais do professor. Se preencher o campo de senha, a conta será ativada imediatamente com a nova senha.
+      </p>
+
+      <form [formGroup]="editForm" (ngSubmit)="salvarEdicao()" class="flex flex-col gap-5">
+        <!-- Nome -->
+        <div class="flex flex-col gap-1.5">
+          <p-float-label variant="on" class="block w-full">
+            <input pInputText id="edit_name" type="text" formControlName="name" class="w-full"
+              [class.border-red-500]="editForm.get('name')?.invalid && editForm.get('name')?.touched" />
+            <label for="edit_name">Nome Completo</label>
+          </p-float-label>
+          <app-form-error [control]="editForm.get('name')"></app-form-error>
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col gap-1.5">
+          <p-float-label variant="on" class="block w-full">
+            <input pInputText id="edit_email" type="email" formControlName="email" class="w-full"
+              [class.border-red-500]="editForm.get('email')?.invalid && editForm.get('email')?.touched" />
+            <label for="edit_email">E-mail Docente</label>
+          </p-float-label>
+          <app-form-error [control]="editForm.get('email')"></app-form-error>
+        </div>
+
+        <!-- Senha (Opcional) -->
+        <div class="flex flex-col gap-1.5">
+          <p-float-label variant="on" class="block w-full">
+            <input pInputText id="edit_password" type="password" formControlName="password" class="w-full" />
+            <label for="edit_password">Nova Senha (Opcional)</label>
+          </p-float-label>
+          <p class="text-[11px] text-slate-400">Deixe em branco para manter a senha atual.</p>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex justify-end gap-3 mt-4">
+          <p-button 
+            label="Cancelar" 
+            severity="secondary" 
+            [text]="true"
+            (onClick)="showEditDialog.set(false)" 
+            styleClass="font-medium">
+          </p-button>
+          <p-button 
+            label="Salvar Alterações" 
+            type="submit" 
+            severity="primary" 
+            [loading]="submitLoading()" 
+            styleClass="font-semibold shadow-sm">
+          </p-button>
+        </div>
+      </form>
+    </div>
+  </p-dialog>
 </div>

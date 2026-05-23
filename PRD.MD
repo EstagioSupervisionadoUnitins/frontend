@@ -464,5 +464,66 @@ Cada fase segue o mesmo ciclo de trabalho:
 - [x] Envio do formulário faz chamada ao `POST /admin/users` e exibe feedback de sucesso ("Professor criado e convite enviado").
 - [x] Menu lateral adapta-se dinamicamente às permissões de `super_admin` exibindo a barra de navegação dedicada.
 
+---
 
+#### **Fase 16 — Gestão Completa de Professores (Super Admin)**
+> **Endpoints:** `GET /admin/users` · `PATCH /admin/users/:id` · `POST /admin/users/:id/resend_invitation`
+> **Contexto:** Super Admin precisa listar os professores cadastrados, verificar o status do convite e realizar edições ou reenvios.
 
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/admin/models/admin-user.interface.ts` | **[CRIAR]** — `{ id, name, email, account_status }` |
+| **Models** | `domain/admin/models/admin-user-update.interface.ts` | **[CRIAR]** — `{ user: { name, email, password } }` |
+| **Service** | `domain/admin/services/admin.service.ts` | **[CRIAR]** — `listTeachers()`, `updateTeacher(id, data)`, `resendInvitation(id)` |
+| **Feature** | `features/admin/professores/` | **[ATUALIZAR]** — Adicionar tabela (`p-table`) para listar professores e seus status (`pending` / `active`) |
+| **Feature** | `features/admin/professores/` | **[ATUALIZAR]** — Adicionar ações na tabela: Editar professor e Reenviar Convite |
+| **UX** | Dialog de Edição | **[CRIAR]** — Modal para alterar nome, e-mail ou definir senha manual para o professor |
+
+**Critérios de Conclusão:**
+- [ ] Super Admin acessa a tela `/admin/professores` e visualiza a lista de professores.
+- [ ] Tabela exibe claramente o `account_status` (pendente ou ativo).
+- [ ] Super Admin consegue editar os dados de um professor (atualizando status para ativo caso defina senha manual).
+- [ ] Ação de reenviar convite dispara o endpoint correto e exibe mensagem de sucesso.
+
+---
+
+#### **Fase 17 — Alunos da Turma, Submissões Suspeitas e Anulação (Professor)**
+> **Endpoints:** `GET /classrooms/:id/students` · `GET /submissions?suspicious=true` · `PATCH /submissions/:id/annul`
+> **Contexto:** O professor precisa acompanhar de perto os alunos da turma, identificar possíveis fraudes (alta suspeita) e, se necessário, anular a pontuação da submissão.
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/classroom/models/classroom-student.interface.ts` | **[CRIAR]** — Representação do aluno na visão do professor, com objeto `stats` (incluindo `suspicious_submissions_count`) |
+| **Models** | `domain/submission/models/annul-request.interface.ts` | **[CRIAR]** — `{ reason: string }` |
+| **Service** | `domain/classroom/services/classroom.service.ts` | **[ATUALIZAR]** — `getStudents(id)` consumindo `GET /classrooms/:id/students` |
+| **Service** | `domain/submission/services/submission.service.ts` | **[ATUALIZAR]** — `getSuspiciousSubmissions()` e `annulSubmission(id, reason)` |
+| **Feature** | `features/dashboard-professor/turma-detalhe/` | **[ATUALIZAR]** — Nova aba/seção para listar os alunos detalhados, destacando aqueles com submissões suspeitas |
+| **Feature** | `features/dashboard-professor/submissoes-suspeitas/` | **[CRIAR]** — Tela/Modal para o professor revisar submissões com `suspicion_score >= 60` e `behavior_flags` |
+| **UX** | Dialog de Anulação | **[CRIAR]** — Modal solicitando o motivo (`reason`) ao anular uma submissão fraudulenta |
+
+**Critérios de Conclusão:**
+- [ ] Professor visualiza a lista completa de alunos da turma com métricas de integridade.
+- [ ] Professor consegue filtrar ou visualizar submissões consideradas suspeitas pela IA.
+- [ ] Professor consegue analisar uma submissão suspeita e clicar em "Anular", informando o motivo.
+- [ ] Submissões anuladas refletem o status visualmente (`annulled: true`) e deduzem a pontuação do aluno no dashboard/ranking.
+
+---
+
+#### **Fase 18 — Telemetria Comportamental e Anti-fraude (Aluno)**
+> **Endpoints:** `POST /submissions/:id/events`
+> **Contexto:** O frontend deve capturar eventos comportamentais do aluno durante a resolução do exercício e enviá-los ao backend para compor o `suspicion_score` (análise de fraude).
+
+| Camada | Artefato | Ação |
+| :--- | :--- | :--- |
+| **Models** | `domain/telemetry/models/telemetry-event.interface.ts` | **[CRIAR]** — `{ event_type, occurred_at, payload }` |
+| **Models** | `domain/telemetry/models/telemetry-payload.interface.ts` | **[CRIAR]** — Estrutura contendo array de eventos para o request body |
+| **Service** | `domain/telemetry/services/telemetry.service.ts` | **[CRIAR]** — Serviço para acumular eventos em memória e realizar disparo em lote |
+| **Feature** | `features/editor-codigo/` | **[ATUALIZAR]** — Escutar eventos DOM do Monaco Editor (`paste`) e janela (`visibilitychange` para tab_hidden/tab_visible) |
+| **Feature** | `features/editor-codigo/` | **[ATUALIZAR]** — Registrar evento de `question_opened` ao iniciar o exercício |
+| **Integração**| `features/editor-codigo/` | **[ATUALIZAR]** — Após confirmação de sucesso de nova submissão, disparar requisição ao endpoint `/submissions/:id/events` via background (fire-and-forget) |
+
+**Critérios de Conclusão:**
+- [ ] Abertura da questão dispara armazenamento interno do evento `question_opened`.
+- [ ] Ação de colar código no editor (`paste`) salva evento e fragmentos (payload de paste) no histórico.
+- [ ] Navegação para outra aba ou app gera evento `tab_hidden` seguido de `tab_visible` na volta.
+- [ ] Submissão bem-sucedida envia todos os eventos acumulados e limpa a fila da memória, sem atrasar a UX do usuário.
