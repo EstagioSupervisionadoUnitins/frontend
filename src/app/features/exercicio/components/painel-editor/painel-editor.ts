@@ -17,6 +17,7 @@ export class PainelEditor implements OnInit {
   avaliando = input<boolean>(false);
   
   onEnviar = output<void>();
+  onPaste = output<string>();
 
   editorOptions: any = {
     theme: 'vs', // Light theme as requested
@@ -54,16 +55,12 @@ export class PainelEditor implements OnInit {
   }
 
   onEditorInit(editor: any) {
-    // 1. Bloquear atalhos de teclado (Ctrl+C, Ctrl+V, Ctrl+X e versões Cmd no Mac)
+    // 1. Bloquear atalhos de copiar/cortar, mas deixar colar fluir
     editor.onKeyDown((event: any) => {
       const { ctrlKey, metaKey, code } = event;
       
       if (ctrlKey || metaKey) {
-        if (code === 'KeyV') {
-          event.preventDefault();
-          event.stopPropagation();
-          this.mostrarMensagemAleatoria(this.mensagensColar);
-        } else if (code === 'KeyC' || code === 'KeyX') {
+        if (code === 'KeyC' || code === 'KeyX') {
           event.preventDefault();
           event.stopPropagation();
           this.mostrarMensagemAleatoria(this.mensagensCopiar);
@@ -71,7 +68,25 @@ export class PainelEditor implements OnInit {
       }
     });
 
-    // 2. Bloquear eventos nativos de clipboard no DOM (garante cobertura para cliques, arrastar, etc.)
+    // 2. Ouvir evento de paste nativo do Monaco Editor
+    editor.onDidPaste((e: any) => {
+      let text = '';
+      if (e.range) {
+        const model = editor.getModel();
+        if (model) {
+          text = model.getValueInRange(e.range);
+        }
+      }
+      
+      console.log('[Telemetry] Monaco onDidPaste acionado. Texto obtido do modelo:', text);
+      
+      if (text) {
+        this.onPaste.emit(text);
+      }
+      this.mostrarMensagemAleatoria(this.mensagensColar);
+    });
+
+    // 3. Ouvir eventos nativos de clipboard no DOM para copiar/cortar (garantir bloqueio)
     const domNode = editor.getDomNode();
     if (domNode) {
       const blockClipboard = (e: ClipboardEvent, mensagens: string[]) => {
@@ -80,8 +95,8 @@ export class PainelEditor implements OnInit {
         this.mostrarMensagemAleatoria(mensagens);
       };
 
+      // Copiar e Cortar continuam bloqueados
       domNode.addEventListener('copy', (e: ClipboardEvent) => blockClipboard(e, this.mensagensCopiar), true);
-      domNode.addEventListener('paste', (e: ClipboardEvent) => blockClipboard(e, this.mensagensColar), true);
       domNode.addEventListener('cut', (e: ClipboardEvent) => blockClipboard(e, this.mensagensCopiar), true);
     }
   }

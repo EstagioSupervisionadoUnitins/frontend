@@ -17,6 +17,11 @@ export const sidebarDataProfessor: MenuItem[] = [
         routerLink: '/professor/solicitacoes'
     },
     {
+        label: 'Submissões Suspeitas',
+        icon: 'pi pi-exclamation-triangle',
+        routerLink: '/professor/submissoes'
+    },
+    {
         label: 'Questões',
         icon: 'pi pi-book',
         routerLink: '/professor/questoes'

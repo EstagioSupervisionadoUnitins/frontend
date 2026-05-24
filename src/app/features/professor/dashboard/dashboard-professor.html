@@ -47,7 +47,8 @@
             <div class="lg:col-span-2">
                 <app-alunos-lista 
                     [studentsAttention]="classroomStats()?.students_needing_attention || []"
-                    [recentSubmissions]="classroomStats()?.recent_submissions || []">
+                    [recentSubmissions]="classroomStats()?.recent_submissions || []"
+                    [allStudents]="allStudents()">
                 </app-alunos-lista>
             </div>
 

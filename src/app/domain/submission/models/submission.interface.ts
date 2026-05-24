@@ -16,4 +16,15 @@ export interface Submission {
   feedback?: string;
   socratic_hint?: string;
   created_at?: string;
+  suspicion_score?: number;
+  behavior_flags?: string[];
+  paste_ratio?: number;
+  annulled?: boolean;
+  annulled_reason?: string;
+  attempt_number?: number;
+  student?: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }

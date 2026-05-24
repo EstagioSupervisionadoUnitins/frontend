@@ -25,7 +25,8 @@
         [(codigo)]="codigoSelecionado"
         linguagem="python"
         [avaliando]="avaliando()"
-        (onEnviar)="submitCodigo()">
+        (onEnviar)="submitCodigo()"
+        (onPaste)="registrarColagem($event)">
       </app-painel-editor>
     </div>
   </div>

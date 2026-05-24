@@ -5,6 +5,7 @@ import { switchMap, takeWhile, filter, timeout } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Submission } from '../models/submission.interface';
 import { SubmissionRequest } from '../models/submission-request.interface';
+import { AnnulRequest } from '../models/annul-request.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,21 @@ export class SubmissionService {
    */
   list(): Observable<Submission[]> {
     return this.http.get<Submission[]>(this.apiUrl);
+  }
+
+  /**
+   * Lista submissões suspeitas para o professor.
+   */
+  listSuspicious(): Observable<Submission[]> {
+    return this.http.get<Submission[]>(`${this.apiUrl}?suspicious=true`);
+  }
+
+  /**
+   * Anula os pontos de uma resposta fraudulenta (Apenas Professor).
+   */
+  annul(id: number, reason: string): Observable<Submission> {
+    const payload: AnnulRequest = { reason };
+    return this.http.patch<Submission>(`${this.apiUrl}/${id}/annul`, payload);
   }
 
   /**

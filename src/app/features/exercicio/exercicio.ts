@@ -9,12 +9,14 @@ import { SubmissionService } from '../../domain/submission/services/submission.s
 import { Submission } from '../../domain/submission/models/submission.interface';
 import { ToastService } from '../../shared/services/toast.service';
 import { TrilhaService } from '../../domain/trilha/services/trilha.service';
+import { SubmissionTelemetryService } from '../../core/services/submission-telemetry.service';
 
 @Component({
   selector: 'app-exercicio',
   imports: [PainelInstrucao, PainelEditor],
   templateUrl: './exercicio.html',
   styleUrl: './exercicio.css',
+  providers: [SubmissionTelemetryService]
 })
 export class Exercicio implements OnInit {
   private route = inject(ActivatedRoute);
@@ -24,6 +26,7 @@ export class Exercicio implements OnInit {
   private toastService = inject(ToastService);
   private destroyRef = inject(DestroyRef);
   private trilhaService = inject(TrilhaService);
+  private telemetry = inject(SubmissionTelemetryService);
 
   question = signal<Question | null>(null);
   playlistId = signal<number | null>(null);
@@ -53,6 +56,7 @@ export class Exercicio implements OnInit {
             this.question.set(q);
             this.carregarProximaQuestao(q);
             this.validarAcessoQuestao(q);
+            this.telemetry.startTracking();
           },
           error: (err) => {
             console.error('[Exercicio] Erro ao carregar questão:', err);
@@ -192,6 +196,9 @@ export class Exercicio implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (sub) => {
+        // Envia telemetria comportamental (fire-and-forget)
+        this.telemetry.flushEvents(sub.id);
+
         // Agora inicia o polling com o ID retornado
         this.pollSubmission(sub.id);
       },
@@ -201,6 +208,10 @@ export class Exercicio implements OnInit {
         console.error('Erro no envio da submissão:', err);
       }
     });
+  }
+
+  registrarColagem(conteudo: string): void {
+    this.telemetry.registerPaste(conteudo);
   }
 
   private pollSubmission(id: number): void {

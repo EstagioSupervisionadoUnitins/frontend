@@ -60,6 +60,12 @@ export const routes: Routes = [
                         canActivate: [roleGuard]
                     },
                     {
+                        path: 'submissoes',
+                        loadComponent: () => import('./features/professor/submissoes/submissoes').then(m => m.SubmissoesSuspeitas),
+                        data: { roles: ['teacher'], breadcrumb: 'Submissões Suspeitas' },
+                        canActivate: [roleGuard]
+                    },
+                    {
                         path: 'questoes',
                         data: { breadcrumb: 'Questões' },
                         children: [

@@ -7,6 +7,7 @@ import { ClassroomRequest } from '../models/classroom-request.interface';
 import { ClassroomRequestUser } from '../models/classroom-request-user.interface';
 import { JoinRequest } from '../models/join-request.interface';
 import { ClassroomStats } from '../models/classroom-stats.interface';
+import { ClassroomStudent } from '../models/classroom-student.interface';
 import { SKIP_GLOBAL_ERROR } from '../../../core/interceptors/error.interceptor';
 
 @Injectable({
@@ -50,6 +51,10 @@ export class ClassroomService {
 
   getStats(id: number | string): Observable<ClassroomStats> {
     return this.http.get<ClassroomStats>(`${this.API}/${id}/stats`);
+  }
+
+  getStudents(id: number | string): Observable<ClassroomStudent[]> {
+    return this.http.get<ClassroomStudent[]>(`${this.API}/${id}/students`);
   }
 
   create(data: ClassroomRequest): Observable<Classroom> {

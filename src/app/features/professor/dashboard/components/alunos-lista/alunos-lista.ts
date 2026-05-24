@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { StudentNeedingAttention, RecentSubmission } from '../../../../../domain/classroom/models/classroom-stats.interface';
+import { ClassroomStudent } from '../../../../../domain/classroom/models/classroom-student.interface';
 
 @Component({
   selector: 'app-alunos-lista',
@@ -13,9 +14,6 @@ import { StudentNeedingAttention, RecentSubmission } from '../../../../../domain
 })
 export class AlunosLista {
   @Input() studentsAttention: StudentNeedingAttention[] = [];
-  /**
-   * TODO: Quando o backend for atualizado para retornar student_name e question_title
-   * em recent_submissions, atualizar o template HTML para exibir esses nomes em vez dos IDs.
-   */
   @Input() recentSubmissions: RecentSubmission[] = [];
+  @Input() allStudents: ClassroomStudent[] = [];
 }

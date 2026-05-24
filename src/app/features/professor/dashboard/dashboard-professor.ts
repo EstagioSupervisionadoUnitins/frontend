@@ -10,6 +10,7 @@ import { TrilhaService } from '../../../domain/trilha/services/trilha.service';
 import { Classroom } from '../../../domain/classroom/models/classroom.interface';
 import { ClassroomStats } from '../../../domain/classroom/models/classroom-stats.interface';
 import { PlaylistClassroomStats } from '../../../domain/trilha/models/playlist-classroom-stats.interface';
+import { ClassroomStudent } from '../../../domain/classroom/models/classroom-student.interface';
 
 import { TurmaResumo } from './components/turma-resumo/turma-resumo';
 import { AlunosLista } from './components/alunos-lista/alunos-lista';
@@ -42,6 +43,7 @@ export class DashboardProfessor implements OnInit {
   
   classroomStats = signal<ClassroomStats | null>(null);
   playlistStats = signal<PlaylistClassroomStats | null>(null);
+  allStudents = signal<ClassroomStudent[]>([]);
 
   ngOnInit(): void {
     this.loadClassrooms();
@@ -75,11 +77,13 @@ export class DashboardProfessor implements OnInit {
 
     forkJoin({
       stats: this.classroomService.getStats(id),
-      playlists: this.trilhaService.getClassroomStats(id)
+      playlists: this.trilhaService.getClassroomStats(id),
+      students: this.classroomService.getStudents(id)
     }).subscribe({
       next: (results) => {
         this.classroomStats.set(results.stats);
         this.playlistStats.set(results.playlists);
+        this.allStudents.set(results.students || []);
         this.loading.set(false);
       },
       error: (err) => {
