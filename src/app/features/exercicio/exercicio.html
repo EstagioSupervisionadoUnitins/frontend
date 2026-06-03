@@ -1,9 +1,9 @@
 <!-- O layout principal ocupa toda a altura da tela, subtraindo o header se necessário -->
-<div class="h-[calc(100vh-8rem)] w-full overflow-hidden bg-slate-50 border border-slate-200 rounded-xl shadow-xs">
+<div class="h-auto lg:h-[calc(100vh-8rem)] w-full overflow-y-auto lg:overflow-hidden bg-slate-50 border border-slate-200 rounded-xl shadow-xs">
   
-  <div class="grid grid-cols-1 lg:grid-cols-[40%_1fr] h-full w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-[40%_1fr] h-auto lg:h-full w-full">
     <!-- Painel de Instruções (Esquerda) -->
-    <div class="h-full relative overflow-hidden">
+    <div class="h-auto lg:h-full relative lg:overflow-hidden">
       @if (question()) {
         <app-painel-instrucao 
           [question]="question()!"
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Painel do Editor de Código (Direita) -->
-    <div class="h-full relative overflow-hidden shadow-[-10px_0_15px_-10px_rgba(0,0,0,0.05)]">
+    <div class="h-[500px] lg:h-full relative lg:overflow-hidden border-t lg:border-t-0 border-slate-200 shadow-none lg:shadow-[-10px_0_15px_-10px_rgba(0,0,0,0.05)]">
       <app-painel-editor
         [(codigo)]="codigoSelecionado"
         linguagem="python"
