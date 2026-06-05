@@ -1,0 +1,121 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <p-toast></p-toast>
+
+  <!-- Header com Seletor de Turma -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <i class="pi pi-user-plus text-emerald-600"></i>
+        Solicitações de Entrada
+      </h1>
+      <p class="text-gray-500">Gerencie a aprovação de alunos que solicitaram entrada em suas turmas.</p>
+    </div>
+
+    <div class="flex items-center gap-3" *ngIf="classrooms().length > 0">
+      <span class="text-sm font-medium text-gray-700">Turma:</span>
+      <p-select 
+        [options]="classrooms()" 
+        [(ngModel)]="selectedClassroom" 
+        optionLabel="name" 
+        (onChange)="onClassroomChange()"
+        class="w-full md:w-64"
+        placeholder="Selecione uma turma">
+      </p-select>
+    </div>
+  </div>
+
+  <!-- Estado Vazio (Sem Turmas) -->
+  <div *ngIf="!loadingClassrooms() && classrooms().length === 0" class="bg-white rounded-2xl p-12 text-center border-2 border-dashed border-gray-200">
+    <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+      <i class="pi pi-users text-4xl"></i>
+    </div>
+    <h2 class="text-xl font-bold text-gray-900 mb-2">Você ainda não tem turmas</h2>
+    <p class="text-gray-500 mb-8 max-w-md mx-auto">
+      Você precisa ter pelo menos uma turma criada para gerenciar solicitações de entrada de alunos.
+    </p>
+    <button pButton label="Criar Turma" icon="pi pi-plus" routerLink="/turmas" class="p-button-lg"></button>
+  </div>
+
+  <!-- Loading State (Carregando turmas ou solicitações) -->
+  <div *ngIf="loadingClassrooms() || loadingRequests()" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+    <i class="pi pi-spin pi-spinner text-4xl text-emerald-600 mb-4"></i>
+    <p class="text-gray-500 animate-pulse">Carregando solicitações pendentes...</p>
+  </div>
+
+  <!-- Conteúdo de Solicitações -->
+  <div *ngIf="!loadingClassrooms() && !loadingRequests() && selectedClassroom()" class="animate-in fade-in duration-500">
+    
+    <!-- Lista de Solicitações Vazias -->
+    <div *ngIf="requests().length === 0" class="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+      <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4 relative overflow-hidden group shadow-inner">
+        <span class="absolute inset-0 bg-emerald-500/5 animate-pulse"></span>
+        <i class="pi pi-check-circle text-3xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-gray-950 mb-1">Tudo em dia!</h3>
+      <p class="text-gray-500 max-w-sm">
+        Não há nenhuma solicitação de entrada pendente para a turma <strong class="text-slate-800">{{ selectedClassroom()?.name }}</strong> no momento.
+      </p>
+    </div>
+
+    <!-- Tabela de Solicitações Pendentes -->
+    <div *ngIf="requests().length > 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h2 class="font-bold text-gray-950">Alunos Pendentes</h2>
+          <p class="text-xs text-gray-500">Há {{ requests().length }} aluno(s) aguardando aprovação para entrar.</p>
+        </div>
+        <span class="px-3 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-full border border-amber-100 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+          Pendentes
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-gray-100 text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <th class="py-4 px-6">Aluno</th>
+              <th class="py-4 px-6">E-mail</th>
+              <th class="py-4 px-6">Data da Solicitação</th>
+              <th class="py-4 px-6 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 text-sm">
+            <tr *ngFor="let req of requests()" class="hover:bg-slate-50/50 transition-colors">
+              <td class="py-4 px-6 font-bold text-gray-900 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+                  {{ req.name.charAt(0) }}
+                </div>
+                {{ req.name }}
+              </td>
+              <td class="py-4 px-6 text-gray-600 font-medium">{{ req.email }}</td>
+              <td class="py-4 px-6 text-gray-500 font-medium">
+                {{ req.requested_at | date: 'dd/MM/yyyy HH:mm' }}
+              </td>
+              <td class="py-4 px-6 text-right space-x-2">
+                <p-button
+                  label="Recusar"
+                  icon="pi pi-times"
+                  [outlined]="true"
+                  severity="danger"
+                  [loading]="processingId() === req.id"
+                  (onClick)="reject(req)"
+                  styleClass="!px-3.5 !py-2 !rounded-xl text-xs font-semibold hover:bg-red-50 transition-all"
+                ></p-button>
+                <p-button
+                  label="Aprovar"
+                  icon="pi pi-check"
+                  severity="success"
+                  [loading]="processingId() === req.id"
+                  (onClick)="approve(req)"
+                  styleClass="!px-3.5 !py-2 !rounded-xl text-xs font-semibold shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 transition-all"
+                ></p-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -18,6 +18,16 @@ export const sidebarDataAluno: MenuItem[] = [
         routerLink: '/aluno/trilhas'
     },
     {
+        label: 'Histórico',
+        icon: 'pi pi-history',
+        routerLink: '/aluno/historico'
+    },
+    {
+        label: 'Ranking',
+        icon: 'pi pi-trophy',
+        routerLink: '/ranking'
+    },
+    {
         label: 'Perfil',
         icon: 'pi pi-user',
         routerLink: '/perfil'

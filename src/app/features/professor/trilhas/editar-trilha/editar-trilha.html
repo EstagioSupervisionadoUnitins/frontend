@@ -1,0 +1,106 @@
+<div class="p-6 max-w-5xl mx-auto">
+    <p-toast></p-toast>
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-black text-slate-800 tracking-tight">Editar Trilha de Aprendizado</h1>
+        <p class="text-slate-500 mt-1">Atualize as informações e as questões desta trilha.</p>
+    </div>
+
+    @if (loadingData()) {
+        <div class="flex justify-center p-12">
+            <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
+        </div>
+    } @else {
+        <form [formGroup]="trilhaForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-8">
+            <!-- Informações Básicas -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="pi pi-info-circle text-blue-500"></i>
+                    Informações Básicas
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label for="title" class="text-sm font-bold text-slate-700">Título da Trilha</label>
+                        <input pInputText id="title" formControlName="title" placeholder="Ex: Fundamentos de Variáveis" class="w-full"
+                            [class.border-red-500]="trilhaForm.get('title')?.invalid && trilhaForm.get('title')?.touched" />
+                        <app-form-error [control]="trilhaForm.get('title')"></app-form-error>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label for="classroom" class="text-sm font-bold text-slate-700">Turma (Não editável)</label>
+                        <p-select 
+                            [options]="classrooms()" 
+                            formControlName="classroom_id" 
+                            optionLabel="name" 
+                            optionValue="id"
+                            placeholder="Selecione a turma"
+                            class="w-full opacity-60"
+                            [class.border-red-500]="trilhaForm.get('classroom_id')?.invalid && trilhaForm.get('classroom_id')?.touched">
+                        </p-select>
+                        <app-form-error [control]="trilhaForm.get('classroom_id')"></app-form-error>
+                    </div>
+
+                    <div class="flex flex-col gap-2 md:col-span-2">
+                        <label for="description" class="text-sm font-bold text-slate-700">Descrição</label>
+                        <textarea pTextarea id="description" formControlName="description" rows="3" placeholder="O que os alunos aprenderão nesta trilha?" class="w-full"
+                            [class.border-red-500]="trilhaForm.get('description')?.invalid && trilhaForm.get('description')?.touched"></textarea>
+                        <app-form-error [control]="trilhaForm.get('description')"></app-form-error>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seleção de Questões -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="pi pi-list text-blue-500"></i>
+                        Selecionar Questões
+                    </h2>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        {{selectedQuestions().length}} selecionadas
+                    </span>
+                </div>
+
+                <p-table [value]="questions()" [(selection)]="selectedQuestions" [loading]="loadingQuestions()"
+                         dataKey="id" responsiveLayout="scroll" [rowHover]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 4rem" class="bg-slate-50">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th class="bg-slate-50 text-slate-600 font-bold">Título</th>
+                            <th class="bg-slate-50 text-slate-600 font-bold text-center">Dificuldade</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-question>
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="question"></p-tableCheckbox>
+                            </td>
+                            <td class="font-medium text-slate-700">{{question.title}}</td>
+                            <td class="text-center">
+                                <p-tag [value]="question.difficulty | difficulty | uppercase" [severity]="getSeverity(question.difficulty)"></p-tag>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="3" class="text-center p-8 text-slate-400 italic">
+                                Nenhuma questão encontrada para esta turma.
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <!-- Ações -->
+            <div class="flex justify-end gap-4 mt-4">
+                <button pButton type="button" label="Cancelar" icon="pi pi-times" 
+                        class="p-button-text p-button-secondary" (click)='onCancel()'></button>
+                <button pButton type="submit" label="Salvar Alterações" icon="pi pi-check" 
+                        [loading]="loading()" class="p-button-primary px-8"></button>
+            </div>
+        </form>
+    }
+</div>

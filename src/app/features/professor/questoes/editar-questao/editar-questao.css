@@ -1,0 +1,18 @@
+:host {
+    display: block;
+}
+
+::ng-deep .p-inputtext, 
+::ng-deep .p-textarea,
+::ng-deep .p-select {
+    border-radius: 0.75rem;
+    border-color: #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+::ng-deep .p-inputtext:focus, 
+::ng-deep .p-textarea:focus,
+::ng-deep .p-select:focus-within {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}

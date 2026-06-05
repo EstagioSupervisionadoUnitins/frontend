@@ -9,6 +9,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { UsuarioResponse } from '../../../domain/auth/models/usuario-response.interface';
 import { AuthService } from '../../../domain/auth/service/auth.service';
 import { sidebarDataAluno } from './sidebar-data';
+import { ClassroomService } from '../../../domain/classroom/services/classroom.service';
 
 @Component({
   selector: 'app-sidebar-aluno',
@@ -18,6 +19,7 @@ import { sidebarDataAluno } from './sidebar-data';
 })
 export class SidebarAluno {
   authService = inject(AuthService);
+  classroomService = inject(ClassroomService);
   usuario = signal<UsuarioResponse | null>(null);
   
   sidebarData = sidebarDataAluno;
@@ -29,8 +31,8 @@ export class SidebarAluno {
 
  
   labelForAvatarIcon = computed(() => {
-    const nome = this.usuario()?.nome;
-    return nome ? nome.charAt(0).toUpperCase() : 'U';
+    const username = this.usuario()?.username;
+    return username ? username.charAt(0).toUpperCase() : 'U';
   });
 
   visible = model<boolean>(false);

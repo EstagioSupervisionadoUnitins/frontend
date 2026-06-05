@@ -1,0 +1,8 @@
+<div class="flex flex-col gap-8 w-full">
+  <app-trilha-header 
+    titulo="Trilhas de Aprendizado"
+    descricao="Explore os módulos de estudo disponíveis para sua turma e acompanhe seu progresso."
+    [progresso]="progressoTotal()" />
+
+  <app-trilha-timeline [playlists]="playlists()" />
+</div>

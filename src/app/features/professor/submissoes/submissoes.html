@@ -1,0 +1,176 @@
+<div class="container mx-auto p-4 animate-fade-in">
+  <p-toast></p-toast>
+
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-surface-900">Submissões Suspeitas</h1>
+      <p class="text-surface-600 mt-1">Monitore atividades de submissão com potenciais quebras de integridade acadêmica.</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="bg-white rounded-xl shadow-sm border border-surface-200 p-6 flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <i class="pi pi-spin pi-spinner text-3xl text-primary-500"></i>
+        <span class="text-surface-600 font-medium">Analisando telemetria das submissões...</span>
+      </div>
+    </div>
+  } @else {
+    @if (submissions().length === 0) {
+      <div class="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-sm border border-surface-200 text-center">
+        <div class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-4">
+          <i class="pi pi-shield text-3xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-surface-900">Nenhuma suspeita de fraude encontrada</h3>
+        <p class="text-surface-500 max-w-md mt-1">Todas as submissões analisadas estão dentro dos parâmetros aceitáveis de integridade.</p>
+      </div>
+    } @else {
+      <div class="bg-white rounded-xl shadow-sm border border-surface-200 overflow-hidden">
+        <p-table 
+          [value]="submissions()" 
+          [rows]="10" 
+          [paginator]="submissions().length > 10"
+          responsiveLayout="scroll"
+          styleClass="p-datatable-striped">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Aluno</th>
+              <th>Questão</th>
+              <th class="text-center">Score de Suspeita</th>
+              <th>Detalhes da Telemetria</th>
+              <th class="text-center">Enviado em</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-sub>
+            <tr>
+              <td>
+                <div class="flex flex-col">
+                  <span class="font-semibold text-surface-900">{{ sub.student_name || 'Aluno' }}</span>
+                  <span class="text-xs text-surface-500">{{ sub.student_email || 'E-mail indisponível' }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="font-medium text-surface-800">{{ sub.question_title || 'Exercício' }}</span>
+              </td>
+              <td class="text-center">
+                <div class="flex flex-col items-center justify-center gap-1 min-w-[100px]">
+                  <span 
+                    class="px-2..5 py-1 rounded-md text-xs font-bold"
+                    [ngClass]="{
+                      'bg-red-50 text-red-700 border border-red-100': (sub.suspicion_score || 0) >= 70,
+                      'bg-amber-50 text-amber-700 border border-amber-100': (sub.suspicion_score || 0) >= 40 && (sub.suspicion_score || 0) < 70,
+                      'bg-emerald-50 text-emerald-700 border border-emerald-100': (sub.suspicion_score || 0) < 40
+                    }">
+                    {{ sub.suspicion_score || 0 }}% Suspeito
+                  </span>
+                  <!-- Barra de Progresso do score -->
+                  <div class="w-20 h-1.5 bg-surface-100 rounded-full overflow-hidden mt-1">
+                    <div 
+                      class="h-full rounded-full"
+                      [style.width]="(sub.suspicion_score || 0) + '%'"
+                      [ngClass]="{
+                        'bg-red-500': (sub.suspicion_score || 0) >= 70,
+                        'bg-amber-500': (sub.suspicion_score || 0) >= 40 && (sub.suspicion_score || 0) < 70,
+                        'bg-emerald-500': (sub.suspicion_score || 0) < 40
+                      }">
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="flex flex-col gap-1.5">
+                  @if (sub.paste_ratio !== null && sub.paste_ratio !== undefined) {
+                    <div class="flex items-center gap-1.5 text-xs text-surface-600">
+                      <i class="pi pi-copy text-surface-400"></i>
+                      <span>Proporção de Colagem: <strong [class.text-red-600]="(sub.paste_ratio || 0) > 0.5">{{ ((sub.paste_ratio || 0) * 100).toFixed(0) }}%</strong></span>
+                    </div>
+                  }
+                  <div class="flex flex-wrap gap-1">
+                    @for (flag of sub.behavior_flags || []; track flag) {
+                      <span class="text-[10px] px-1.5 py-0.5 bg-surface-100 text-surface-700 rounded border border-surface-200">
+                        {{ translateFlag(flag) }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              </td>
+              <td class="text-center text-xs text-surface-500">
+                {{ sub.created_at | date: 'dd/MM/yyyy HH:mm' }}
+              </td>
+              <td class="text-center">
+                @if (sub.annulled) {
+                  <span 
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold"
+                    [pTooltip]="'Motivo: ' + sub.annulled_reason"
+                    tooltipPosition="top">
+                    <i class="pi pi-ban"></i>
+                    Anulada
+                  </span>
+                } @else {
+                  <p-button 
+                    label="Anular Pontuação" 
+                    icon="pi pi-ban" 
+                    severity="danger" 
+                    [outlined]="true"
+                    size="small"
+                    styleClass="text-xs !py-1 !px-2.5 !rounded-xl"
+                    (click)="openAnnulModal(sub)">
+                  </p-button>
+                }
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
+  }
+
+  <!-- Modal de Anulação de Submissão -->
+  <p-dialog 
+    header="Confirmar Anulação de Submissão" 
+    [(visible)]="displayAnnulModal"
+    [modal]="true" 
+    [style]="{ width: '450px' }"
+    [draggable]="false" 
+    [resizable]="false"
+    styleClass="shadow-lg rounded-xl">
+    <div class="flex flex-col gap-4 pt-4">
+      <div class="p-3 bg-red-50 text-red-800 border border-red-100 rounded-lg text-sm flex gap-2">
+        <i class="pi pi-exclamation-triangle text-lg flex-shrink-0 mt-0.5"></i>
+        <div>
+          <strong>Atenção:</strong> Ao anular a pontuação, o aluno perderá os pontos deste exercício na trilha correspondente. Esta ação poderá ser visualizada pelo aluno e não pode ser desfeita.
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="annulReason" class="font-semibold text-surface-700">Justificativa da Anulação <span class="text-red-500">*</span></label>
+        <textarea
+          pTextarea
+          id="annulReason"
+          [(ngModel)]="annulReason"
+          rows="4"
+          placeholder="Ex: Identificado uso de inteligência artificial ou compartilhamento indevido de código."
+          class="w-full !rounded-lg border-surface-200"
+          [autoResize]="true">
+        </textarea>
+        <small class="text-surface-500">Esta justificativa ficará visível para o aluno em seu histórico de submissões.</small>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <p-button 
+          label="Cancelar" 
+          severity="secondary" 
+          [text]="true" 
+          (click)="displayAnnulModal.set(false)">
+        </p-button>
+        <p-button 
+          label="Confirmar Anulação" 
+          severity="danger" 
+          [loading]="isSaving()"
+          (click)="annulSubmission()">
+        </p-button>
+      </div>
+    </div>
+  </p-dialog>
+</div>

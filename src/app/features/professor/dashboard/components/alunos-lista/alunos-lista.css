@@ -1,0 +1,14 @@
+:host ::ng-deep .p-datatable-thead th {
+    background-color: transparent !important;
+    color: #6b7280 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+}
+
+:host ::ng-deep .p-datatable-tbody td {
+    padding: 1rem !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+}

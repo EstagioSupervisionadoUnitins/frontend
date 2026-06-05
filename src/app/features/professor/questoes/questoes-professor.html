@@ -1,0 +1,102 @@
+<div class="container mx-auto p-6 animate-fade-in">
+  <p-toast></p-toast>
+  
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div class="flex-1">
+      <h1 class="text-3xl font-black text-slate-900 tracking-tight">Banco de Questões</h1>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 mt-2">
+        <span class="text-sm font-bold text-slate-400 uppercase tracking-wider shrink-0">Filtrar por Turma:</span>
+        <p-select 
+          [options]="classrooms()" 
+          [(ngModel)]="selectedClassroomId" 
+          optionLabel="name" 
+          optionValue="id"
+          placeholder="Selecione uma turma"
+          (onChange)="onClassroomChange()"
+          [loading]="loadingClassrooms()"
+          styleClass="w-full sm:w-64"
+          class="w-full sm:w-64">
+        </p-select>
+      </div>
+    </div>
+    
+    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+      <p-button 
+        label="Gerar com IA" 
+        icon="pi pi-sparkles" 
+        severity="secondary" 
+        (click)="gerarQuestaoIA()"
+        styleClass="w-full sm:w-auto"
+        raised>
+      </p-button>
+      <p-button 
+        label="Nova Questão Manual" 
+        icon="pi pi-plus" 
+        (click)="novaQuestaoManual()"
+        styleClass="w-full sm:w-auto"
+        raised>
+      </p-button>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
+    <p-table 
+      [value]="questions()" 
+      [loading]="loading()"
+      [rows]="10" 
+      [paginator]="true" 
+      responsiveLayout="scroll"
+      styleClass="p-datatable-lg">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="bg-slate-50 text-slate-600 font-bold py-4">Título</th>
+          <th class="bg-slate-50 text-slate-600 font-bold py-4">Dificuldade</th>
+          <th class="bg-slate-50 text-slate-600 font-bold py-4">Enunciado (Resumo)</th>
+          <th class="bg-slate-50 text-slate-600 font-bold py-4 text-center">Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-question>
+        <tr class="hover:bg-slate-50/50 transition-colors">
+          <td class="font-semibold text-slate-700">{{ question.title }}</td>
+          <td>
+            <p-tag 
+              [value]="question.difficulty | difficulty" 
+              [severity]="getSeverity(question.difficulty)">
+            </p-tag>
+          </td>
+          <td>
+            <span class="text-slate-500 text-sm truncate max-w-md block">
+              {{ question.statement }}
+            </span>
+          </td>
+          <td class="text-center">
+            <p-button 
+              icon="pi pi-pencil" 
+              [rounded]="true" 
+              [text]="true" 
+              severity="secondary" 
+              pTooltip="Editar"
+              (click)="editarQuestao(question.id)">
+            </p-button>
+            <p-button 
+              icon="pi pi-trash" 
+              [rounded]="true" 
+              [text]="true" 
+              severity="danger" 
+              pTooltip="Excluir"
+              (click)="excluirQuestao(question.id)">
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center py-12">
+            <i class="pi pi-folder-open text-4xl text-slate-300 mb-4 block"></i>
+            <span class="text-slate-500">Nenhuma questão encontrada. Comece criando uma!</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

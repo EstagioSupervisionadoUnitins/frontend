@@ -1,0 +1,201 @@
+<div class="p-6 md:p-8 animate-fade-in max-w-6xl mx-auto">
+    <!-- Cabeçalho -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600">
+                <i class="pi pi-history text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-slate-800">Seu Histórico de Submissões</h1>
+                <p class="text-slate-500">Revise todas as suas tentativas e analise os feedbacks da IA.</p>
+            </div>
+        </div>
+
+        <div>
+            <a routerLink="/aluno/dashboard" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold rounded-xl transition-colors">
+                <i class="pi pi-arrow-left text-sm"></i>
+                Voltar ao Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabela do Histórico -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <p-table [value]="submissions()" [loading]="loading()" [rows]="10" [paginator]="true"
+                 [rowsPerPageOptions]="[10, 20, 50]"
+                 sortField="created_at" [sortOrder]="-1"
+                 styleClass="p-datatable-sm p-datatable-hoverable-rows"
+                 responsiveLayout="scroll"
+                 currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} tentativas"
+                 [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-slate-50/50 border-b border-slate-200">
+                    <span class="text-base font-semibold text-slate-700">Histórico de Exercícios</span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filtrar Resultado:</span>
+                        <p-select [options]="filterOptions" 
+                                  [ngModel]="filterResult()" 
+                                  (ngModelChange)="filterResult.set($event)"
+                                  optionLabel="label" 
+                                  optionValue="value" 
+                                  styleClass="w-52 text-sm rounded-xl border-slate-200 shadow-sm"
+                                  placeholder="Selecione">
+                        </p-select>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr class="bg-slate-50 border-b border-slate-200">
+                    <th pSortableColumn="created_at" class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 pl-6 w-44 cursor-pointer hover:bg-slate-100 transition-colors">
+                        Data / Hora <p-sortIcon field="created_at"></p-sortIcon>
+                    </th>
+                    <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4">Questão</th>
+                    <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4">Código Enviado</th>
+                    <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 w-32">Status</th>
+                    <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 w-36 text-center">Resultado</th>
+                    <th class="text-slate-500 font-semibold uppercase text-xs tracking-wider py-4 w-28 text-center pr-6">Ações</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-sub>
+                <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/30 transition-colors">
+                    <td class="py-4 pl-6 text-slate-600 font-medium text-sm">
+                        {{ sub.created_at ? (sub.created_at | date: 'dd/MM/yyyy HH:mm') : 'Data não registrada' }}
+                    </td>
+                    <td class="py-4 font-semibold text-slate-800">
+                        {{ sub.question?.title || 'Exercício #' + (sub.question?.id || sub.question_id) }}
+                    </td>
+                    <td class="py-4 text-slate-500 font-mono text-xs max-w-xs truncate">
+                        {{ truncateCode(sub.code) }}
+                    </td>
+                    <td class="py-4">
+                        <p-tag [severity]="getStatusSeverity(sub.status)" [value]="getStatusLabel(sub.status)"></p-tag>
+                    </td>
+                    <td class="py-4 text-center">
+                        @if (sub.status === 'completed') {
+                            @if (sub.is_correct) {
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 font-bold rounded-full text-xs border border-emerald-100">
+                                    <i class="pi pi-check-circle text-xs"></i> Correto
+                                </span>
+                            } @else {
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-700 font-bold rounded-full text-xs border border-rose-100">
+                                    <i class="pi pi-times-circle text-xs"></i> Incorreto
+                                </span>
+                            }
+                        } @else {
+                            <span class="text-slate-400 text-xs">—</span>
+                        }
+                    </td>
+                    <td class="py-4 text-center pr-6">
+                        <button pButton icon="pi pi-eye" class="p-button-text p-button-rounded p-button-sm text-primary-600 hover:bg-primary-50"
+                                pTooltip="Ver detalhes da tentativa" tooltipPosition="left"
+                                (click)="openDetails(sub)">
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center py-16">
+                        <div class="flex flex-col items-center gap-3">
+                             <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                                 <i class="pi pi-folder-open text-3xl"></i>
+                             </div>
+                             <h3 class="text-lg font-bold text-slate-700">Nenhuma submissão encontrada</h3>
+                             <p class="text-slate-400 max-w-sm text-sm">Você ainda não enviou soluções para os exercícios de lógica. Vá até as Trilhas para começar!</p>
+                             <a routerLink="/aluno/trilhas" class="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 font-semibold rounded-xl transition-colors text-sm shadow-sm">
+                                <i class="pi pi-briefcase text-xs"></i>
+                                Ir para Trilhas
+                             </a>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- Modal com os Detalhes da Submissão -->
+<p-dialog [header]="selectedSubmission()?.question?.title || 'Detalhes da Submissão'"
+          [(visible)]="displayDetailModal"
+          [modal]="true"
+          [draggable]="false"
+          [resizable]="false"
+          styleClass="w-full max-w-3xl"
+          (onHide)="closeDetails()">
+    
+    @if (selectedSubmission(); as sub) {
+        <div class="flex flex-col gap-6 max-h-[75vh] overflow-y-auto pr-2">
+            <!-- Informações Resumidas -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div>
+                    <span class="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Status</span>
+                    <p-tag [severity]="getStatusSeverity(sub.status)" [value]="getStatusLabel(sub.status)" class="mt-1 inline-block"></p-tag>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Resultado</span>
+                    @if (sub.status === 'completed') {
+                        <span class="mt-1 inline-flex items-center gap-1.5 font-bold text-sm" [ngClass]="sub.is_correct ? 'text-emerald-600' : 'text-rose-600'">
+                            <i class="pi" [ngClass]="sub.is_correct ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                            {{ sub.is_correct ? 'Correto' : 'Incorreto' }}
+                        </span>
+                    } @else {
+                        <span class="mt-1 text-slate-500 font-medium text-sm">—</span>
+                    }
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Data do Envio</span>
+                    <span class="mt-1 text-slate-700 font-semibold text-sm block">
+                        {{ sub.created_at ? (sub.created_at | date: 'dd/MM/yyyy HH:mm') : '—' }}
+                    </span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 block font-semibold uppercase tracking-wider">Ação</span>
+                    <a [routerLink]="['/aluno/exercicio', sub.question?.id || sub.question_id]" (click)="closeDetails()" class="mt-1 inline-flex items-center gap-1.5 text-xs text-primary-600 hover:text-primary-700 font-bold transition-colors">
+                        <i class="pi pi-external-link"></i> Refazer Questão
+                    </a>
+                </div>
+            </div>
+
+            <!-- Código Submetido -->
+            <div>
+                <h3 class="text-base font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="pi pi-code text-slate-500"></i> Código Enviado
+                </h3>
+                <div class="relative bg-slate-950 text-slate-100 p-4 rounded-2xl font-mono text-sm overflow-x-auto max-h-80 border border-slate-800">
+                    <pre><code>{{ sub.code }}</code></pre>
+                </div>
+            </div>
+
+            <!-- Feedback / Orientação Socrática -->
+            @if (sub.status === 'completed') {
+                @if (sub.socratic_hint) {
+                    <div class="p-5 bg-amber-50/50 border border-amber-200/60 rounded-2xl">
+                        <h4 class="text-amber-800 font-bold text-base flex items-center gap-2 mb-2">
+                            <i class="pi pi-lightbulb"></i> Orientação Socrática (Dica da IA)
+                        </h4>
+                        <p class="text-amber-900/90 text-sm leading-relaxed whitespace-pre-line font-medium">
+                            {{ sub.socratic_hint }}
+                        </p>
+                    </div>
+                }
+
+                @if (sub.feedback) {
+                    <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <h4 class="text-slate-700 font-bold text-base flex items-center gap-2 mb-2">
+                            <i class="pi pi-comment"></i> Avaliação Detalhada da IA
+                        </h4>
+                        <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
+                            {{ sub.feedback }}
+                        </p>
+                    </div>
+                }
+            }
+        </div>
+        
+        <ng-template pTemplate="footer">
+            <div class="flex justify-end pt-4 border-t border-slate-100">
+                <button pButton label="Fechar" class="p-button-outlined p-button-secondary rounded-xl font-semibold" (click)="closeDetails()"></button>
+            </div>
+        </ng-template>
+    }
+</p-dialog>

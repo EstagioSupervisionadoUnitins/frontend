@@ -1,0 +1,4 @@
+/* Estilos customizados e micro-interações discretas */
+.card-hover:hover {
+  transform: translateY(-2px);
+}

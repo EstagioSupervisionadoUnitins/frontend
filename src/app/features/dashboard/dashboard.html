@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-8 w-full">
+  <div class="flex flex-col gap-1">
+    <h1 class="text-2xl font-black text-slate-900 tracking-tight">Dashboard</h1>
+    <p class="text-slate-500 text-sm font-medium">Bem-vindo à sua jornada de aprendizado.</p>
+  </div>
+
+  <div class="flex flex-col gap-8 pb-12 animate-fade-in">
+    <app-hero-progresso></app-hero-progresso>
+
+    <!-- Seção de Ações Rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card Histórico -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-300">
+        <div class="flex gap-4 items-start">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <i class="pi pi-history text-xl"></i>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg font-bold text-slate-800">Histórico de Submissões</h3>
+            <p class="text-slate-500 text-sm leading-relaxed">Revise as soluções enviadas anteriormente, veja dicas socráticas recebidas e os feedbacks detalhados da inteligência artificial.</p>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <a routerLink="/aluno/historico" class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold rounded-xl transition-colors text-sm">
+            Ver Meu Histórico
+            <i class="pi pi-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card Desafios/Trilhas -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-300">
+        <div class="flex gap-4 items-start">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i class="pi pi-briefcase text-xl"></i>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg font-bold text-slate-800">Trilha de Aprendizado</h3>
+            <p class="text-slate-500 text-sm leading-relaxed">Continue sua jornada de estudos resolvendo problemas práticos de lógica gerados especificamente para o seu nível.</p>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <a routerLink="/aluno/trilhas" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold rounded-xl transition-colors text-sm">
+            Ir para Trilhas
+            <i class="pi pi-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

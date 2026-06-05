@@ -1,0 +1,105 @@
+<div class="container mx-auto p-6 animate-fade-in max-w-3xl">
+  <p-toast></p-toast>
+
+  <div class="mb-8">
+    <p-button 
+      label="Voltar para a lista" 
+      icon="pi pi-arrow-left" 
+      [text]="true" 
+      severity="secondary" 
+      (click)="onCancel()"
+      class="mb-4">
+    </p-button>
+    <h1 class="text-3xl font-black text-slate-900 tracking-tight">Nova Questão Manual</h1>
+    <p class="text-slate-500">Defina o título, enunciado e as regras deste desafio.</p>
+  </div>
+
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <div class="bg-white rounded-2xl shadow-xs border border-slate-200 p-8 space-y-6">
+      
+      <!-- Título -->
+      <div class="flex flex-col gap-2">
+        <label for="title" class="font-bold text-slate-700">Título da Questão</label>
+        <input 
+          pInputText 
+          id="title" 
+          formControlName="title" 
+          placeholder="Ex: Estruturas de Repetição com For"
+          class="w-full" />
+        <app-form-error [control]="recipeForm.get('title')"></app-form-error>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Turma -->
+        <div class="flex flex-col gap-2">
+          <label for="classroom_id" class="font-bold text-slate-700">Vincular à Turma</label>
+          <p-select 
+            id="classroom_id"
+            formControlName="classroom_id"
+            [options]="classrooms()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Selecione uma turma"
+            [style]="{'width':'100%'}">
+          </p-select>
+          <app-form-error [control]="recipeForm.get('classroom_id')"></app-form-error>
+        </div>
+
+        <!-- Dificuldade -->
+        <div class="flex flex-col gap-2">
+          <label for="difficulty" class="font-bold text-slate-700">Dificuldade</label>
+          <p-select 
+            id="difficulty" 
+            [options]="difficultyOptions" 
+            formControlName="difficulty" 
+            optionLabel="label" 
+            optionValue="value"
+            [style]="{'width':'100%'}">
+          </p-select>
+        </div>
+      </div>
+
+      <!-- Enunciado -->
+      <div class="flex flex-col gap-2">
+        <label for="statement" class="font-bold text-slate-700">Enunciado (Markdown/HTML)</label>
+        <textarea 
+          pTextarea 
+          id="statement" 
+          formControlName="statement" 
+          rows="8" 
+          placeholder="Descreva o que o aluno deve fazer. Você pode usar tags HTML básicas."
+          class="w-full"></textarea>
+        <app-form-error [control]="recipeForm.get('statement')"></app-form-error>
+      </div>
+
+      <!-- Restrições -->
+      <div class="flex flex-col gap-2">
+        <label for="constraints" class="font-bold text-slate-700">Restrições (Opcional)</label>
+        <input 
+          pInputText 
+          id="constraints" 
+          formControlName="constraints" 
+          placeholder="Ex: Não use a função sum(), implemente manualmente."
+          class="w-full" />
+      </div>
+
+    </div>
+
+    <div class="flex justify-end gap-3 pb-12">
+      <p-button 
+        label="Cancelar" 
+        severity="secondary" 
+        [text]="true" 
+        (click)="onCancel()"
+        [disabled]="loading()">
+      </p-button>
+      <p-button 
+        type="submit" 
+        label="Salvar Questão" 
+        icon="pi pi-save" 
+        [loading]="loading()"
+        raised>
+      </p-button>
+    </div>
+  </form>
+</div>

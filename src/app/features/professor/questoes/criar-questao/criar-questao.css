@@ -1,0 +1,9 @@
+/* Estilos específicos para o formulário de criação */
+:host ::ng-deep .p-dropdown {
+    width: 100%;
+}
+
+:host ::ng-deep .p-inputtext:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.1);
+}
